@@ -19,7 +19,9 @@ i standing constraints dla przyszłych sesji.
 | Deployment Protection | ON — `all_except_custom_domains` (anonimowy curl na URL-e deploymentów = 401/302; aliasy produkcyjne publiczne) |
 | Node na builderach | 24.x |
 | Git integration | **ODŁĄCZONA** (CLI auto-podpiął przy `vercel link`; odłączono `vercel git disconnect` — podpięcie czeka na osobną zgodę) |
-| Env vary | **brak** (`vercel env ls` = 0; zgodnie z planem — zero placeholderów) |
+| Supabase (Marketplace) | zasób **`supabase-cordovan-kettle`**, region **eu-central-1** (potwierdzony w connection stringach), status Available, podpięty do `english-talk`; terms zaakceptowane przez użytkownika 2026-07-15; billing przez Vercel (free tier) |
+| Env vary | **16 zmiennych Supabase** auto-provisionowanych przez integrację, wszystkie scope'y (Production/Preview/Development): `POSTGRES_URL`, `POSTGRES_PRISMA_URL`, `POSTGRES_URL_NON_POOLING`, `POSTGRES_HOST`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DATABASE`, `SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_ANON_KEY`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_JWT_SECRET`. `OPENAI_API_KEY` nadal nieustawiony (czeka na bezpieczniki OpenAI) |
+| Lokalny stack Supabase | devDep `supabase` + `supabase/` w repo (`npx supabase start/stop`); szczegóły w sekcji „Lokalny dev" |
 | CLI | vercel 56.2.0, konto `gumis1153` |
 
 ## Stan wykonania faz
@@ -39,6 +41,7 @@ i standing constraints dla przyszłych sesji.
 3. **Istnieje lokalny `.env` z sekretem `SUPABASE_PASS`** — plan zakładał brak plików env, a Supabase nie jest sprovisionowany. Plik jest poprawnie gitignorowany (nie trafi do repo), zgodnie z planem nieruszany. **TODO człowiek**: zweryfikować skąd pochodzi i czy nie jest martwy; jeśli martwy — usunąć ręcznie.
 4. **Globalny `core.excludesfile`** (`~/Herd/dev-items/.gitignore`) ignoruje `package-lock.json` we wszystkich repo. Lockfile dodany wymuszeniem (`git add -f`) — raz strackowany, ignore go nie dotyczy. **TODO człowiek (opcjonalnie)**: przejrzeć globalny excludes, czy nie psuje innych projektów node'owych.
 5. **Trzy commity zamiast dwóch** — groundwork Fazy 3 (`.env.example`, `.gitignore`, foundation) wszedł osobnym commitem `a3b0041`; plan wymieniał te pliki, ale nie przypisał im commita.
+6. **Stare wolumeny Dockera blokowały lokalny stack** — `supabase start` crash-loopował na `database files are incompatible with server`: na maszynie istniały wolumeny `supabase_{db,config,storage}_10xdevs` z **2025-05-06** (wcześniejsze podejście, starszy Postgres major). Obejście bez kasowania danych: `project_id` w `supabase/config.toml` zmienione z `10xdevs` na `english-talk` → CLI utworzył świeże wolumeny, stare zostały nietknięte. **TODO ludzkie (opcjonalnie)**: gdy stare dane na pewno zbędne — `docker volume rm supabase_config_10xdevs supabase_db_10xdevs supabase_storage_10xdevs`.
 
 ## Dziennik decyzji
 
@@ -77,6 +80,14 @@ Wymagają jawnej zgody człowieka; agent może przygotować, nie wykonuje:
 9. **Sekrety wyłącznie przez `vercel env`** (`vercel env pull .env.local`); zero placeholderów w dashboardzie; `.env.example` dokumentuje same nazwy. Uwaga: `vercel env pull` NADPISUJE `.env.local`.
 10. **Nieinteraktywne `vercel link`/skrypty: zawsze `--scope gumis1153s-projects`** (CLI ≥55 nie dziedziczy teamu).
 
+## Lokalny dev (Supabase, stan 2026-07-15)
+
+- Stack: `npx supabase start` / `npx supabase stop` (wymaga działającego Docker Desktop). API `http://127.0.0.1:54321`, Postgres `54322`, Studio `54323`.
+- `.env.local` (gitignorowany) = wartości LOKALNEGO stacka + `VERCEL_OIDC_TOKEN`; zdalne wartości do inspekcji przez `vercel env pull .env.vercel` (osobny plik — pull NADPISUJE cel).
+- Pętla migracji: `npx supabase migration new <nazwa>` → SQL → `npx supabase db reset` (lokalnie od zera); na zdalny projekt `npx supabase db push` dopiero po `npx supabase login` + `link` (token = krok ludzki, ODŁOŻONE do pierwszej migracji).
+- Free-tier gotcha: zdalny projekt pauzuje po ~tygodniu nieaktywności (wznowienie ręczne z dashboardu; przy lokalnym devie pauzy będą częste — to oczekiwane, nie awaria).
+- Dashboard zdalny: SSO z dashboardu Vercela (Storage → Open in Supabase); OAuth Google/GitHub — konfiguracja ODŁOŻONA do feature auth (client ID/secret = tylko człowiek).
+
 ## Runbook — następna sesja
 
 Produkcja już live, więc runbook z planu redukuje się do:
@@ -84,4 +95,5 @@ Produkcja już live, więc runbook z planu redukuje się do:
 1. (bramka) `vercel git connect` + branch protection na `master` → od tej pory merge do `master` = deploy produkcyjny; human gate przenosi się na merge.
 2. Known-good rollback target: `dpl_Ea4wHR5CFcnF5hQeHZYrQvnVHi3w` (scaffold, fra1).
 3. Przy pierwszym feature z AI: bezpieczniki OpenAI (przedpłata, auto-recharge OFF, klucz per-środowisko) → dopiero wtedy `vercel env add OPENAI_API_KEY production`.
-4. Przy pierwszym feature z DB: sekcja B planu źródłowego (Supabase Marketplace, region `eu-central-1`, lokalny stack przez Docker).
+4. Przy pierwszym feature z DB: schemat + pierwsza migracja lokalnie (`supabase migration new` → `db reset`), potem `npx supabase login` + `link --project-ref` (krok ludzki) i `db push`; RLS włączone od pierwszej tabeli.
+5. Przy feature auth: OAuth Google/GitHub w Supabase Dashboard (client ID/secret — tylko człowiek) + Site URL/redirect allowlist na `*.vercel.app` i domenę produkcyjną; lokalnie wpisy w `supabase/config.toml`.
