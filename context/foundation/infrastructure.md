@@ -98,6 +98,17 @@ The team shipped english-talk on Vercel Hobby in week three and it demoed beauti
 | MCP is read-only beta — agent cannot mutate via MCP | Unknown unknowns / Research finding | H | L | Architect agent ops around the `vercel` CLI for writes; use MCP only for read/inspect. Re-check MCP write support as it exits beta. |
 | Vercel lock-in if pricing/policy shifts | Pre-mortem | L | M | Keep the app portable (standard Next.js 16, no Vercel-only primitives on the critical path); runner-up Cloudflare/OpenNext is a documented exit. |
 
+## Decision Log
+
+- **2026-07-15 — AI provider: OpenAI direct; OpenRouter evaluated and rejected.**
+  Verified against OpenRouter docs (2026-07-15): OpenRouter supports only
+  turn-based audio via chat completions — no Realtime API (no WebRTC/WebSocket
+  sessions, no ephemeral `client_secrets` tokens), which the entire voice
+  architecture depends on. Both Realtime voice and transcript analysis stay on
+  OpenAI direct. Revision is admissible **only for the transcript-analysis
+  route**, if cost control becomes pressing (OpenRouter offers prepaid credits
+  and per-key limits — a hard cap OpenAI does not offer).
+
 ## Getting Started
 
 Validated against Next.js 16 + the current Vercel CLI (checked 2026-07-05). Your installed `vercel` CLI is 50.43.0 — upgrade first, as the deploy/rollback surface has moved.

@@ -39,3 +39,9 @@ bootstrapper-verified, so scaffolding is smooth; the trade-off versus
 batteries-included. Deploys to Vercel (starter default; Fluid Compute suits the
 voice/LLM API routes) with GitHub Actions auto-deploy-on-merge. Auth, realtime,
 and AI flags are set; payments and background jobs are out of scope per the PRD.
+
+> **Provider note (2026-07-15)**: OpenAI Realtime stays on OpenAI direct.
+> OpenRouter was evaluated and rejected — it has no Realtime API support
+> (no WebRTC/WebSocket sessions, no ephemeral `client_secrets` tokens), which
+> the voice architecture depends on. See the decision entry in
+> `infrastructure.md` for scope of any future revision.
