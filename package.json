@@ -21,6 +21,7 @@
     "@vercel/config": "^0.5.5",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
+    "supabase": "^2.109.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
