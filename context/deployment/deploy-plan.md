@@ -43,7 +43,7 @@ i standing constraints dla przyszłych sesji.
 ## Dziennik decyzji
 
 - **AI provider: OpenAI direct; OpenRouter odrzucony (2026-07-15)** — brak wsparcia Realtime API (WebRTC/ephemeral `client_secrets`). Rewizja dopuszczalna wyłącznie dla route'u analizy transkryptu (OpenRouter = przedpłacone kredyty + limity per-klucz jako twardy cap). Zapisane w `context/foundation/infrastructure.md` (Decision Log) i `tech-stack.md`.
-- **DB odłożona** — żadnego provisioningu. **Twardy constraint: każdy przyszły datastore wyłącznie Frankfurt / `eu-central-1`** (kolokacja z fra1). Kandydaci przy pierwszym feature z DB: Supabase (Postgres + Auth OAuth Google/GitHub w jednej integracji Marketplace — zgodne z preferencją PRD; billing przez Vercel; region wybierany przy tworzeniu, nieodwracalny) vs Neon (scale-to-zero, branch DB per preview). Instrukcja provisioningu: sekcja B planu źródłowego.
+- **DB: SUPABASE (decyzja użytkownika 2026-07-15)** — wygrał z Neonem, bo bundluje Auth OAuth Google/GitHub (preferencja PRD) + Storage w jednej integracji Marketplace, z billingiem przez Vercel. **Nowy projekt przez Vercel Marketplace w `eu-central-1`** (twardy constraint kolokacji z fra1 utrzymany). Istniejący projekt użytkownika na supabase.com (`eu-west-1`) **odrzucony dla tego repo** — regionu nie da się zmienić, a złamanie kolokacji kosztowałoby ~20–25 ms na każdym roundtripie funkcja↔DB; projekt zostaje nietknięty poza zakresem repo. Instrukcja wykonania: sekcja B planu źródłowego.
 - **Rate limiting odłożony jako MERGE-GATE** (patrz standing constraints).
 - **Produkcja live od 2026-07-15** (decyzja użytkownika po odchyleniu nr 1); Git integration nadal odłączona.
 
@@ -62,7 +62,7 @@ Wymagają jawnej zgody człowieka; agent może przygotować, nie wykonuje:
 | Limity OpenAI | budżety NIE blokują ruchu; jedyny twardy bezpiecznik = przedpłacone kredyty + auto-recharge OFF; dedykowany klucz `english-talk-prod` (+ osobny preview) dopiero przy feature |
 | Warunki Marketplace Supabase | akceptacja terms/billingu w dashboardzie |
 | OAuth client ID/secret (Google/GitHub) | konta zewnętrzne, tylko człowiek |
-| Weryfikacja/usunięcie lokalnego `.env` z `SUPABASE_PASS` | patrz odchylenie nr 3 |
+| Weryfikacja/usunięcie lokalnego `.env` z `SUPABASE_PASS` | należy do istniejącego projektu Supabase użytkownika (`eu-west-1`, poza zakresem repo); może być jedyną kopią hasła — przenieść/usunąć wyłącznie ręcznie |
 
 ## Standing constraints dla przyszłych feature'ów
 
