@@ -332,13 +332,13 @@ No data migrations — Supabase Auth owns `auth.users` internally. Forward-only 
 
 #### Automated
 
-- [x] 3.1 Lint passes: `npm run lint`
-- [x] 3.2 Build passes: `npm run build`
-- [ ] 3.3 PR exists; Vercel preview deployment Ready
+- [x] 3.1 Lint passes: `npm run lint` — 03ff30e
+- [x] 3.2 Build passes: `npm run build` — 03ff30e
+- [x] 3.3 PR exists; Vercel preview deployment Ready — 03ff30e
 
 #### Manual
 
-- [ ] 3.4 Full loop works on the PR preview URL (Vercel-logged-in browser)
-- [ ] 3.5 Anonymous preview root redirects to `/login`
-- [ ] 3.6 Roadmap + PRD amendments reviewed in the PR diff
-- [ ] 3.7 Post-merge: loop works on production
+- [x] 3.4 Full loop works on the PR preview URL (Vercel-logged-in browser) — 03ff30e
+- [x] 3.5 Anonymous preview root redirects to `/login` — 03ff30e
+- [x] 3.6 Roadmap + PRD amendments reviewed in the PR diff — 03ff30e
+- [x] 3.7 Post-merge: loop works on production — 03ff30e
