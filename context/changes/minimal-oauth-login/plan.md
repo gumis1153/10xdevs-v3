@@ -305,28 +305,28 @@ No data migrations — Supabase Auth owns `auth.users` internally. Forward-only 
 
 #### Automated
 
-- [x] 1.1 Lint passes: `npm run lint`
-- [x] 1.2 Production build (incl. typecheck) passes: `npm run build`
-- [x] 1.3 New files exist: `src/proxy.ts`, `src/lib/supabase/server.ts`, `src/app/login/page.tsx`, `src/app/auth/actions.ts`, `src/app/auth/callback/route.ts`
+- [x] 1.1 Lint passes: `npm run lint` — 0f53466
+- [x] 1.2 Production build (incl. typecheck) passes: `npm run build` — 0f53466
+- [x] 1.3 New files exist: `src/proxy.ts`, `src/lib/supabase/server.ts`, `src/app/login/page.tsx`, `src/app/auth/actions.ts`, `src/app/auth/callback/route.ts` — 0f53466
 
 #### Manual
 
-- [x] 1.4 Anonymous visit redirects to `/login`; login page renders; static assets unblocked (local stack)
-- [ ] 1.5 Sign-in attempt fails gracefully with inline Polish error (provider not yet enabled)
+- [x] 1.4 Anonymous visit redirects to `/login`; login page renders; static assets unblocked (local stack) — 0f53466
+- [x] 1.5 Sign-in attempt fails gracefully with inline Polish error (provider not yet enabled)
 
 ### Phase 2: Google OAuth Configuration (human-in-the-loop)
 
 #### Automated
 
-- [ ] 2.1 Local stack boots cleanly with `[auth.external.google]` enabled: `npx supabase stop && npx supabase start`
-- [ ] 2.2 Lint still passes: `npm run lint`
+- [x] 2.1 Local stack boots cleanly with `[auth.external.google]` enabled: `npx supabase stop && npx supabase start`
+- [x] 2.2 Lint still passes: `npm run lint`
 
 #### Manual
 
-- [ ] 2.3 Full local loop: Google consent → `/` shows email/avatar
-- [ ] 2.4 Sign-out returns to `/login`; `/` redirects to `/login` afterwards
-- [ ] 2.5 Signed-in user visiting `/login` is redirected to `/`
-- [ ] 2.6 Denied consent → `/login` with inline Polish error
+- [x] 2.3 Full local loop: Google consent → `/` shows email/avatar
+- [x] 2.4 Sign-out returns to `/login`; `/` redirects to `/login` afterwards
+- [x] 2.5 Signed-in user visiting `/login` is redirected to `/`
+- [x] 2.6 Denied consent → `/login` with inline Polish error
 
 ### Phase 3: Preview Verification + Decision Write-back
 
