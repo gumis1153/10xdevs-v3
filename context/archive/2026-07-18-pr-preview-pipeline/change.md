@@ -1,10 +1,10 @@
 ---
 change_id: pr-preview-pipeline
 title: Podpięcie delivery pipeline: Git → auto-deploy + preview per PR
-status: implemented
+status: archived
 created: 2026-07-18
 updated: 2026-07-20
-archived_at: null
+archived_at: 2026-07-20T17:27:45Z
 ---
 
 ## Notes

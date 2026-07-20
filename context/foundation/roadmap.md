@@ -3,7 +3,7 @@ project: "english-talk"
 version: 1
 status: draft
 created: 2026-07-18
-updated: 2026-07-18
+updated: 2026-07-20
 prd_version: 1
 main_goal: speed
 top_blocker: decisions
@@ -29,7 +29,7 @@ Polscy programiści na poziomie A2–B2 mają barierę mówioną w angielskim �
 
 | ID   | Change ID                 | Outcome (user can …)                                                                | Prerequisites                    | PRD refs                        | Status   |
 | ---- | ------------------------- | ----------------------------------------------------------------------------------- | -------------------------------- | ------------------------------- | -------- |
-| F-01 | pr-preview-pipeline       | (foundation) merge do `master` = automatyczny deploy; PR = preview URL              | —                                | tech-stack: ci_default_flow     | blocked  |
+| F-01 | pr-preview-pipeline       | (foundation) merge do `master` = automatyczny deploy; PR = preview URL              | —                                | tech-stack: ci_default_flow     | done     |
 | S-01 | minimal-oauth-login       | użytkownik może założyć konto i zalogować się (OAuth Google/GitHub)                 | —                                | FR-001, FR-002, US-01           | ready    |
 | S-02 | session-topic-proposal    | użytkownik może rozpocząć sesję: widzi wylosowany temat, może odrzucić i wylosować inny | —                            | FR-003, FR-004, US-01           | ready    |
 | S-03 | first-voice-conversation  | użytkownik może odbyć 2–3 min rozmowę głosową po angielsku i zakończyć ją w dowolnym momencie | S-02, bezpieczniki OpenAI (krok ludzki) | FR-006, FR-007, FR-008, FR-009, US-01 | proposed |
@@ -73,7 +73,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - Zgoda człowieka na `vercel git connect` + branch protection na `master` (bramka ludzka z rejestru w deploy-plan) — Owner: user. Block: yes.
 - **Risk:** bez tego deploye pozostają ręczne przez CLI (dopuszczalne, ale każdy prod-deploy to osobna bramka ludzka); podpięcie Gita przenosi bramkę na merge i odblokowuje weryfikację preview per PR.
-- **Status:** blocked
+- **Status:** done
 
 ## Slices
 
@@ -189,3 +189,5 @@ Foundations below assume these are present and do NOT re-scaffold them.
 ## Done
 
 (Empty on first generation. `/10x-archive` appends an entry here — and flips that item's `Status` to `done` — when a change whose `Change ID` matches the item is archived.)
+
+- **F-01: (foundation) merge do `master` buduje produkcję automatycznie, a każdy PR dostaje preview URL — ścieżka weryfikacji dla wszystkich plasterków.** — Archived 2026-07-20 → `context/archive/2026-07-18-pr-preview-pipeline/`. Lesson: —.
