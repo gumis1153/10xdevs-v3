@@ -138,7 +138,7 @@ Konkretna metoda uwierzytelnienia jest decyzją downstream (patrz `## Open Quest
 
 ## Open Questions
 
-1. **Metoda uwierzytelnienia (email+hasło vs OAuth Google/GitHub vs magic link)** — preferencja zgłoszona dla OAuth-only podczas Socrates round (FR-001), ale decyzja właściwa należy do downstream tech-stack selection. Owner: tech-stack-selector. By: przed implementacją.
+1. **Metoda uwierzytelnienia (email+hasło vs OAuth Google/GitHub vs magic link)** — preferencja zgłoszona dla OAuth-only podczas Socrates round (FR-001), ale decyzja właściwa należy do downstream tech-stack selection. Owner: tech-stack-selector. By: przed implementacją. **Rozstrzygnięte 2026-07-20: OAuth-only, wyłącznie Google (GitHub odrzucony — decyzja produktowa przy planowaniu S-01).**
 2. **Czy ograniczyć liczbę skipów tematu na sesję (FR-004)?** — counter-argument Socratesa wskazał, że niekontrolowane skipowanie pozwala user unikać trudnych tematów. Otwarte na v2 (np. limit 3/sesja). Owner: product. By: po pierwszych zewnętrznych testach v1.
 3. **Lista predefiniowanych tematów (FR-003) — ile i jakie?** — w v1 potrzebna konkretna lista. Pomysły z dyskusji: "daily standup", "job interview", "code review discussion", "ordering coffee", "explaining a bug to a colleague". Owner: user. By: przed implementacją.
 4. **Sugestie dalszej nauki w v1 będą bazować tylko na bieżącej sesji (FR-013)** — przyjęte jako znana ograniczona wartość; v2 doda kontekst historii błędów. Owner: product. By: po pierwszej sesji feedbackowej z użytkownikiem.

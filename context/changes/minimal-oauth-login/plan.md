@@ -312,28 +312,28 @@ No data migrations — Supabase Auth owns `auth.users` internally. Forward-only 
 #### Manual
 
 - [x] 1.4 Anonymous visit redirects to `/login`; login page renders; static assets unblocked (local stack) — 0f53466
-- [x] 1.5 Sign-in attempt fails gracefully with inline Polish error (provider not yet enabled)
+- [x] 1.5 Sign-in attempt fails gracefully with inline Polish error (provider not yet enabled) — fa7090f
 
 ### Phase 2: Google OAuth Configuration (human-in-the-loop)
 
 #### Automated
 
-- [x] 2.1 Local stack boots cleanly with `[auth.external.google]` enabled: `npx supabase stop && npx supabase start`
-- [x] 2.2 Lint still passes: `npm run lint`
+- [x] 2.1 Local stack boots cleanly with `[auth.external.google]` enabled: `npx supabase stop && npx supabase start` — fa7090f
+- [x] 2.2 Lint still passes: `npm run lint` — fa7090f
 
 #### Manual
 
-- [x] 2.3 Full local loop: Google consent → `/` shows email/avatar
-- [x] 2.4 Sign-out returns to `/login`; `/` redirects to `/login` afterwards
-- [x] 2.5 Signed-in user visiting `/login` is redirected to `/`
-- [x] 2.6 Denied consent → `/login` with inline Polish error
+- [x] 2.3 Full local loop: Google consent → `/` shows email/avatar — fa7090f
+- [x] 2.4 Sign-out returns to `/login`; `/` redirects to `/login` afterwards — fa7090f
+- [x] 2.5 Signed-in user visiting `/login` is redirected to `/` — fa7090f
+- [x] 2.6 Denied consent → `/login` with inline Polish error — fa7090f
 
 ### Phase 3: Preview Verification + Decision Write-back
 
 #### Automated
 
-- [ ] 3.1 Lint passes: `npm run lint`
-- [ ] 3.2 Build passes: `npm run build`
+- [x] 3.1 Lint passes: `npm run lint`
+- [x] 3.2 Build passes: `npm run build`
 - [ ] 3.3 PR exists; Vercel preview deployment Ready
 
 #### Manual

@@ -3,7 +3,7 @@ project: "english-talk"
 version: 1
 status: draft
 created: 2026-07-18
-updated: 2026-07-18
+updated: 2026-07-20
 prd_version: 1
 main_goal: speed
 top_blocker: decisions
@@ -30,7 +30,7 @@ Polscy programiści na poziomie A2–B2 mają barierę mówioną w angielskim �
 | ID   | Change ID                 | Outcome (user can …)                                                                | Prerequisites                    | PRD refs                        | Status   |
 | ---- | ------------------------- | ----------------------------------------------------------------------------------- | -------------------------------- | ------------------------------- | -------- |
 | F-01 | pr-preview-pipeline       | (foundation) merge do `master` = automatyczny deploy; PR = preview URL              | —                                | tech-stack: ci_default_flow     | blocked  |
-| S-01 | minimal-oauth-login       | użytkownik może założyć konto i zalogować się (OAuth Google/GitHub)                 | —                                | FR-001, FR-002, US-01           | ready    |
+| S-01 | minimal-oauth-login       | użytkownik może założyć konto i zalogować się (OAuth Google)                        | —                                | FR-001, FR-002, US-01           | ready    |
 | S-02 | session-topic-proposal    | użytkownik może rozpocząć sesję: widzi wylosowany temat, może odrzucić i wylosować inny | —                            | FR-003, FR-004, US-01           | ready    |
 | S-03 | first-voice-conversation  | użytkownik może odbyć 2–3 min rozmowę głosową po angielsku i zakończyć ją w dowolnym momencie | S-02, bezpieczniki OpenAI (krok ludzki) | FR-006, FR-007, FR-008, FR-009, US-01 | proposed |
 | S-04 | post-session-report       | użytkownik widzi po sesji raport: pogrupowane błędy, ocena CEFR z disclaimerem, sugestie | S-03                         | FR-010, FR-011, FR-012, FR-013, US-01 | proposed |
@@ -79,14 +79,14 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 ### S-01: Minimalne logowanie OAuth
 
-- **Outcome:** użytkownik może założyć konto i zalogować się (OAuth Google/GitHub); aplikacja jest za bramką logowania.
+- **Outcome:** użytkownik może założyć konto i zalogować się (OAuth Google); aplikacja jest za bramką logowania. (Decyzja 2026-07-20 przy planowaniu: wyłącznie Google — GitHub odrzucony, nie odłożony.)
 - **Change ID:** minimal-oauth-login
 - **PRD refs:** FR-001, FR-002, US-01 (Given: zalogowany użytkownik), sekcja Access Control
 - **Prerequisites:** — (konfiguracja OAuth client ID/secret w Supabase Dashboard to krok ludzki wykonywany W RAMACH tego plasterka, nie przed nim)
 - **Parallel with:** S-02, S-03, S-04, S-06, F-01
 - **Blockers:** —
 - **Unknowns:**
-  - Potwierdzenie metody uwierzytelnienia: preferencja OAuth-only (Google/GitHub) via Supabase Auth zapisana w PRD Open Q1 i decyzji DB z 2026-07-15 — formalne domknięcie przy planowaniu. — Owner: user. Block: no.
+  - ~~Potwierdzenie metody uwierzytelnienia~~ ROZSTRZYGNIĘTE 2026-07-20 (planowanie S-01): OAuth-only, wyłącznie Google via Supabase Auth; GitHub odrzucony jako decyzja produktowa (przywrócenie = nowa decyzja).
 - **Risk:** najmniejszy plasterek z krokiem ludzkim w środku (client ID/secret); zrobiony wcześnie, bo domyka Open Q1 i odblokowuje archiwum (S-05), a biegnie równolegle do całej ścieżki głosowej.
 - **Status:** ready
 
@@ -158,7 +158,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 | Roadmap ID | Change ID                  | Suggested issue title                                        | Ready for `/10x-plan` | Notes                                        |
 | ---------- | -------------------------- | ------------------------------------------------------------ | --------------------- | -------------------------------------------- |
 | F-01       | pr-preview-pipeline        | Podpięcie Git → auto-deploy + preview per PR                 | no                    | Czeka na bramkę ludzką (`vercel git connect`) |
-| S-01       | minimal-oauth-login        | Konto i logowanie OAuth (Google/GitHub) via Supabase Auth    | yes                   | Run `/10x-plan minimal-oauth-login`          |
+| S-01       | minimal-oauth-login        | Konto i logowanie OAuth (Google) via Supabase Auth           | yes                   | Run `/10x-plan minimal-oauth-login`          |
 | S-02       | session-topic-proposal     | Start sesji: propozycja tematu + ponowne losowanie           | yes                   | Run `/10x-plan session-topic-proposal`       |
 | S-03       | first-voice-conversation   | Rozmowa głosowa 2–3 min (STT + odpowiedź głosowa + stan UI)  | no                    | Czeka na S-02 + bezpieczniki OpenAI          |
 | S-04       | post-session-report        | Raport po sesji: błędy, CEFR, sugestie                       | no                    | Czeka na S-03                                |
@@ -167,7 +167,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 ## Open Roadmap Questions
 
-1. **Metoda uwierzytelnienia (email+hasło vs OAuth Google/GitHub vs magic link)** — preferencja OAuth-only z PRD; decyzja DB z 2026-07-15 (Supabase wybrany m.in. za bundlowany OAuth) praktycznie ją domyka — formalne potwierdzenie przy planowaniu S-01. Owner: user. Block: S-01 (nieblokująco — patrz Unknown w S-01).
+1. **Metoda uwierzytelnienia (email+hasło vs OAuth Google/GitHub vs magic link)** — ROZSTRZYGNIĘTE 2026-07-20 przy planowaniu S-01: OAuth-only, wyłącznie Google (GitHub odrzucony — decyzja produktowa, nie odroczenie). Zapis w `context/changes/minimal-oauth-login/plan-brief.md`.
 2. **Czy ograniczyć liczbę skipów tematu na sesję (FR-004)?** — otwarte na v2 (np. limit 3/sesja). Owner: product. By: po pierwszych zewnętrznych testach v1. Block: —.
 3. **Lista predefiniowanych tematów (FR-003) — ile i jakie?** — w v1 potrzebna konkretna lista; kandydaci: daily standup, job interview, code review discussion, ordering coffee, explaining a bug to a colleague. Owner: user. By: przed implementacją. Block: S-02 (implementacja, nie planowanie).
 4. **Sugestie dalszej nauki w v1 bazują tylko na bieżącej sesji (FR-013)** — przyjęte jako znana ograniczona wartość; v2 doda kontekst historii błędów. Owner: product. Block: —.
