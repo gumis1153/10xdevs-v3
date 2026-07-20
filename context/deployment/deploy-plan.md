@@ -18,7 +18,7 @@ i standing constraints dla przyszłych sesji.
 | Fluid Compute | ON (default) |
 | Deployment Protection | ON — `all_except_custom_domains` (anonimowy curl na URL-e deploymentów = 401/302; aliasy produkcyjne publiczne) |
 | Node na builderach | 24.x |
-| Git integration | **ODŁĄCZONA** (CLI auto-podpiął przy `vercel link`; odłączono `vercel git disconnect` — podpięcie czeka na osobną zgodę) |
+| Git integration | **PODŁĄCZONA** (2026-07-20, zmiana `pr-preview-pipeline`): `english-talk` ↔ `github.com/gumis1153/10xdevs-v3`, production branch `master`; merge do `master` = deploy produkcyjny, każdy PR = preview URL |
 | Supabase (Marketplace) | zasób **`supabase-cordovan-kettle`**, region **eu-central-1** (potwierdzony w connection stringach), status Available, podpięty do `english-talk`; terms zaakceptowane przez użytkownika 2026-07-15; billing przez Vercel (free tier) |
 | Env vary | **16 zmiennych Supabase** auto-provisionowanych przez integrację, wszystkie scope'y (Production/Preview/Development): `POSTGRES_URL`, `POSTGRES_PRISMA_URL`, `POSTGRES_URL_NON_POOLING`, `POSTGRES_HOST`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DATABASE`, `SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_ANON_KEY`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_JWT_SECRET`. `OPENAI_API_KEY` nadal nieustawiony (czeka na bezpieczniki OpenAI) |
 | Lokalny stack Supabase | devDep `supabase` + `supabase/` w repo (`npx supabase start/stop`); szczegóły w sekcji „Lokalny dev" |
@@ -48,7 +48,8 @@ i standing constraints dla przyszłych sesji.
 - **AI provider: OpenAI direct; OpenRouter odrzucony (2026-07-15)** — brak wsparcia Realtime API (WebRTC/ephemeral `client_secrets`). Rewizja dopuszczalna wyłącznie dla route'u analizy transkryptu (OpenRouter = przedpłacone kredyty + limity per-klucz jako twardy cap). Zapisane w `context/foundation/infrastructure.md` (Decision Log) i `tech-stack.md`.
 - **DB: SUPABASE (decyzja użytkownika 2026-07-15)** — wygrał z Neonem, bo bundluje Auth OAuth Google/GitHub (preferencja PRD) + Storage w jednej integracji Marketplace, z billingiem przez Vercel. **Nowy projekt przez Vercel Marketplace w `eu-central-1`** (twardy constraint kolokacji z fra1 utrzymany). Istniejący projekt użytkownika na supabase.com (`eu-west-1`) **odrzucony dla tego repo** — regionu nie da się zmienić, a złamanie kolokacji kosztowałoby ~20–25 ms na każdym roundtripie funkcja↔DB; projekt zostaje nietknięty poza zakresem repo. Instrukcja wykonania: sekcja B planu źródłowego.
 - **Rate limiting odłożony jako MERGE-GATE** (patrz standing constraints).
-- **Produkcja live od 2026-07-15** (decyzja użytkownika po odchyleniu nr 1); Git integration nadal odłączona.
+- **Produkcja live od 2026-07-15** (decyzja użytkownika po odchyleniu nr 1).
+- **Git integration podłączona + repo public (2026-07-20, zmiana `pr-preview-pipeline`)** — GitHub Free zwraca 403 dla rulesetów na prywatnym repo; po sweepie treści (zero sekretów w plikach i w historii gita; jawnie zaakceptowano publiczny email autora commitów) repo `10xdevs-v3` upublicznione, ruleset `protect-master` włączony. Decyzja użytkownika (fallback wybrany przy planowaniu, potwierdzony przy wykonaniu).
 
 ## Rejestr bramek ludzkich
 
@@ -58,7 +59,7 @@ Wymagają jawnej zgody człowieka; agent może przygotować, nie wykonuje:
 |---|---|
 | `vercel promote` / `vercel rollback` | mutacje produkcji; known-good rollback target: `dpl_Ea4wHR5CFcnF5hQeHZYrQvnVHi3w` |
 | Kolejne deploye produkcyjne | preview jawnie `--target=preview`; prod tylko za zgodą |
-| `vercel git connect` | otwiera auto-deploy-on-merge = ścieżka produkcyjna; wymaga też branch protection na `master`. UWAGA: `vercel link` w CLI ≥56 podpina Git automatycznie — po linkowaniu sprawdzić i ew. `vercel git disconnect` |
+| ~~`vercel git connect`~~ SKONSUMOWANA 2026-07-20 | Git podpięty (zmiana `pr-preview-pipeline`); ruleset `protect-master` aktywny (PR wymagany, zakaz force-push/delete). Bramka produkcyjna = merge PR do `master`. UWAGA (historyczna): `vercel link` w CLI ≥56 podpina Git automatycznie — po linkowaniu sprawdzić |
 | Rotacja kluczy (OpenAI, przyszłe DB) | zawsze ręczna |
 | Zmiana regionu na żywym projekcie | fra1 zacommitowany; zmiana = bramka |
 | Zmiany planu/billingu | klif licencyjny Hobby przy komercjalizacji → Pro $20/mies. |
@@ -69,7 +70,7 @@ Wymagają jawnej zgody człowieka; agent może przygotować, nie wykonuje:
 
 ## Standing constraints dla przyszłych feature'ów
 
-1. **MERGE-GATE tokenów Realtime**: PR z endpointem mintującym `client_secrets` (`POST /api/.../token`) NIE wchodzi na `master` bez: (a) rate limitu (WAF per-IP — 1 darmowa reguła na Hobby — i/lub `@upstash/ratelimit` per-sesja), (b) TTL tokenu ≤600s (`expires_after.seconds`), (c) nagłówka `OpenAI-Safety-Identifier`.
+1. **MERGE-GATE tokenów Realtime**: PR z endpointem mintującym `client_secrets` (`POST /api/.../token`) NIE wchodzi na `master` bez: (a) rate limitu (WAF per-IP — 1 darmowa reguła na Hobby — i/lub `@upstash/ratelimit` per-sesja), (b) TTL tokenu ≤600s (`expires_after.seconds`), (c) nagłówka `OpenAI-Safety-Identifier`. Punkt egzekwowania: review PR (od 2026-07-20 wszystkie zmiany wchodzą przez PR — patrz constraint #11).
 2. **Cap 300s (Hobby, Fluid)** dla route'u analizy transkryptu — cap długości / streaming / background; escape hatch: Pro 800s.
 3. **Zakaz stanu per-user/per-request w module scope** — Fluid Compute reuse'uje instancje między równoległymi requestami.
 4. **Datastore wyłącznie Frankfurt/`eu-central-1`.**
@@ -79,6 +80,7 @@ Wymagają jawnej zgody człowieka; agent może przygotować, nie wykonuje:
 8. **Logi runtime Hobby żyją 1h** — debugować od razu; `vercel logs` streamuje tylko z `--follow`.
 9. **Sekrety wyłącznie przez `vercel env`** (`vercel env pull .env.local`); zero placeholderów w dashboardzie; `.env.example` dokumentuje same nazwy. Uwaga: `vercel env pull` NADPISUJE `.env.local`.
 10. **Nieinteraktywne `vercel link`/skrypty: zawsze `--scope gumis1153s-projects`** (CLI ≥55 nie dziedziczy teamu).
+11. **Wszystkie zmiany przez PR do `master`** (ruleset `protect-master`: PR wymagany, zakaz force-push/delete; bezpośredni push odrzucany). Preview URL-e są za Deployment Protection — weryfikacja przez `vercel curl / --deployment <preview-url>` albo zalogowaną przeglądarkę; anonimowy 401 to poprawne zachowanie, nie awaria.
 
 ## Lokalny dev (Supabase, stan 2026-07-15)
 
@@ -92,7 +94,7 @@ Wymagają jawnej zgody człowieka; agent może przygotować, nie wykonuje:
 
 Produkcja już live, więc runbook z planu redukuje się do:
 
-1. (bramka) `vercel git connect` + branch protection na `master` → od tej pory merge do `master` = deploy produkcyjny; human gate przenosi się na merge.
+1. ~~(bramka) `vercel git connect` + branch protection na `master`~~ **WYKONANE 2026-07-20** (zmiana `pr-preview-pipeline`): merge do `master` = deploy produkcyjny, każdy PR = preview URL; human gate siedzi na merge'u PR.
 2. Known-good rollback target: `dpl_Ea4wHR5CFcnF5hQeHZYrQvnVHi3w` (scaffold, fra1).
 3. Przy pierwszym feature z AI: bezpieczniki OpenAI (przedpłata, auto-recharge OFF, klucz per-środowisko) → dopiero wtedy `vercel env add OPENAI_API_KEY production`.
 4. Przy pierwszym feature z DB: schemat + pierwsza migracja lokalnie (`supabase migration new` → `db reset`), potem `npx supabase login` + `link --project-ref` (krok ludzki) i `db push`; RLS włączone od pierwszej tabeli.
