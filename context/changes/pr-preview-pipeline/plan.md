@@ -270,26 +270,26 @@ None — no runtime code changes. Build minutes on Hobby are ample for one PR + 
 
 #### Automated
 
-- [x] 2.1 Git link active: Vercel project shows `gumis1153/10xdevs-v3`, production branch `master`
-- [x] 2.2 Protection active: `master` ruleset lists PR-required rule (or fallback/deferral recorded)
+- [x] 2.1 Git link active: Vercel project shows `gumis1153/10xdevs-v3`, production branch `master` — 50c6cd5
+- [x] 2.2 Protection active: `master` ruleset lists PR-required rule (or fallback/deferral recorded) — 50c6cd5
 
 #### Manual
 
-- [x] 2.3 Explicit approval given before `vercel git connect`
-- [x] 2.4 If fallback triggered: sensitive-content sweep reviewed and approval given before visibility flip
+- [x] 2.3 Explicit approval given before `vercel git connect` — 50c6cd5
+- [x] 2.4 If fallback triggered: sensitive-content sweep reviewed and approval given before visibility flip — 50c6cd5
 
 ### Phase 3: End-to-end verification + docs
 
 #### Automated
 
-- [ ] 3.1 Preview reachable authenticated: `vercel curl / --deployment <preview-url>` returns 200
-- [ ] 3.2 Direct push to `master` rejected by protection (skip if deferred)
-- [ ] 3.3 Production deployment auto-created from merge commit, status Ready
-- [ ] 3.4 Prod alias healthy: HTTP 200 from https://english-talk-black.vercel.app
+- [x] 3.1 Preview reachable authenticated: `vercel curl / --deployment <preview-url>` returns 200 — 94dc656
+- [x] 3.2 Direct push to `master` rejected by protection (skip if deferred) — 94dc656
+- [x] 3.3 Production deployment auto-created from merge commit, status Ready — 94dc656
+- [x] 3.4 Prod alias healthy: HTTP 200 from https://english-talk-black.vercel.app — 94dc656
 
 #### Manual
 
-- [ ] 3.5 Preview URL renders the app in an authenticated browser
-- [ ] 3.6 Explicit approval given before merging the test PR
-- [ ] 3.7 Vercel check required on subsequent PRs (or deferral recorded)
-- [ ] 3.8 deploy-plan.md and AGENTS.md updated and accurate
+- [x] 3.5 Preview URL renders the app in an authenticated browser — 94dc656
+- [x] 3.6 Explicit approval given before merging the test PR — 94dc656
+- [x] 3.7 Vercel check required on subsequent PRs (or deferral recorded) — 94dc656
+- [x] 3.8 deploy-plan.md and AGENTS.md updated and accurate — 94dc656
