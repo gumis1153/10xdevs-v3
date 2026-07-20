@@ -42,4 +42,4 @@ No test framework is configured yet. If you add one, wire a `test` script into @
 
 ## Commit & Pull Request Guidelines
 
-History is short and uses sentence-style summaries (`git log`); no strict convention is set. Keep subjects imperative and scoped. There is no CI gate — run `npm run lint` and `npm run build` locally before opening a PR against `master`.
+History is short and uses sentence-style summaries (`git log`); no strict convention is set. Keep subjects imperative and scoped. All changes land via PR against `master` — direct pushes are blocked by the `protect-master` ruleset. Every PR gets a Vercel preview build (typecheck included) with a preview URL; merging to `master` auto-deploys production. ESLint does not run in CI — run `npm run lint` locally before pushing. Preview URLs sit behind Deployment Protection: verify with `vercel curl / --deployment <preview-url>` or a logged-in browser (anonymous 401 is expected).

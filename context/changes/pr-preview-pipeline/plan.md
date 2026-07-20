@@ -256,27 +256,27 @@ None — no runtime code changes. Build minutes on Hobby are ample for one PR + 
 
 #### Automated
 
-- [x] 1.1 Lint passes: `npm run lint`
-- [x] 1.2 Build passes: `npm run build`
-- [ ] 1.3 Working tree clean: `git status --porcelain` empty
-- [ ] 1.4 Remote parity: `git rev-parse HEAD` == `git rev-parse origin/master`
-- [x] 1.5 Project link intact: `.vercel/project.json` names `english-talk`; `vercel whoami` returns `gumis1153`
+- [x] 1.1 Lint passes: `npm run lint` — 2b4c669
+- [x] 1.2 Build passes: `npm run build` — 2b4c669
+- [x] 1.3 Working tree clean: `git status --porcelain` empty — 2b4c669
+- [x] 1.4 Remote parity: `git rev-parse HEAD` == `git rev-parse origin/master` — 2b4c669
+- [x] 1.5 Project link intact: `.vercel/project.json` names `english-talk`; `vercel whoami` returns `gumis1153` — 2b4c669
 
 #### Manual
 
-- [x] 1.6 User decided the fate of `dla-mnie.md` (committed vs gitignored)
+- [x] 1.6 User decided the fate of `dla-mnie.md` (committed vs gitignored) — 2b4c669
 
 ### Phase 2: Connect Git + protect master (gated)
 
 #### Automated
 
-- [ ] 2.1 Git link active: Vercel project shows `gumis1153/10xdevs-v3`, production branch `master`
-- [ ] 2.2 Protection active: `master` ruleset lists PR-required rule (or fallback/deferral recorded)
+- [x] 2.1 Git link active: Vercel project shows `gumis1153/10xdevs-v3`, production branch `master`
+- [x] 2.2 Protection active: `master` ruleset lists PR-required rule (or fallback/deferral recorded)
 
 #### Manual
 
-- [ ] 2.3 Explicit approval given before `vercel git connect`
-- [ ] 2.4 If fallback triggered: sensitive-content sweep reviewed and approval given before visibility flip
+- [x] 2.3 Explicit approval given before `vercel git connect`
+- [x] 2.4 If fallback triggered: sensitive-content sweep reviewed and approval given before visibility flip
 
 ### Phase 3: End-to-end verification + docs
 
