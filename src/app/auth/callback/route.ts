@@ -16,6 +16,8 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
+      // Zaufanie do x-forwarded-host jest poprawne tylko na Vercelu (platforma
+      // nadpisuje ten nagłówek); przy self-hostingu = spoofowalny redirect.
       const forwardedHost = request.headers.get('x-forwarded-host')
       const isLocalEnv = process.env.NODE_ENV === 'development'
       if (isLocalEnv) {
