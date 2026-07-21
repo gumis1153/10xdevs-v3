@@ -35,7 +35,13 @@ export async function requireUser(): Promise<User> {
   const supabase = await createClient()
   const {
     data: { user },
+    error,
   } = await supabase.auth.getUser()
+
+  // Brak sesji to stan normalny (redirect niżej); loguj tylko realne awarie.
+  if (error && error.name !== 'AuthSessionMissingError') {
+    console.error('requireUser getUser failed:', error.message)
+  }
 
   if (!user) {
     redirect('/login')

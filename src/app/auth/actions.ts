@@ -40,6 +40,11 @@ export async function signInWithGoogle() {
 
 export async function signOut() {
   const supabase = await createClient()
-  await supabase.auth.signOut()
+  const { error } = await supabase.auth.signOut()
+  if (error) {
+    // Nieudane wylogowanie odbije użytkownika z powrotem na "/" (proxy widzi
+    // wciąż ważną sesję) — zostaw ślad w logach, inaczej awaria jest niema.
+    console.error('signOut failed:', error.message)
+  }
   redirect('/login')
 }

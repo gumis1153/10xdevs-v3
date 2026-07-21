@@ -5,6 +5,9 @@ export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
   })
+  // Nagłówki, które @supabase/ssr każe ustawić obok Set-Cookie (anty-cache) —
+  // zbierane osobno, żeby dało się je przenieść także na odpowiedzi redirect.
+  const sessionHeaders = new Headers()
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -24,9 +27,10 @@ export async function proxy(request: NextRequest) {
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
           )
-          Object.entries(headers ?? {}).forEach(([key, value]) =>
+          Object.entries(headers ?? {}).forEach(([key, value]) => {
             supabaseResponse.headers.set(key, value)
-          )
+            sessionHeaders.set(key, value)
+          })
         },
       },
     }
@@ -36,7 +40,14 @@ export async function proxy(request: NextRequest) {
   // grozi desynchronizacją ciasteczek sesji (patrz plan, Critical Details).
   const {
     data: { user },
+    error: getUserError,
   } = await supabase.auth.getUser()
+
+  // Fail-closed (brak usera → /login) jest OK, ale awaria Supabase musi
+  // zostawić ślad. Brak sesji (anonimowy request) to stan normalny — nie loguj.
+  if (getUserError && getUserError.name !== 'AuthSessionMissingError') {
+    console.error('proxy getUser failed:', getUserError.message)
+  }
 
   const { pathname } = request.nextUrl
 
@@ -44,32 +55,47 @@ export async function proxy(request: NextRequest) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     url.search = ''
-    return withSessionCookies(NextResponse.redirect(url), supabaseResponse)
+    return withSessionCookies(
+      NextResponse.redirect(url),
+      supabaseResponse,
+      sessionHeaders
+    )
   }
 
   if (user && pathname === '/login') {
     const url = request.nextUrl.clone()
     url.pathname = '/'
     url.search = ''
-    return withSessionCookies(NextResponse.redirect(url), supabaseResponse)
+    return withSessionCookies(
+      NextResponse.redirect(url),
+      supabaseResponse,
+      sessionHeaders
+    )
   }
 
   return supabaseResponse
 }
 
 // Przy zwracaniu innej odpowiedzi niż supabaseResponse trzeba przenieść
-// odświeżone ciasteczka sesji — inaczej przeglądarka i serwer się rozjadą.
+// odświeżone ciasteczka sesji i towarzyszące im nagłówki anty-cache —
+// inaczej przeglądarka i serwer się rozjadą.
 function withSessionCookies(
   response: NextResponse,
-  supabaseResponse: NextResponse
+  supabaseResponse: NextResponse,
+  sessionHeaders: Headers
 ) {
   supabaseResponse.cookies.getAll().forEach((cookie) => {
     response.cookies.set(cookie)
+  })
+  sessionHeaders.forEach((value, key) => {
+    response.headers.set(key, value)
   })
   return response
 }
 
 export const config = {
+  // Uwaga: wzorzec wyłącza KAŻDĄ ścieżkę kończącą się rozszerzeniem obrazka —
+  // przyszły dynamiczny route (np. /report.png) ominąłby bramkę sesji.
   matcher: [
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
