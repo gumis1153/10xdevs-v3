@@ -3,7 +3,7 @@ project: "english-talk"
 version: 1
 status: draft
 created: 2026-07-18
-updated: 2026-07-20
+updated: 2026-07-21
 prd_version: 1
 main_goal: speed
 top_blocker: decisions
@@ -30,7 +30,7 @@ Polscy programiści na poziomie A2–B2 mają barierę mówioną w angielskim �
 | ID   | Change ID                 | Outcome (user can …)                                                                | Prerequisites                    | PRD refs                        | Status   |
 | ---- | ------------------------- | ----------------------------------------------------------------------------------- | -------------------------------- | ------------------------------- | -------- |
 | F-01 | pr-preview-pipeline       | (foundation) merge do `master` = automatyczny deploy; PR = preview URL              | —                                | tech-stack: ci_default_flow     | done     |
-| S-01 | minimal-oauth-login       | użytkownik może założyć konto i zalogować się (OAuth Google)                        | —                                | FR-001, FR-002, US-01           | ready    |
+| S-01 | minimal-oauth-login       | użytkownik może założyć konto i zalogować się (OAuth Google)                        | —                                | FR-001, FR-002, US-01           | done     |
 | S-02 | session-topic-proposal    | użytkownik może rozpocząć sesję: widzi wylosowany temat, może odrzucić i wylosować inny | —                            | FR-003, FR-004, US-01           | ready    |
 | S-03 | first-voice-conversation  | użytkownik może odbyć 2–3 min rozmowę głosową po angielsku i zakończyć ją w dowolnym momencie | S-02, bezpieczniki OpenAI (krok ludzki) | FR-006, FR-007, FR-008, FR-009, US-01 | proposed |
 | S-04 | post-session-report       | użytkownik widzi po sesji raport: pogrupowane błędy, ocena CEFR z disclaimerem, sugestie | S-03                         | FR-010, FR-011, FR-012, FR-013, US-01 | proposed |
@@ -88,7 +88,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - ~~Potwierdzenie metody uwierzytelnienia~~ ROZSTRZYGNIĘTE 2026-07-20 (planowanie S-01): OAuth-only, wyłącznie Google via Supabase Auth; GitHub odrzucony jako decyzja produktowa (przywrócenie = nowa decyzja).
 - **Risk:** najmniejszy plasterek z krokiem ludzkim w środku (client ID/secret); zrobiony wcześnie, bo domyka Open Q1 i odblokowuje archiwum (S-05), a biegnie równolegle do całej ścieżki głosowej.
-- **Status:** ready
+- **Status:** done
 
 ### S-02: Start sesji — propozycja tematu z możliwością ponownego losowania
 
@@ -191,3 +191,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 (Empty on first generation. `/10x-archive` appends an entry here — and flips that item's `Status` to `done` — when a change whose `Change ID` matches the item is archived.)
 
 - **F-01: (foundation) merge do `master` buduje produkcję automatycznie, a każdy PR dostaje preview URL — ścieżka weryfikacji dla wszystkich plasterków.** — Archived 2026-07-20 → `context/archive/2026-07-18-pr-preview-pipeline/`. Lesson: —.
+- **S-01: użytkownik może założyć konto i zalogować się (OAuth Google); aplikacja jest za bramką logowania.** — Archived 2026-07-21 → `context/archive/2026-07-20-minimal-oauth-login/`. Lesson: —.
