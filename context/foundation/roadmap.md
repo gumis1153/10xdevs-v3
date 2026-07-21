@@ -99,7 +99,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Parallel with:** S-01, F-01
 - **Blockers:** —
 - **Unknowns:**
-  - Lista predefiniowanych tematów — ile i jakie (PRD Open Q3; kandydaci z dyskusji: daily standup, job interview, code review, ordering coffee, explaining a bug). Planowanie może ruszyć na roboczej liście; implementacja potrzebuje finalnej. — Owner: user. Block: no.
+  - ~~Lista predefiniowanych tematów — ile i jakie~~ ROZSTRZYGNIĘTE 2026-07-21 (planowanie S-02): 10 tematów w `src/lib/topics.ts` — 5 kandydatów z PRD Open Q3 + 5 dodatków pokrywających konteksty persony (sprint planning, explaining your project, client update, conference networking, asking for help).
 - **Risk:** pierwszy krok ścieżki must-have do gwiazdy przewodniej; celowo odcięty od S-03, żeby decyzja o liście tematów nie blokowała pracy nad torem głosowym.
 - **Status:** ready
 
@@ -169,7 +169,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 
 1. **Metoda uwierzytelnienia (email+hasło vs OAuth Google/GitHub vs magic link)** — ROZSTRZYGNIĘTE 2026-07-20 przy planowaniu S-01: OAuth-only, wyłącznie Google (GitHub odrzucony — decyzja produktowa, nie odroczenie). Zapis w `context/changes/minimal-oauth-login/plan-brief.md`.
 2. **Czy ograniczyć liczbę skipów tematu na sesję (FR-004)?** — otwarte na v2 (np. limit 3/sesja). Owner: product. By: po pierwszych zewnętrznych testach v1. Block: —.
-3. **Lista predefiniowanych tematów (FR-003) — ile i jakie?** — w v1 potrzebna konkretna lista; kandydaci: daily standup, job interview, code review discussion, ordering coffee, explaining a bug to a colleague. Owner: user. By: przed implementacją. Block: S-02 (implementacja, nie planowanie).
+3. **Lista predefiniowanych tematów (FR-003) — ile i jakie?** — ROZSTRZYGNIĘTE 2026-07-21 przy planowaniu S-02: 10 tematów (5 kandydatów z dyskusji + sprint planning, explaining your project, client progress update, conference networking, asking for help). Finalna lista w `src/lib/topics.ts`; zapis decyzji w `context/changes/session-topic-proposal/plan-brief.md`.
 4. **Sugestie dalszej nauki w v1 bazują tylko na bieżącej sesji (FR-013)** — przyjęte jako znana ograniczona wartość; v2 doda kontekst historii błędów. Owner: product. Block: —.
 5. **CEFR estymacja z pojedynczej sesji jest szumna (FR-012)** — przyjęte z disclaimerem o niepewności; v2 zbuduje stabilniejszą estymatę na historii. Owner: product. Block: —.
 6. **Hard deadline z PRD (2026-07-04) minął — czy obowiązuje nowy termin?** — cel sekwencjonowania to `speed`, ale bez zaktualizowanego terminu nie wiadomo, względem czego ciąć zakres (S-05/S-06 to pierwsi kandydaci do parkowania). Owner: user. Block: roadmap-wide (nieblokująco — kolejność pozostaje ta sama, zmienia się tylko punkt odcięcia).

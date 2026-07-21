@@ -212,22 +212,22 @@ None — no data, no schema, no config changes. Rollback = revert the PR.
 
 #### Automated
 
-- [x] 1.1 Lint passes: `npm run lint`
-- [x] 1.2 Production build passes (includes typecheck): `npm run build`
+- [x] 1.1 Lint passes: `npm run lint` — 785a915
+- [x] 1.2 Production build passes (includes typecheck): `npm run build` — 785a915
 
 #### Manual
 
-- [x] 1.3 `/` shows orb + proposal card (EN topic, PL buttons); header/sign-out intact
-- [x] 1.4 Redraw is instant and never repeats the current topic
-- [x] 1.5 Accept → orb foreground + accepted topic + stub note; return button restores card
-- [x] 1.6 Orb OK in light/dark; static under `prefers-reduced-motion`
-- [x] 1.7 Usable on mobile viewport
+- [x] 1.3 `/` shows orb + proposal card (EN topic, PL buttons); header/sign-out intact — 785a915
+- [x] 1.4 Redraw is instant and never repeats the current topic — 785a915
+- [x] 1.5 Accept → orb foreground + accepted topic + stub note; return button restores card — 785a915
+- [x] 1.6 Orb OK in light/dark; static under `prefers-reduced-motion` — 785a915
+- [x] 1.7 Usable on mobile viewport — 785a915
 
 ### Phase 2: Preview verification + decision write-back
 
 #### Automated
 
-- [ ] 2.1 Lint clean before push: `npm run lint`
+- [x] 2.1 Lint clean before push: `npm run lint`
 - [ ] 2.2 Vercel preview build green on the PR
 
 #### Manual
