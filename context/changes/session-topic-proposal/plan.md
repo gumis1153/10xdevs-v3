@@ -227,12 +227,12 @@ None — no data, no schema, no config changes. Rollback = revert the PR.
 
 #### Automated
 
-- [x] 2.1 Lint clean before push: `npm run lint`
-- [ ] 2.2 Vercel preview build green on the PR
+- [x] 2.1 Lint clean before push: `npm run lint` — 1a15e4f
+- [x] 2.2 Vercel preview build green on the PR — 1a15e4f
 
 #### Manual
 
-- [ ] 2.3 Full flow verified on PR preview (logged-in browser)
-- [ ] 2.4 Flow spot-checked in a second browser engine
-- [ ] 2.5 PRD + roadmap record the 10-topic resolution of Open Q3
-- [ ] 2.6 Production shows the session screen after merge
+- [x] 2.3 Full flow verified on PR preview (logged-in browser) — 1a15e4f
+- [x] 2.4 Flow spot-checked in a second browser engine — 1a15e4f
+- [x] 2.5 PRD + roadmap record the 10-topic resolution of Open Q3 — 1a15e4f
+- [x] 2.6 Production shows the session screen after merge — 1a15e4f
