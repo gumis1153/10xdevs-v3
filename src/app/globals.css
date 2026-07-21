@@ -24,3 +24,136 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Orb — wizualna kotwica ekranu sesji (animacja idle; stany rozmowy dojdą w S-03) */
+
+.orb {
+  position: relative;
+  width: 24rem;
+  height: 24rem;
+}
+
+/* Statyczna baza pierścienia: kolory stoją w miejscu (fiolet góra → indygo →
+   cyjan dół → niebieski), obie krawędzie miękkie (mask-composite: intersect),
+   delikatna asymetria grubości (dziura przesunięta minimalnie ku górze). */
+.orb-ring {
+  position: absolute;
+  inset: -1.5rem;
+  background: conic-gradient(
+    from 0deg,
+    #a855f7,
+    #6366f1 25%,
+    #38bdf8 50%,
+    #60a5fa 75%,
+    #a855f7
+  );
+  -webkit-mask:
+    radial-gradient(
+      farthest-side at 50% 48.5%,
+      transparent calc(100% - 3.9rem),
+      #000 calc(100% - 2.9rem)
+    ),
+    radial-gradient(
+      farthest-side at 50% 50%,
+      #000 calc(100% - 1.7rem),
+      transparent calc(100% - 0.5rem)
+    );
+  -webkit-mask-composite: source-in;
+  mask:
+    radial-gradient(
+      farthest-side at 50% 48.5%,
+      transparent calc(100% - 3.9rem),
+      #000 calc(100% - 2.9rem)
+    ),
+    radial-gradient(
+      farthest-side at 50% 50%,
+      #000 calc(100% - 1.7rem),
+      transparent calc(100% - 0.5rem)
+    );
+  mask-composite: intersect;
+  filter: blur(1.5px);
+}
+
+/* Wirujący hot-spot: jasny łuk (~130°) na szerszym pasie niż baza — tam gdzie
+   przechodzi, pierścień wygląda na grubszy i świeci; kolory bazy stoją. */
+.orb-hot,
+.orb-glow {
+  position: absolute;
+  inset: -1.5rem;
+  background: conic-gradient(
+    from 0deg,
+    transparent,
+    transparent 62%,
+    rgba(125, 211, 252, 0.6) 74%,
+    #7dd3fc 82%,
+    rgba(196, 181, 253, 0.6) 90%,
+    transparent
+  );
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 3.4rem),
+    #000 calc(100% - 2.2rem),
+    #000 calc(100% - 0.6rem),
+    transparent
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 3.4rem),
+    #000 calc(100% - 2.2rem),
+    #000 calc(100% - 0.6rem),
+    transparent
+  );
+  animation: orb-spin 7s linear infinite;
+}
+
+.orb-hot {
+  filter: blur(3px);
+}
+
+/* Poświata hot-spota: ta sama wirująca jasna smuga, mocno rozmyta */
+.orb-glow {
+  filter: blur(20px);
+  animation:
+    orb-spin 7s linear infinite,
+    orb-breathe 6s ease-in-out infinite;
+}
+
+.orb-halo {
+  position: absolute;
+  inset: -10%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    transparent 42%,
+    rgba(99, 102, 241, 0.25) 62%,
+    rgba(56, 189, 248, 0.12) 74%,
+    transparent 85%
+  );
+  filter: blur(24px);
+  animation: orb-breathe 6s ease-in-out infinite;
+}
+
+@keyframes orb-breathe {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes orb-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orb-ring,
+  .orb-hot,
+  .orb-glow,
+  .orb-halo {
+    animation: none;
+  }
+}
