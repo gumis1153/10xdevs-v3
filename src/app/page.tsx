@@ -1,5 +1,7 @@
 import { signOut } from '@/app/auth/actions'
+import { SessionStart } from '@/components/session-start'
 import { requireUser } from '@/lib/supabase/server'
+import { drawTopic } from '@/lib/topics'
 
 export default async function Home() {
   const user = await requireUser()
@@ -63,16 +65,10 @@ export default async function Home() {
         </div>
       </header>
 
-      <main className="flex flex-1 flex-col items-center justify-center gap-6 px-6 text-center">
-        <div className="flex w-full max-w-md flex-col items-center gap-3 rounded-2xl border border-dashed border-black/[.16] px-8 py-12 dark:border-white/[.24]">
-          <h1 className="text-xl font-semibold tracking-tight">
-            Rozpocznij sesję
-          </h1>
-          <p className="text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-            Tu wkrótce zaczniesz rozmowę po angielsku — propozycja tematu
-            pojawi się w następnym kroku budowy aplikacji.
-          </p>
-        </div>
+      {/* relative + overflow-hidden: kontekst pozycjonowania dla orba
+          (absolutny element przy krawędziach nie może tworzyć scrollbarów) */}
+      <main className="relative flex flex-1 flex-col items-center justify-center gap-6 overflow-hidden px-6 text-center">
+        <SessionStart initialTopic={drawTopic()} />
       </main>
     </div>
   )
