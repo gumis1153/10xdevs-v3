@@ -1,19 +1,43 @@
 'use client'
 
-import { useState } from 'react'
-import { Orb } from '@/components/orb'
+import { useCallback, useState } from 'react'
+import { Orb, type OrbState } from '@/components/orb'
+import {
+  VoiceConversation,
+  type ConversationState,
+} from '@/components/voice-conversation'
 import { drawTopic, type Topic } from '@/lib/topics'
 
-type Phase = 'proposal' | 'accepted'
+type Phase = 'proposal' | 'conversation'
+
+/** Stan rozmowy → stan orba; stany terminalne wracają do spokojnego idle. */
+function toOrbState(state: ConversationState): OrbState {
+  return state === 'ended' || state === 'error' ? 'idle' : state
+}
 
 /**
- * Interaktywny rdzeń startu sesji (S-02): propozycja tematu z ponownym
- * losowaniem (FR-003/FR-004) i stan po akceptacji — zaślepka, którą S-03
- * podmieni na prawdziwą rozmowę głosową.
+ * Interaktywny rdzeń startu sesji: propozycja tematu z ponownym losowaniem
+ * (S-02, FR-003/FR-004) i rozmowa głosowa po akceptacji (S-03, FR-006–FR-009).
+ * Klik „Rozpocznij rozmowę" jest zarazem gestem użytkownika wymaganym przez
+ * getUserMedia/AudioContext (Safari).
  */
 export function SessionStart({ initialTopic }: { initialTopic: Topic }) {
   const [topic, setTopic] = useState(initialTopic)
   const [phase, setPhase] = useState<Phase>('proposal')
+  const [conversationState, setConversationState] =
+    useState<ConversationState>('connecting')
+
+  const startConversation = () => {
+    // Synchronicznie w handlerze kliknięcia, przed jakimkolwiek awaitem —
+    // sygnał „łączenie" na orbie w ≤500 ms (NFR).
+    setConversationState('connecting')
+    setPhase('conversation')
+  }
+
+  const exitConversation = useCallback(() => {
+    setPhase('proposal')
+    setConversationState('connecting')
+  }, [])
 
   return (
     <>
@@ -25,7 +49,11 @@ export function SessionStart({ initialTopic }: { initialTopic: Topic }) {
           phase === 'proposal' ? 'scale-95 opacity-70 blur-[2px]' : 'scale-100 opacity-100 blur-none'
         }`}
       >
-        <Orb />
+        <Orb
+          state={
+            phase === 'conversation' ? toOrbState(conversationState) : 'idle'
+          }
+        />
       </div>
 
       {phase === 'proposal' ? (
@@ -42,7 +70,7 @@ export function SessionStart({ initialTopic }: { initialTopic: Topic }) {
           <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
             <button
               type="button"
-              onClick={() => setPhase('accepted')}
+              onClick={startConversation}
               className="h-11 rounded-full bg-foreground px-6 text-sm font-medium text-background transition-opacity hover:opacity-85"
             >
               Rozpocznij rozmowę
@@ -57,21 +85,11 @@ export function SessionStart({ initialTopic }: { initialTopic: Topic }) {
           </div>
         </div>
       ) : (
-        <div className="relative z-10 flex w-full max-w-md flex-col items-center gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            {topic.title}
-          </h1>
-          <p className="text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-            Rozmowa głosowa pojawi się w następnym kroku budowy aplikacji.
-          </p>
-          <button
-            type="button"
-            onClick={() => setPhase('proposal')}
-            className="mt-2 h-9 rounded-full border border-solid border-black/[.08] px-4 text-sm font-medium transition-colors hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
-          >
-            Zmień temat
-          </button>
-        </div>
+        <VoiceConversation
+          topic={topic}
+          onStateChange={setConversationState}
+          onExit={exitConversation}
+        />
       )}
     </>
   )

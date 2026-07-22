@@ -1,11 +1,20 @@
+export type OrbState =
+  | 'idle'
+  | 'connecting'
+  | 'listening'
+  | 'user-speaking'
+  | 'processing'
+  | 'speaking'
+
 /**
  * Wizualna kotwica ekranu sesji — gradientowy orb z animacją idle.
- * S-03 rozszerzy go o stany rozmowy (mówi / słucha); ten slice
- * celowo nie przyjmuje propsów.
+ * Stan rozmowy (FR-008: łączenie / słuchanie / użytkownik mówi /
+ * przetwarzanie / agent mówi) mapowany wyłącznie na warianty klas CSS —
+ * element pozostaje trwały, bez remountu (remount restartuje animacje).
  */
-export function Orb() {
+export function Orb({ state = 'idle' }: { state?: OrbState }) {
   return (
-    <div aria-hidden="true" className="orb">
+    <div aria-hidden="true" className={`orb orb--${state}`}>
       <div className="orb-halo" />
       <div className="orb-glow" />
       <div className="orb-ring" />

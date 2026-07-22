@@ -25,12 +25,63 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Orb — wizualna kotwica ekranu sesji (animacja idle; stany rozmowy dojdą w S-03) */
+/* Orb — wizualna kotwica ekranu sesji. Stany rozmowy (S-03, FR-008)
+   sterowane zmiennymi CSS na wariantach .orb--<stan>; sam element jest
+   trwały, więc przejścia to płynne tranzycje transform/filter/opacity.
+   Tempo wirowania (orb-spin) celowo stałe — zmiana animation-duration
+   w locie skokowo przestawia kąt rotacji. */
 
 .orb {
+  --orb-scale: 1;
+  --orb-hue: 0deg;
+  --orb-saturate: 1;
+  --orb-brightness: 1;
+  --orb-breathe-duration: 6s;
   position: relative;
   width: 24rem;
   height: 24rem;
+  transform: scale(var(--orb-scale));
+  filter: hue-rotate(var(--orb-hue)) saturate(var(--orb-saturate))
+    brightness(var(--orb-brightness));
+  transition:
+    transform 500ms ease-out,
+    filter 500ms ease-out;
+}
+
+/* Stany rozmowy — każdy rozróżnialny na pierwszy rzut oka:
+   connecting = wyszarzony i nerwowo pulsuje; listening = chłodniejszy,
+   spokojny; user-speaking = zieleń + lekkie powiększenie; processing =
+   przesunięcie w magentę + szybki puls; speaking = duży, najjaśniejszy. */
+
+.orb--connecting {
+  --orb-saturate: 0.35;
+  --orb-brightness: 0.9;
+  --orb-breathe-duration: 1.6s;
+}
+
+.orb--listening {
+  --orb-hue: -25deg;
+  --orb-brightness: 1.05;
+  --orb-breathe-duration: 4s;
+}
+
+.orb--user-speaking {
+  --orb-hue: -90deg;
+  --orb-scale: 1.06;
+  --orb-brightness: 1.15;
+  --orb-breathe-duration: 1.4s;
+}
+
+.orb--processing {
+  --orb-hue: 45deg;
+  --orb-scale: 0.96;
+  --orb-breathe-duration: 0.9s;
+}
+
+.orb--speaking {
+  --orb-scale: 1.1;
+  --orb-brightness: 1.3;
+  --orb-breathe-duration: 2.2s;
 }
 
 /* Statyczna baza pierścienia: kolory stoją w miejscu (fiolet góra → indygo →
@@ -115,7 +166,7 @@ body {
   filter: blur(20px);
   animation:
     orb-spin 7s linear infinite,
-    orb-breathe 6s ease-in-out infinite;
+    orb-breathe var(--orb-breathe-duration) ease-in-out infinite;
 }
 
 .orb-halo {
@@ -130,7 +181,7 @@ body {
     transparent 85%
   );
   filter: blur(24px);
-  animation: orb-breathe 6s ease-in-out infinite;
+  animation: orb-breathe var(--orb-breathe-duration) ease-in-out infinite;
 }
 
 @keyframes orb-breathe {
@@ -150,6 +201,11 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* Stany rozmowy pozostają rozróżnialne statycznie (hue/scale/brightness) */
+  .orb {
+    transition: none;
+  }
+
   .orb-ring,
   .orb-hot,
   .orb-glow,

@@ -510,33 +510,33 @@ rule can stay (it only guards a path that would then 404).
 
 #### Automated
 
-- [x] 1.1 `npm run lint` passes
-- [x] 1.2 `npm run build` passes
-- [x] 1.3 Anonymous POST to `/api/realtime/token` returns 401 JSON
+- [x] 1.1 `npm run lint` passes — ae665b7
+- [x] 1.2 `npm run build` passes — ae665b7
+- [x] 1.3 Anonymous POST to `/api/realtime/token` returns 401 JSON — ae665b7
 
 #### Manual
 
-- [x] 1.4 Logged-in token fetch returns `ek_` with expiry ~120 s (≤600 s cap)
-- [x] 1.5 WAF rule live; preview returns 429 over the per-IP threshold
-- [x] 1.6 Response contains only the `ek_` token (no key leak)
-- [x] 1.7 Logged-out navigation to `/` still redirects to `/login` (proxy regression)
+- [x] 1.4 Logged-in token fetch returns `ek_` with expiry ~120 s (≤600 s cap) — ae665b7
+- [x] 1.5 WAF rule live; preview returns 429 over the per-IP threshold — ae665b7
+- [x] 1.6 Response contains only the `ek_` token (no key leak) — ae665b7
+- [x] 1.7 Logged-out navigation to `/` still redirects to `/login` (proxy regression) — ae665b7
 
 ### Phase 2: Conversation core
 
 #### Automated
 
-- [ ] 2.1 `npm run lint` passes
-- [ ] 2.2 `npm run build` passes (SSR import check resolved)
-- [ ] 2.3 `npm ls` shows `zod` + `@openai/agents-realtime` as direct deps, no peer warnings
+- [x] 2.1 `npm run lint` passes
+- [x] 2.2 `npm run build` passes (SSR import check resolved)
+- [x] 2.3 `npm ls` shows `zod` + `@openai/agents-realtime` as direct deps, no peer warnings
 
 #### Manual
 
-- [ ] 2.4 Full 2–3 min English conversation on desktop Chrome
-- [ ] 2.5 Orb transitions through all states ≤500 ms after events
-- [ ] 2.6 Barge-in stops agent audio
-- [ ] 2.7 "Zakończ rozmowę" ends session; mic indicator off
-- [ ] 2.8 StrictMode: no duplicate audio/sessions
-- [ ] 2.9 Polish input gets an English steer-back reply
+- [x] 2.4 Full 2–3 min English conversation on desktop Chrome
+- [x] 2.5 Orb transitions through all states ≤500 ms after events
+- [x] 2.6 Barge-in stops agent audio
+- [x] 2.7 "Zakończ rozmowę" ends session; mic indicator off
+- [x] 2.8 StrictMode: no duplicate audio/sessions
+- [x] 2.9 Polish input gets an English steer-back reply
 
 ### Phase 3: Session lifecycle & resilience
 
