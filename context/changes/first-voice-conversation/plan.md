@@ -525,31 +525,31 @@ rule can stay (it only guards a path that would then 404).
 
 #### Automated
 
-- [x] 2.1 `npm run lint` passes
-- [x] 2.2 `npm run build` passes (SSR import check resolved)
-- [x] 2.3 `npm ls` shows `zod` + `@openai/agents-realtime` as direct deps, no peer warnings
+- [x] 2.1 `npm run lint` passes — a23e448
+- [x] 2.2 `npm run build` passes (SSR import check resolved) — a23e448
+- [x] 2.3 `npm ls` shows `zod` + `@openai/agents-realtime` as direct deps, no peer warnings — a23e448
 
 #### Manual
 
-- [x] 2.4 Full 2–3 min English conversation on desktop Chrome
-- [x] 2.5 Orb transitions through all states ≤500 ms after events
-- [x] 2.6 Barge-in stops agent audio
-- [x] 2.7 "Zakończ rozmowę" ends session; mic indicator off
-- [x] 2.8 StrictMode: no duplicate audio/sessions
-- [x] 2.9 Polish input gets an English steer-back reply
+- [x] 2.4 Full 2–3 min English conversation on desktop Chrome — a23e448
+- [x] 2.5 Orb transitions through all states ≤500 ms after events — a23e448
+- [x] 2.6 Barge-in stops agent audio — a23e448
+- [x] 2.7 "Zakończ rozmowę" ends session; mic indicator off — a23e448
+- [x] 2.8 StrictMode: no duplicate audio/sessions — a23e448
+- [x] 2.9 Polish input gets an English steer-back reply — a23e448
 
 ### Phase 3: Session lifecycle & resilience
 
 #### Automated
 
-- [ ] 3.1 `npm run lint` passes
-- [ ] 3.2 `npm run build` passes
+- [x] 3.1 `npm run lint` passes
+- [x] 3.2 `npm run build` passes
 
 #### Manual
 
-- [ ] 3.3 Countdown + 4:30 warning + auto-end at 5:00 into end screen
-- [ ] 3.4 Mic-denied flow: instructions + working retry after unblocking
-- [ ] 3.5 Network-kill flow: error card + fresh-session retry; normal end shows no error
-- [ ] 3.6 End screen "Nowa sesja" returns to fresh topic proposal
-- [ ] 3.7 Safari iOS smoke test passes (known quirks acceptable)
+- [x] 3.3 Countdown + 4:30 warning + auto-end at 5:00 into end screen
+- [x] 3.4 Mic-denied flow: instructions + working retry after unblocking
+- [x] 3.5 Network-kill flow: error card + fresh-session retry; normal end shows no error
+- [x] 3.6 End screen "Nowa sesja" returns to fresh topic proposal
+- [x] 3.7 Safari iOS smoke test passes (known quirks acceptable)
 - [ ] 3.8 PR preview verified in a logged-in browser

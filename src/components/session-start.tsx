@@ -39,6 +39,14 @@ export function SessionStart({ initialTopic }: { initialTopic: Topic }) {
     setConversationState('connecting')
   }, [])
 
+  // „Nowa sesja" z ekranu końcowego — powrót do propozycji ze świeżym
+  // losowaniem (z wykluczeniem właśnie omówionego tematu).
+  const startNewSession = useCallback(() => {
+    setTopic((current) => drawTopic(current.id))
+    setPhase('proposal')
+    setConversationState('connecting')
+  }, [])
+
   return (
     <>
       {/* Jeden trwały element orba przez obie fazy — repozycjonowany
@@ -89,6 +97,7 @@ export function SessionStart({ initialTopic }: { initialTopic: Topic }) {
           topic={topic}
           onStateChange={setConversationState}
           onExit={exitConversation}
+          onNewSession={startNewSession}
         />
       )}
     </>

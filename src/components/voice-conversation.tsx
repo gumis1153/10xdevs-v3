@@ -18,6 +18,8 @@ export type ConversationState =
   | 'ended'
   | 'error'
 
+type ErrorKind = 'mic-denied' | 'connection'
+
 const STATE_LABELS: Record<ConversationState, string> = {
   connecting: 'Łączenie z rozmówcą…',
   listening: 'Słucham — mów śmiało',
@@ -28,31 +30,77 @@ const STATE_LABELS: Record<ConversationState, string> = {
   error: 'Coś poszło nie tak',
 }
 
+// Twardy limit sesji (decyzja: bezpiecznik kosztowy; skrócony z planowanych
+// 5:00 do 2:00 ze względu na koszt Realtime API — decyzja 2026-07-22);
+// ostrzeżenie wizualne 30 s przed końcem.
+const SESSION_SECONDS = 2 * 60
+const WARNING_SECONDS = 30
+
+const ACTIVE_STATES: ReadonlyArray<ConversationState> = [
+  'listening',
+  'user-speaking',
+  'processing',
+  'speaking',
+]
+
+function formatCountdown(seconds: number): string {
+  const minutes = Math.floor(seconds / 60)
+  const rest = seconds % 60
+  return `${minutes}:${String(rest).padStart(2, '0')}`
+}
+
+const CARD_CLASS =
+  'relative z-10 flex w-full max-w-md flex-col items-center gap-4 rounded-2xl border border-black/[.08] bg-white/85 px-8 py-10 backdrop-blur-sm dark:border-white/[.145] dark:bg-black/70'
+
+const SECONDARY_BUTTON_CLASS =
+  'h-11 rounded-full border border-solid border-black/[.08] px-6 text-sm font-medium transition-colors hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]'
+
+const PRIMARY_BUTTON_CLASS =
+  'h-11 rounded-full bg-foreground px-6 text-sm font-medium text-background transition-opacity hover:opacity-85'
+
 /**
  * Rdzeń rozmowy głosowej (S-03, FR-006–FR-009): pobiera token ek_,
  * zestawia sesję WebRTC przez @openai/agents-realtime i mapuje zdarzenia
- * sesji na maszynę stanów UI (orb + etykieta). Sesja żyje wyłącznie po
- * stronie klienta; zakończenie wraca do fazy propozycji tematu (ekran
- * końcowy dojdzie w fazie 3).
+ * sesji na maszynę stanów UI (orb + etykieta). Do tego twardy limit 5:00
+ * z odliczaniem, karty błędów z ręcznym retry (świeży token + nowa sesja)
+ * i ekran końcowy — zaślepka, którą S-04 podmieni na raport.
  */
 export function VoiceConversation({
   topic,
   onStateChange,
   onExit,
+  onNewSession,
 }: {
   topic: Topic
   onStateChange: (state: ConversationState) => void
   onExit: () => void
+  onNewSession: () => void
 }) {
   const [state, setState] = useState<ConversationState>('connecting')
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [errorKind, setErrorKind] = useState<ErrorKind | null>(null)
+  // Pozostały czas sesji; null = odliczanie nieaktywne (łączenie, błąd, koniec).
+  const [secondsLeft, setSecondsLeft] = useState<number | null>(null)
+  // Licznik prób — inkrementacja wymusza ponowny przebieg efektu połączenia
+  // (retry = świeży token + całkiem nowa sesja; poprzednia wymiana przepada).
+  const [attempt, setAttempt] = useState(0)
   const sessionRef = useRef<RealtimeSession | null>(null)
-  // Pełna historia rozmowy (history_updated) — materiał dla raportu S-04;
-  // ref, bo zmiany historii nie mają powodować re-renderów.
+  // Pełna historia rozmowy (history_updated) — utrzymywana w pamięci także
+  // na ekranie końcowym jako punkt przekazania dla raportu S-04; ref, bo
+  // zmiany historii nie mają powodować re-renderów. Surowe audio nigdzie
+  // nie jest zapisywane (strumienie WebRTC są przejściowe z założenia).
   const historyRef = useRef<RealtimeItem[]>([])
-  // Odróżnia świadome zakończenie (przycisk) od zerwania połączenia,
-  // żeby normalny koniec nigdy nie wyglądał jak błąd.
+  // Odróżnia świadome zakończenie (przycisk / limit czasu) od zerwania
+  // połączenia, żeby normalny koniec nigdy nie wyglądał jak błąd.
   const userEndedRef = useRef(false)
+  // Lustro stanu dla handlerów zdarzeń sesji (odczyt bez re-subskrypcji).
+  const stateRef = useRef(state)
+  // Lustro odliczania dla callbacku interwału (tam też zapada auto-koniec).
+  const secondsLeftRef = useRef<number | null>(null)
+
+  const updateSecondsLeft = useCallback((value: number | null) => {
+    secondsLeftRef.current = value
+    setSecondsLeft(value)
+  }, [])
 
   // Przejścia stanów aktywnej rozmowy — stany terminalne nie są nadpisywane
   // przez spóźnione zdarzenia sesji.
@@ -61,6 +109,7 @@ export function VoiceConversation({
   }, [])
 
   useEffect(() => {
+    stateRef.current = state
     onStateChange(state)
   }, [state, onStateChange])
 
@@ -114,17 +163,23 @@ export function VoiceConversation({
         setActiveState('processing')
       }
     })
-    // Nieoczekiwane zerwanie połączenia w aktywnej rozmowie → stan błędu;
-    // świadome zakończenie (przycisk) jest odfiltrowane flagą.
+    // Nieoczekiwane zerwanie połączenia w aktywnej rozmowie → karta błędu;
+    // świadome zakończenie (przycisk / limit czasu) jest odfiltrowane flagą.
     session.transport.on('connection_change', (status) => {
-      if (status === 'disconnected' && !userEndedRef.current && !cancelled) {
-        setErrorMessage('Połączenie z rozmówcą zostało przerwane.')
-        setState((prev) =>
-          prev === 'ended' || prev === 'error' || prev === 'connecting'
-            ? prev
-            : 'error',
-        )
+      if (status !== 'disconnected' || userEndedRef.current || cancelled) {
+        return
       }
+      const current = stateRef.current
+      if (
+        current === 'ended' ||
+        current === 'error' ||
+        current === 'connecting'
+      ) {
+        return
+      }
+      setErrorKind('connection')
+      updateSecondsLeft(null)
+      setState('error')
     })
 
     ;(async () => {
@@ -149,14 +204,17 @@ export function VoiceConversation({
           return
         }
         setActiveState('listening')
+        // Odliczanie startuje, gdy sesja osiąga stan aktywny.
+        updateSecondsLeft(SESSION_SECONDS)
       } catch (error) {
         if (cancelled) return
         console.error('voice conversation connect:', error)
-        setErrorMessage(
+        setErrorKind(
           error instanceof DOMException && error.name === 'NotAllowedError'
-            ? 'Brak dostępu do mikrofonu. Odblokuj mikrofon w ustawieniach przeglądarki i spróbuj ponownie.'
-            : 'Nie udało się nawiązać połączenia z rozmówcą. Spróbuj ponownie.',
+            ? 'mic-denied'
+            : 'connection',
         )
+        updateSecondsLeft(null)
         setState('error')
       }
     })()
@@ -166,31 +224,95 @@ export function VoiceConversation({
       sessionRef.current = null
       session.close()
     }
-  }, [topic, setActiveState])
+  }, [topic, attempt, setActiveState, updateSecondsLeft])
+
+  // Tykanie zegara tylko w aktywnej rozmowie; interval sprzątany przy każdym
+  // wyjściu ze stanu aktywnego (błąd, koniec, odmontowanie). Po upływie
+  // limitu automatyczne zakończenie — przepływ jak przy przycisku (normalny
+  // koniec, nie błąd), wprost do ekranu końcowego.
+  const isActive = ACTIVE_STATES.includes(state)
+  useEffect(() => {
+    if (!isActive) return
+    const id = setInterval(() => {
+      const current = secondsLeftRef.current
+      if (current === null) return
+      const next = Math.max(0, current - 1)
+      if (next === 0) {
+        userEndedRef.current = true
+        sessionRef.current?.close()
+        updateSecondsLeft(null)
+        setState('ended')
+        return
+      }
+      updateSecondsLeft(next)
+    }, 1000)
+    return () => clearInterval(id)
+  }, [isActive, updateSecondsLeft])
 
   // Świadome zakończenie rozmowy (FR-009) — dostępne w każdym stanie,
   // także w trakcie łączenia (connect() bywa zawieszalny).
   const endConversation = () => {
     userEndedRef.current = true
     sessionRef.current?.close()
-    onExit()
+    updateSecondsLeft(null)
+    setState('ended')
+  }
+
+  const retryConversation = () => {
+    setErrorKind(null)
+    updateSecondsLeft(null)
+    setState('connecting')
+    setAttempt((current) => current + 1)
   }
 
   if (state === 'error') {
     return (
-      <div className="relative z-10 flex w-full max-w-md flex-col items-center gap-4 rounded-2xl border border-black/[.08] bg-white/85 px-8 py-10 backdrop-blur-sm dark:border-white/[.145] dark:bg-black/70">
+      <div className={CARD_CLASS}>
         <h1 className="text-2xl font-semibold tracking-tight">
-          {STATE_LABELS.error}
+          {errorKind === 'mic-denied'
+            ? 'Brak dostępu do mikrofonu'
+            : 'Połączenie przerwane'}
         </h1>
         <p className="text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-          {errorMessage}
+          {errorKind === 'mic-denied'
+            ? 'Rozmowa potrzebuje mikrofonu. Kliknij ikonę kłódki (lub ustawień strony) przy pasku adresu przeglądarki, zezwól na dostęp do mikrofonu i spróbuj ponownie.'
+            : 'Połączenie z rozmówcą zostało przerwane. Sprawdź połączenie z internetem i spróbuj ponownie — rozmowa zacznie się od nowa.'}
+        </p>
+        <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={retryConversation}
+            className={PRIMARY_BUTTON_CLASS}
+          >
+            Spróbuj ponownie
+          </button>
+          <button
+            type="button"
+            onClick={onExit}
+            className={SECONDARY_BUTTON_CLASS}
+          >
+            Wróć do tematu
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  if (state === 'ended') {
+    return (
+      <div className={CARD_CLASS}>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Sesja zakończona
+        </h1>
+        <p className="text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+          Raport z rozmowy pojawi się w następnym kroku budowy aplikacji.
         </p>
         <button
           type="button"
-          onClick={onExit}
-          className="mt-2 h-11 rounded-full border border-solid border-black/[.08] px-6 text-sm font-medium transition-colors hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
+          onClick={onNewSession}
+          className={`mt-2 ${PRIMARY_BUTTON_CLASS}`}
         >
-          Wróć do tematu
+          Nowa sesja
         </button>
       </div>
     )
@@ -205,10 +327,21 @@ export function VoiceConversation({
       >
         {STATE_LABELS[state]}
       </p>
+      {secondsLeft !== null && (
+        <p
+          className={`font-mono text-sm tabular-nums ${
+            secondsLeft <= WARNING_SECONDS
+              ? 'animate-pulse font-semibold text-amber-600 dark:text-amber-400'
+              : 'text-zinc-600 dark:text-zinc-400'
+          }`}
+        >
+          {formatCountdown(secondsLeft)}
+        </p>
+      )}
       <button
         type="button"
         onClick={endConversation}
-        className="mt-2 h-11 rounded-full border border-solid border-black/[.08] px-6 text-sm font-medium transition-colors hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
+        className={`mt-2 ${SECONDARY_BUTTON_CLASS}`}
       >
         Zakończ rozmowę
       </button>
