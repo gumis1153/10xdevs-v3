@@ -542,14 +542,14 @@ rule can stay (it only guards a path that would then 404).
 
 #### Automated
 
-- [x] 3.1 `npm run lint` passes
-- [x] 3.2 `npm run build` passes
+- [x] 3.1 `npm run lint` passes — 25bc0d0
+- [x] 3.2 `npm run build` passes — 25bc0d0
 
 #### Manual
 
-- [x] 3.3 Countdown + 4:30 warning + auto-end at 5:00 into end screen
-- [x] 3.4 Mic-denied flow: instructions + working retry after unblocking
-- [x] 3.5 Network-kill flow: error card + fresh-session retry; normal end shows no error
-- [x] 3.6 End screen "Nowa sesja" returns to fresh topic proposal
-- [x] 3.7 Safari iOS smoke test passes (known quirks acceptable)
-- [ ] 3.8 PR preview verified in a logged-in browser
+- [x] 3.3 Countdown + 4:30 warning + auto-end at 5:00 into end screen — 25bc0d0
+- [x] 3.4 Mic-denied flow: instructions + working retry after unblocking — 25bc0d0
+- [x] 3.5 Network-kill flow: error card + fresh-session retry; normal end shows no error — 25bc0d0
+- [x] 3.6 End screen "Nowa sesja" returns to fresh topic proposal — 25bc0d0
+- [x] 3.7 Safari iOS smoke test passes (known quirks acceptable) — 25bc0d0
+- [x] 3.8 PR preview verified in a logged-in browser — 25bc0d0
