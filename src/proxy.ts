@@ -52,6 +52,16 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   if (!user && pathname !== '/login' && !pathname.startsWith('/auth')) {
+    // Konsumenci /api/* to fetch(), nie nawigująca przeglądarka — redirect
+    // 307 na /login podałby im HTML; zwracamy 401 JSON (route'y i tak
+    // weryfikują auth same — to defense-in-depth, nie jedyna bramka).
+    if (pathname.startsWith('/api')) {
+      return withSessionCookies(
+        NextResponse.json({ error: 'unauthorized' }, { status: 401 }),
+        supabaseResponse,
+        sessionHeaders
+      )
+    }
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     url.search = ''
