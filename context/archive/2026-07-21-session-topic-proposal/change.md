@@ -1,10 +1,10 @@
 ---
 change_id: session-topic-proposal
 title: Session topic proposal
-status: impl_reviewed
+status: archived
 created: 2026-07-21
 updated: 2026-07-22
-archived_at: null
+archived_at: 2026-07-22T16:09:40Z
 ---
 
 ## Notes
