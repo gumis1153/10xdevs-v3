@@ -61,7 +61,7 @@ const PRIMARY_BUTTON_CLASS =
 /**
  * Rdzeń rozmowy głosowej (S-03, FR-006–FR-009): pobiera token ek_,
  * zestawia sesję WebRTC przez @openai/agents-realtime i mapuje zdarzenia
- * sesji na maszynę stanów UI (orb + etykieta). Do tego twardy limit 5:00
+ * sesji na maszynę stanów UI (orb + etykieta). Do tego twardy limit 2:00
  * z odliczaniem, karty błędów z ręcznym retry (świeży token + nowa sesja)
  * i ekran końcowy — zaślepka, którą S-04 podmieni na raport.
  */
@@ -190,6 +190,9 @@ export function VoiceConversation({
           audio: true,
         })
         stream.getTracks().forEach((track) => track.stop())
+        // Wczesne wyjście przed mintowaniem tokenu — anulowany przebieg
+        // (StrictMode w dev) nie ma marnować tokenów ek_.
+        if (cancelled) return
 
         const response = await fetch('/api/realtime/token', { method: 'POST' })
         if (!response.ok) {

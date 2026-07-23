@@ -1,9 +1,9 @@
 ---
 change_id: first-voice-conversation
 title: First voice conversation
-status: implemented
+status: impl_reviewed
 created: 2026-07-22
-updated: 2026-07-22
+updated: 2026-07-23
 archived_at: null
 ---
 
