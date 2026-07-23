@@ -7,6 +7,9 @@ import {
   type RealtimeItem,
 } from '@openai/agents-realtime'
 import { buildInstructions } from '@/lib/realtime/instructions'
+import { buildTurns } from '@/lib/realtime/transcript'
+import type { ReportResponse, Turn } from '@/lib/report/schema'
+import { SessionReport, type ReportOutcome } from '@/components/session-report'
 import type { Topic } from '@/lib/topics'
 
 export type ConversationState =
@@ -63,7 +66,10 @@ const PRIMARY_BUTTON_CLASS =
  * zestawia sesję WebRTC przez @openai/agents-realtime i mapuje zdarzenia
  * sesji na maszynę stanów UI (orb + etykieta). Do tego twardy limit 2:00
  * z odliczaniem, karty błędów z ręcznym retry (świeży token + nowa sesja)
- * i ekran końcowy — zaślepka, którą S-04 podmieni na raport.
+ * i ekran końcowy z raportem po sesji (S-04, FR-010–FR-014): po wejściu
+ * w `ended` snapshot historii idzie POST-em do /api/report, a wynik
+ * (analiza / raport / za mało materiału / błąd z retry) renderuje
+ * SessionReport.
  */
 export function VoiceConversation({
   topic,
@@ -96,6 +102,28 @@ export function VoiceConversation({
   const stateRef = useRef(state)
   // Lustro odliczania dla callbacku interwału (tam też zapada auto-koniec).
   const secondsLeftRef = useRef<number | null>(null)
+  // Faza raportu na ekranie końcowym (S-04) — niezależna od maszyny stanów
+  // sesji, żyje tylko w gałęzi `ended`.
+  const [reportOutcome, setReportOutcome] = useState<ReportOutcome>({
+    phase: 'analyzing',
+  })
+  // Strażnik pojedynczego auto-POST-a na wejście w `ended` (StrictMode w dev
+  // odpala efekty podwójnie); retry omija efekt i woła fetch wprost.
+  const reportRequestedRef = useRef(false)
+  // Snapshot tur zbudowany raz przy wejściu w `ended` — retry wysyła
+  // dokładnie ten sam transkrypt; state (nie ref), bo render transkrypcji
+  // czyta tę wartość (react-hooks/refs zakazuje refów w renderze).
+  const [turnsSnapshot, setTurnsSnapshot] = useState<Turn[]>([])
+  // Blokada setState po odmontowaniu w trakcie fetcha raportu (retry działa
+  // poza efektem, więc lokalna flaga cleanupu nie wystarczy).
+  const unmountedRef = useRef(false)
+
+  useEffect(() => {
+    unmountedRef.current = false
+    return () => {
+      unmountedRef.current = true
+    }
+  }, [])
 
   const updateSecondsLeft = useCallback((value: number | null) => {
     secondsLeftRef.current = value
@@ -252,6 +280,51 @@ export function VoiceConversation({
     return () => clearInterval(id)
   }, [isActive, updateSecondsLeft])
 
+  const fetchReport = useCallback(async (turns: Turn[]) => {
+    try {
+      const response = await fetch('/api/report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ turns }),
+      })
+      if (!response.ok) {
+        throw new Error(`report endpoint responded ${response.status}`)
+      }
+      const result = (await response.json()) as ReportResponse
+      if (unmountedRef.current) return
+      setReportOutcome(
+        result.kind === 'report'
+          ? { phase: 'report', report: result.report }
+          : { phase: 'insufficient' },
+      )
+    } catch (error) {
+      if (unmountedRef.current) return
+      console.error('report request failed:', error)
+      setReportOutcome({ phase: 'error' })
+    }
+  }, [])
+
+  // Auto-POST raportu przy wejściu w `ended`: snapshot historii budowany raz.
+  // Pusta próbka (brak tur ucznia — np. „Zakończ rozmowę" w trakcie łączenia)
+  // od razu daje wynik `insufficient` bez żądania — pusty payload i tak
+  // odbiłby się 400 od TurnsPayloadSchema.min(1) i uwięził usera na retry.
+  useEffect(() => {
+    if (state !== 'ended' || reportRequestedRef.current) return
+    reportRequestedRef.current = true
+    const turns = buildTurns(historyRef.current)
+    setTurnsSnapshot(turns)
+    if (!turns.some((turn) => turn.speaker === 'learner')) {
+      setReportOutcome({ phase: 'insufficient' })
+      return
+    }
+    void fetchReport(turns)
+  }, [state, fetchReport])
+
+  const retryReport = () => {
+    setReportOutcome({ phase: 'analyzing' })
+    void fetchReport(turnsSnapshot)
+  }
+
   // Świadome zakończenie rozmowy (FR-009) — dostępne w każdym stanie,
   // także w trakcie łączenia (connect() bywa zawieszalny).
   const endConversation = () => {
@@ -303,21 +376,15 @@ export function VoiceConversation({
 
   if (state === 'ended') {
     return (
-      <div className={CARD_CLASS}>
-        <h1 className="text-2xl font-semibold tracking-tight">
-          Sesja zakończona
-        </h1>
-        <p className="text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-          Raport z rozmowy pojawi się w następnym kroku budowy aplikacji.
-        </p>
-        <button
-          type="button"
-          onClick={onNewSession}
-          className={`mt-2 ${PRIMARY_BUTTON_CLASS}`}
-        >
-          Nowa sesja
-        </button>
-      </div>
+      <SessionReport
+        outcome={reportOutcome}
+        transcriptLines={turnsSnapshot.map(
+          (turn) =>
+            `${turn.speaker === 'learner' ? 'Learner' : 'Tutor'}: ${turn.text}`,
+        )}
+        onRetry={retryReport}
+        onNewSession={onNewSession}
+      />
     )
   }
 
