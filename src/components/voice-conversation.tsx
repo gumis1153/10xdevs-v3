@@ -285,7 +285,11 @@ export function VoiceConversation({
       const response = await fetch('/api/report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ turns }),
+        // topic dołączany, by serwer mógł opisać archiwizowaną sesję (S-05).
+        body: JSON.stringify({
+          turns,
+          topic: { id: topic.id, title: topic.title },
+        }),
       })
       if (!response.ok) {
         throw new Error(`report endpoint responded ${response.status}`)
@@ -302,7 +306,7 @@ export function VoiceConversation({
       console.error('report request failed:', error)
       setReportOutcome({ phase: 'error' })
     }
-  }, [])
+  }, [topic.id, topic.title])
 
   // Auto-POST raportu przy wejściu w `ended`: snapshot historii budowany raz.
   // Pusta próbka (brak tur ucznia — np. „Zakończ rozmowę" w trakcie łączenia)

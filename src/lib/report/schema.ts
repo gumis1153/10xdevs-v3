@@ -24,6 +24,12 @@ export const TurnsPayloadSchema = z.object({
     )
     .min(1)
     .max(200),
+  // Temat sesji dołączany przez klienta wyłącznie po to, by opisać
+  // archiwizowaną sesję (S-05) — id + tytuł, bez description.
+  topic: z.object({
+    id: z.string().min(1).max(100),
+    title: z.string().min(1).max(200),
+  }),
 })
 
 export type TurnsPayload = z.infer<typeof TurnsPayloadSchema>
