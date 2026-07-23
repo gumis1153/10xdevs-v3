@@ -56,23 +56,24 @@ export function SessionReport({
   onRetry: () => void
   onNewSession: () => void
 }) {
+  // aria-live siedzi na korzeniu każdego wyniku: React reużywa ten sam
+  // węzeł div między fazami, więc region live trwa i czytnik ekranu
+  // ogłasza także moment, gdy spinner zmienia się w raport / błąd.
   if (outcome.phase === 'analyzing') {
     return (
-      <div className={CARD_CLASS}>
+      <div aria-live="polite" className={CARD_CLASS}>
         <div
           aria-hidden
           className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-300 border-t-zinc-900 dark:border-zinc-700 dark:border-t-zinc-100"
         />
-        <p aria-live="polite" className={MUTED_TEXT_CLASS}>
-          Analizuję rozmowę…
-        </p>
+        <p className={MUTED_TEXT_CLASS}>Analizuję rozmowę…</p>
       </div>
     )
   }
 
   if (outcome.phase === 'insufficient') {
     return (
-      <div className={CARD_CLASS}>
+      <div aria-live="polite" className={CARD_CLASS}>
         <h1 className="text-2xl font-semibold tracking-tight">
           Za mało materiału do analizy
         </h1>
@@ -93,7 +94,7 @@ export function SessionReport({
 
   if (outcome.phase === 'error') {
     return (
-      <div className={CARD_CLASS}>
+      <div aria-live="polite" className={CARD_CLASS}>
         <h1 className="text-2xl font-semibold tracking-tight">
           Analiza nie powiodła się
         </h1>
@@ -127,7 +128,7 @@ export function SessionReport({
   )
 
   return (
-    <div className={WIDE_CARD_CLASS}>
+    <div aria-live="polite" className={WIDE_CARD_CLASS}>
       <header className="flex flex-col gap-1">
         <h1 className="text-2xl font-semibold tracking-tight">
           Raport z rozmowy

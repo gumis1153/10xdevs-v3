@@ -1,7 +1,7 @@
 ---
 change_id: post-session-report
 title: Post session report
-status: implemented
+status: impl_reviewed
 created: 2026-07-23
 updated: 2026-07-23
 archived_at: null

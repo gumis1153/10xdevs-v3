@@ -82,9 +82,11 @@ export async function POST(request: Request) {
     })
   }
 
-  const client = new OpenAI()
   let parsed
   try {
+    // Konstruktor rzuca synchronicznie przy braku OPENAI_API_KEY — musi
+    // siedzieć w try, żeby zła konfiguracja env dawała to samo 502.
+    const client = new OpenAI()
     parsed = await client.responses.parse({
       model: REPORT_MODEL,
       reasoning: { effort: 'low' },
@@ -113,11 +115,18 @@ export async function POST(request: Request) {
   const report = parsed.output_parsed
 
   // Bramka groundingu (anty-halucynacja): każdy błąd musi cytować dosłowny
-  // substring korpusu ucznia. Join przez '\n' — konkatenacja bez separatora
-  // zaakceptowałaby cytat sklejony z granicy dwóch tur.
-  const learnerCorpus = learnerTurns.map((turn) => turn.text).join('\n')
+  // substring korpusu ucznia. Białe znaki zwijane po obu stronach (model
+  // potrafi znormalizować np. podwójną spację z ASR — bez tego prawdziwy
+  // błąd wypadałby po cichu), ale per tura i z joinem przez '\n' — separator
+  // tur nie może stać się spacją, bo przepuściłby cytat sklejony z granicy
+  // dwóch tur.
+  const collapseWhitespace = (text: string) =>
+    text.replace(/\s+/g, ' ').trim()
+  const learnerCorpus = learnerTurns
+    .map((turn) => collapseWhitespace(turn.text))
+    .join('\n')
   const groundedErrors = report.errors.filter((error) =>
-    learnerCorpus.includes(error.quote),
+    learnerCorpus.includes(collapseWhitespace(error.quote)),
   )
   const droppedCount = report.errors.length - groundedErrors.length
   if (droppedCount > 0) {
