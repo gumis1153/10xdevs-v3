@@ -389,29 +389,29 @@ pierwszej tabeli. Datastore pozostaje `eu-central-1`.
 
 #### Automated
 
-- [x] 1.1 Migracja aplikuje się czysto lokalnie: `npx supabase db reset`
-- [x] 1.2 Lint przechodzi: `npm run lint`
-- [x] 1.3 Build + typecheck przechodzi: `npm run build`
+- [x] 1.1 Migracja aplikuje się czysto lokalnie: `npx supabase db reset` — 41dc2f4
+- [x] 1.2 Lint przechodzi: `npm run lint` — 41dc2f4
+- [x] 1.3 Build + typecheck przechodzi: `npm run build` — 41dc2f4
 
 #### Manual
 
-- [x] 1.4 Ukończona sesja ≥40 słów tworzy dokładnie jeden wiersz z poprawnymi metadanymi, pełnym `report` i `transcript`
-- [x] 1.5 Sesja „za mało materiału" i sesja z błędem analizy nie tworzą wiersza
-- [x] 1.6 Wymuszona awaria zapisu nie psuje raportu (raport widoczny, błąd w logach)
-- [x] 1.7 Zapisany wiersz nie zawiera surowego audio; raport wraca z `Cache-Control: no-store`
+- [x] 1.4 Ukończona sesja ≥40 słów tworzy dokładnie jeden wiersz z poprawnymi metadanymi, pełnym `report` i `transcript` — 41dc2f4
+- [x] 1.5 Sesja „za mało materiału" i sesja z błędem analizy nie tworzą wiersza — 41dc2f4
+- [x] 1.6 Wymuszona awaria zapisu nie psuje raportu (raport widoczny, błąd w logach) — 41dc2f4
+- [x] 1.7 Zapisany wiersz nie zawiera surowego audio; raport wraca z `Cache-Control: no-store` — 41dc2f4
 
 ### Faza 2: UI archiwum — lista, szczegół, usuwanie, nawigacja
 
 #### Automated
 
-- [ ] 2.1 Lint przechodzi: `npm run lint`
-- [ ] 2.2 Build + typecheck przechodzi: `npm run build`
+- [x] 2.1 Lint przechodzi: `npm run lint`
+- [x] 2.2 Build + typecheck przechodzi: `npm run build`
 
 #### Manual
 
-- [ ] 2.3 Ekran końcowy S-04 działa i wygląda jak dotąd po refaktorze `ReportView`
-- [ ] 2.4 `/archive` pokazuje sesje najnowsze-najpierw (data, temat, CEFR, liczba błędów); pusty stan działa
-- [ ] 2.5 `/archive/[id]` pokazuje pełny raport i transkrypt zgodne z zapisaną sesją
-- [ ] 2.6 Drugi użytkownik nie widzi cudzych sesji; `/archive/<cudze-id>` → 404
-- [ ] 2.7 Usuwanie z potwierdzeniem znika z listy i DB; anulowanie nie usuwa
-- [ ] 2.8 Link „Archiwum" z ekranu startu prowadzi do listy
+- [x] 2.3 Ekran końcowy S-04 działa i wygląda jak dotąd po refaktorze `ReportView`
+- [x] 2.4 `/archive` pokazuje sesje najnowsze-najpierw (data, temat, CEFR, liczba błędów); pusty stan działa
+- [x] 2.5 `/archive/[id]` pokazuje pełny raport i transkrypt zgodne z zapisaną sesją
+- [x] 2.6 Drugi użytkownik nie widzi cudzych sesji; `/archive/<cudze-id>` → 404
+- [x] 2.7 Usuwanie z potwierdzeniem znika z listy i DB; anulowanie nie usuwa
+- [x] 2.8 Link „Archiwum" z ekranu startu prowadzi do listy
