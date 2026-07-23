@@ -292,15 +292,15 @@ None — stateless slice, no schema, no data. Rollback = revert the PR; the ende
 
 #### Automated
 
-- [x] 2.1 Linting passes: `npm run lint`
-- [x] 2.2 Production build passes: `npm run build`
+- [x] 2.1 Linting passes: `npm run lint` — eedcf24
+- [x] 2.2 Production build passes: `npm run build` — eedcf24
 
 #### Manual
 
-- [x] 2.3 Happy path: loading → report (CEFR + range + disclaimer + grouped errors + suggestions), both end triggers
-- [x] 2.4 Short session → "za mało materiału do analizy" without model latency
-- [x] 2.5 Failure → error card; retry re-sends same transcript and recovers
-- [x] 2.6 Transcript toggle works; POST payload is text-only (no audio/base64)
-- [x] 2.7 Correct-English session → empty error list rendered positively
-- [x] 2.8 No StrictMode double-POST in dev
-- [x] 2.9 Immediate end (empty history) → insufficient message, zero /api/report requests
+- [x] 2.3 Happy path: loading → report (CEFR + range + disclaimer + grouped errors + suggestions), both end triggers — eedcf24
+- [x] 2.4 Short session → "za mało materiału do analizy" without model latency — eedcf24
+- [x] 2.5 Failure → error card; retry re-sends same transcript and recovers — eedcf24
+- [x] 2.6 Transcript toggle works; POST payload is text-only (no audio/base64) — eedcf24
+- [x] 2.7 Correct-English session → empty error list rendered positively — eedcf24
+- [x] 2.8 No StrictMode double-POST in dev — eedcf24
+- [x] 2.9 Immediate end (empty history) → insufficient message, zero /api/report requests — eedcf24
