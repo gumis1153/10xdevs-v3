@@ -278,29 +278,29 @@ None — stateless slice, no schema, no data. Rollback = revert the PR; the ende
 
 #### Automated
 
-- [x] 1.1 `openai` in dependencies, single copy in lockfile
-- [x] 1.2 Linting passes: `npm run lint`
-- [x] 1.3 Production build passes: `npm run build`
+- [x] 1.1 `openai` in dependencies, single copy in lockfile — 7fd86ac
+- [x] 1.2 Linting passes: `npm run lint` — 7fd86ac
+- [x] 1.3 Production build passes: `npm run build` — 7fd86ac
 
 #### Manual
 
-- [x] 1.4 Logged-in fetch returns schema-valid report; < 40 learner words returns `insufficient_material`
-- [x] 1.5 Anonymous request gets 401
-- [x] 1.6 Correct learner sentence produces no fabricated error (spot-check)
+- [x] 1.4 Logged-in fetch returns schema-valid report; < 40 learner words returns `insufficient_material` — 7fd86ac
+- [x] 1.5 Anonymous request gets 401 — 7fd86ac
+- [x] 1.6 Correct learner sentence produces no fabricated error (spot-check) — 7fd86ac
 
 ### Phase 2: Client Hand-off & Report UI
 
 #### Automated
 
-- [ ] 2.1 Linting passes: `npm run lint`
-- [ ] 2.2 Production build passes: `npm run build`
+- [x] 2.1 Linting passes: `npm run lint`
+- [x] 2.2 Production build passes: `npm run build`
 
 #### Manual
 
-- [ ] 2.3 Happy path: loading → report (CEFR + range + disclaimer + grouped errors + suggestions), both end triggers
-- [ ] 2.4 Short session → "za mało materiału do analizy" without model latency
-- [ ] 2.5 Failure → error card; retry re-sends same transcript and recovers
-- [ ] 2.6 Transcript toggle works; POST payload is text-only (no audio/base64)
-- [ ] 2.7 Correct-English session → empty error list rendered positively
-- [ ] 2.8 No StrictMode double-POST in dev
-- [ ] 2.9 Immediate end (empty history) → insufficient message, zero /api/report requests
+- [x] 2.3 Happy path: loading → report (CEFR + range + disclaimer + grouped errors + suggestions), both end triggers
+- [x] 2.4 Short session → "za mało materiału do analizy" without model latency
+- [x] 2.5 Failure → error card; retry re-sends same transcript and recovers
+- [x] 2.6 Transcript toggle works; POST payload is text-only (no audio/base64)
+- [x] 2.7 Correct-English session → empty error list rendered positively
+- [x] 2.8 No StrictMode double-POST in dev
+- [x] 2.9 Immediate end (empty history) → insufficient message, zero /api/report requests
