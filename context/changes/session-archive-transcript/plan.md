@@ -404,14 +404,14 @@ pierwszej tabeli. Datastore pozostaje `eu-central-1`.
 
 #### Automated
 
-- [x] 2.1 Lint przechodzi: `npm run lint`
-- [x] 2.2 Build + typecheck przechodzi: `npm run build`
+- [x] 2.1 Lint przechodzi: `npm run lint` — ea36038
+- [x] 2.2 Build + typecheck przechodzi: `npm run build` — ea36038
 
 #### Manual
 
-- [x] 2.3 Ekran końcowy S-04 działa i wygląda jak dotąd po refaktorze `ReportView`
-- [x] 2.4 `/archive` pokazuje sesje najnowsze-najpierw (data, temat, CEFR, liczba błędów); pusty stan działa
-- [x] 2.5 `/archive/[id]` pokazuje pełny raport i transkrypt zgodne z zapisaną sesją
-- [x] 2.6 Drugi użytkownik nie widzi cudzych sesji; `/archive/<cudze-id>` → 404
-- [x] 2.7 Usuwanie z potwierdzeniem znika z listy i DB; anulowanie nie usuwa
-- [x] 2.8 Link „Archiwum" z ekranu startu prowadzi do listy
+- [x] 2.3 Ekran końcowy S-04 działa i wygląda jak dotąd po refaktorze `ReportView` — ea36038
+- [x] 2.4 `/archive` pokazuje sesje najnowsze-najpierw (data, temat, CEFR, liczba błędów); pusty stan działa — ea36038
+- [x] 2.5 `/archive/[id]` pokazuje pełny raport i transkrypt zgodne z zapisaną sesją — ea36038
+- [x] 2.6 Drugi użytkownik nie widzi cudzych sesji; `/archive/<cudze-id>` → 404 — ea36038
+- [x] 2.7 Usuwanie z potwierdzeniem znika z listy i DB; anulowanie nie usuwa — ea36038
+- [x] 2.8 Link „Archiwum" z ekranu startu prowadzi do listy — ea36038
