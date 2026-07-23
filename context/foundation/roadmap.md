@@ -3,7 +3,7 @@ project: "english-talk"
 version: 1
 status: draft
 created: 2026-07-18
-updated: 2026-07-22
+updated: 2026-07-23
 prd_version: 1
 main_goal: speed
 top_blocker: decisions
@@ -32,7 +32,7 @@ Polscy programiści na poziomie A2–B2 mają barierę mówioną w angielskim �
 | F-01 | pr-preview-pipeline       | (foundation) merge do `master` = automatyczny deploy; PR = preview URL              | —                                | tech-stack: ci_default_flow     | done     |
 | S-01 | minimal-oauth-login       | użytkownik może założyć konto i zalogować się (OAuth Google)                        | —                                | FR-001, FR-002, US-01           | done     |
 | S-02 | session-topic-proposal    | użytkownik może rozpocząć sesję: widzi wylosowany temat, może odrzucić i wylosować inny | —                            | FR-003, FR-004, US-01           | done     |
-| S-03 | first-voice-conversation  | użytkownik może odbyć 2–3 min rozmowę głosową po angielsku i zakończyć ją w dowolnym momencie | S-02, bezpieczniki OpenAI (krok ludzki) | FR-006, FR-007, FR-008, FR-009, US-01 | proposed |
+| S-03 | first-voice-conversation  | użytkownik może odbyć 2–3 min rozmowę głosową po angielsku i zakończyć ją w dowolnym momencie | S-02, bezpieczniki OpenAI (krok ludzki) | FR-006, FR-007, FR-008, FR-009, US-01 | done |
 | S-04 | post-session-report       | użytkownik widzi po sesji raport: pogrupowane błędy, ocena CEFR z disclaimerem, sugestie | S-03                         | FR-010, FR-011, FR-012, FR-013, US-01 | proposed |
 | S-05 | session-archive-transcript | użytkownik widzi archiwum swoich sesji z transkrypcją i raportem                    | S-01, S-04                       | FR-014, FR-015                  | proposed |
 | S-06 | adaptive-level-tuning     | aplikacja wnioskuje poziom z pierwszej wymiany zdań i dostosowuje tempo oraz słownictwo | S-03                         | FR-005                          | proposed |
@@ -114,7 +114,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Unknowns:**
   - Kompatybilność toru audio (mikrofon/WebRTC) na Safari iOS — historycznie najsłabsza platforma dla głosu w web (NFR cross-browser; sygnał z shape-notes „Forward: tech-stack"). — Owner: user. Block: no.
 - **Risk:** największa niewiadoma techniczna produktu, dlatego zaraz po starcie sesji; podlega MERGE-GATE z deploy-plan (rate limit na route mintujący tokeny, TTL ≤600 s, nagłówek safety) — endpoint tokenów bez tych bezpieczników nie wchodzi na `master`.
-- **Status:** proposed
+- **Status:** done
 
 ### S-04: Raport po sesji
 
@@ -193,3 +193,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **F-01: (foundation) merge do `master` buduje produkcję automatycznie, a każdy PR dostaje preview URL — ścieżka weryfikacji dla wszystkich plasterków.** — Archived 2026-07-20 → `context/archive/2026-07-18-pr-preview-pipeline/`. Lesson: —.
 - **S-01: użytkownik może założyć konto i zalogować się (OAuth Google); aplikacja jest za bramką logowania.** — Archived 2026-07-21 → `context/archive/2026-07-20-minimal-oauth-login/`. Lesson: —.
 - **S-02: użytkownik może rozpocząć sesję: widzi wylosowany temat, może odrzucić i wylosować inny.** — Archived 2026-07-22 → `context/archive/2026-07-21-session-topic-proposal/`. Lesson: —.
+- **S-03: użytkownik może odbyć 2–3 min rozmowę głosową po angielsku na zaakceptowany temat — mówi do mikrofonu, słyszy odpowiedzi głosowo, widzi stan rozmowy (mówi / słucha / przetwarza) i może zakończyć sesję w dowolnym momencie.** — Archived 2026-07-23 → `context/archive/2026-07-22-first-voice-conversation/`. Lesson: —.
