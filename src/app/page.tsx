@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 import { signOut } from '@/app/auth/actions'
 import { SessionStart } from '@/components/session-start'
 import { requireUser } from '@/lib/supabase/server'
@@ -54,6 +56,12 @@ export default async function Home() {
               )}
             </div>
           </div>
+          <Link
+            href="/archive"
+            className="h-9 rounded-full border border-solid border-black/[.08] px-4 text-sm font-medium leading-9 transition-colors hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
+          >
+            Archiwum
+          </Link>
           <form action={signOut}>
             <button
               type="submit"

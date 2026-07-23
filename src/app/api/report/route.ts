@@ -29,8 +29,9 @@ function countWords(text: string): number {
 /**
  * Jednorazowa ocena rozmowy (S-04, FR-010–FR-013): przyjmuje tekstowe tury
  * rozmowy, ocenia tury ucznia w skali CEFR przez Responses API + Structured
- * Outputs i zwraca raport. Bezstanowe — nic nie jest utrwalane (S-05).
- * Auth weryfikowany tu niezależnie od proxy (defense-in-depth).
+ * Outputs i zwraca raport. Udany raport jest best-effort archiwizowany (S-05);
+ * błąd zapisu nie blokuje odpowiedzi. Auth weryfikowany tu niezależnie od proxy
+ * (defense-in-depth).
  */
 export async function POST(request: Request) {
   const supabase = await createClient()
@@ -65,7 +66,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'invalid_payload' }, { status: 400 })
   }
 
-  const { turns } = parsedPayload.data
+  const { turns, topic } = parsedPayload.data
   const learnerTurns = turns.filter((turn) => turn.speaker === 'learner')
 
   const learnerWordCount = learnerTurns.reduce(
@@ -133,9 +134,34 @@ export async function POST(request: Request) {
     console.warn(`report grounding gate dropped ${droppedCount} error(s)`)
   }
 
+  const groundedReport = { ...report, errors: groundedErrors }
+
+  // Archiwizacja sesji (S-05) — best-effort. Zapis idzie tym samym
+  // user-scoped klientem (RLS wymusza user_id = auth.uid()), po bramce
+  // groundingu, tak by utrwalić dokładnie ten raport, który dostaje klient.
+  // Awaria DB nigdy nie blokuje raportu (główna wartość US-01 > nice-to-have
+  // archiwum) — logujemy i lecimy dalej. Gałęzie „za mało materiału" i błędów
+  // nie docierają tutaj, więc nie zapisują wiersza.
+  try {
+    const { error: insertError } = await supabase.from('sessions').insert({
+      user_id: user.id,
+      topic_id: topic.id,
+      topic_title: topic.title,
+      cefr_level: groundedReport.cefrLevel,
+      error_count: groundedErrors.length,
+      report: groundedReport,
+      transcript: turns,
+    })
+    if (insertError) {
+      console.error('report session insert failed:', insertError.message)
+    }
+  } catch (error) {
+    console.error('report session insert threw:', error)
+  }
+
   const response: ReportResponse = {
     kind: 'report',
-    report: { ...report, errors: groundedErrors },
+    report: groundedReport,
   }
   return NextResponse.json(response, {
     headers: { 'Cache-Control': 'no-store' },
