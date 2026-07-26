@@ -54,6 +54,15 @@ export default async function ArchivePage() {
 
   return (
     <main className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-6 px-6 py-10">
+      {/* Powrót jak na szczególe sesji: kontekstowy link w treści, nie w
+          headerze — po S-08 header ma tylko logo i menu konta. */}
+      <Link
+        href="/"
+        className="self-start text-sm font-medium underline underline-offset-4"
+      >
+        ← Nowa sesja
+      </Link>
+
       <h1 className="text-2xl font-semibold tracking-tight">Archiwum sesji</h1>
 
       {error ? (

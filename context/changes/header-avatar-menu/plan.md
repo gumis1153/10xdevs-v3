@@ -47,7 +47,7 @@ Verify by walking `/` → avatar → `Wyloguj się` (lands on `/login`), then `/
 
 - Not adding the account name or e-mail to the dropdown body. The dropdown holds `Wyloguj się` only; the display name survives as the avatar button's accessible name (see Critical Implementation Details).
 - Not adding an `Archiwum` link inside the dropdown — the archive gets exactly one entry point, under the orb.
-- Not keeping the `Nowa sesja` button on `/archive`. The logo links to `/`.
+- ~~Not keeping the `Nowa sesja` button on `/archive`. The logo links to `/`.~~ **Reversed during implementation (2026-07-26, user request):** the clickable logo turned out to be too weak an affordance for "back to start" from the archive list. `/archive` now carries a quiet `← Nowa sesja` text link at the top of `<main>`, mirroring the `← Archiwum` link on the session detail. The header itself stays logo + avatar on every route — the reversal restores the destination, not the header button, so the slice's core outcome is intact. Tracked as Progress row 2.9.
 - Not showing the archive link during a conversation or on the post-session report screen.
 - Not building a mobile-specific dropdown variant (bottom sheet, full-width) and not auditing the rest of the app for responsiveness.
 - Not introducing a UI library, `role="menu"`/roving-focus ARIA machinery, or animation.
@@ -171,6 +171,16 @@ Restore an archive entry point in its new location: under the topic card on the 
 
 **Contract**: Inside the `phase === 'proposal'` branch, after the card `<div>` (`src/components/session-start.tsx:68-94`), render an `Archiwum sesji` `<Link href="/archive">` — quiet text-link styling matching `archive/page.tsx:82`, and `relative z-10` so it sits above the absolutely positioned orb layer rather than under it. It must render only in the `proposal` branch, so it is absent during `conversation` and on the post-session report screen. Import `Link` from `next/link`; the component is already `'use client'`, where `next/link` works unchanged.
 
+> **Drift note (implementation, 2026-07-26).** S-09 (`topic-selection-revamp`, PR #18) merged to `master` between planning and implementation and rewrote this file: the single-topic card became three topic buttons, and `Inny temat` became `Inne tematy` (re-rolls the whole set via `drawTopicSet`). The intent above is unchanged; only the anchors moved. Actual card `<div>` is at `:74-102`, and the `proposal` branch now needs a fragment wrapper (`<>…</>`) because it returned a single element. Progress row 2.5 keeps its original title — read `Inny temat` there as today's `Inne tematy`, and "re-draws the topic" as "re-draws the topic set".
+
+#### 2. Return link on the archive list (added during implementation)
+
+**File**: `src/app/(app)/archive/page.tsx`
+
+**Intent**: Added at the user's request after Phase 2's original scope was verified working. The clickable logo alone proved too weak an affordance for returning to the start screen from the archive list, so the destination removed in Phase 1 comes back — as page content, not as a header button.
+
+**Contract**: A `← Nowa sesja` `<Link href="/">` as the first child of `<main>`, above the `Archiwum sesji` heading, using the identical `self-start text-sm font-medium underline underline-offset-4` treatment as the session detail's `← Archiwum`. `AppHeader` is untouched — no per-route action slot is introduced. The empty state's `Rozpocznij pierwszą sesję` link stays; it targets `/` too but reads as a first-run CTA rather than a back link.
+
 ### Success Criteria:
 
 #### Automated Verification:
@@ -236,35 +246,36 @@ No data migration. Fully revertible by reverting the commits.
 
 #### Automated
 
-- [x] 1.1 Linting passes: `npm run lint`
-- [x] 1.2 Production build and typecheck pass: `npm run build`
-- [x] 1.3 No stray header markup remains: `grep -rn "<header" src/app` returns nothing
-- [x] 1.4 Wrapper duplication gone: `grep -rn "flex flex-1 flex-col font-sans" src/app` matches only `src/app/(app)/layout.tsx`
+- [x] 1.1 Linting passes: `npm run lint` — 9a2eedc
+- [x] 1.2 Production build and typecheck pass: `npm run build` — 9a2eedc
+- [x] 1.3 No stray header markup remains: `grep -rn "<header" src/app` returns nothing — 9a2eedc
+- [x] 1.4 Wrapper duplication gone: `grep -rn "flex flex-1 flex-col font-sans" src/app` matches only `src/app/(app)/layout.tsx` — 9a2eedc
 
 #### Manual
 
-- [x] 1.5 Identical header on `/`, `/archive`, `/archive/[id]`; none on `/login`
-- [x] 1.6 Avatar opens dropdown; `Wyloguj się` logs out to `/login`
-- [x] 1.7 Escape and outside click close the dropdown and return focus to the avatar
-- [x] 1.8 Keyboard reaches avatar and menu item; avatar announces the display name
-- [x] 1.9 Logo navigates to `/` from both archive routes
-- [x] 1.10 `← Archiwum` above the session title returns to the archive list
-- [x] 1.11 No header overflow at 320 px; dropdown stays inside the right edge
-- [x] 1.12 Dark mode borders and hover states match the previous header
-- [x] 1.13 No regression in orb or topic card layout on `/`
+- [x] 1.5 Identical header on `/`, `/archive`, `/archive/[id]`; none on `/login` — 9a2eedc
+- [x] 1.6 Avatar opens dropdown; `Wyloguj się` logs out to `/login` — 9a2eedc
+- [x] 1.7 Escape and outside click close the dropdown and return focus to the avatar — 9a2eedc
+- [x] 1.8 Keyboard reaches avatar and menu item; avatar announces the display name — 9a2eedc
+- [x] 1.9 Logo navigates to `/` from both archive routes — 9a2eedc
+- [x] 1.10 `← Archiwum` above the session title returns to the archive list — 9a2eedc
+- [x] 1.11 No header overflow at 320 px; dropdown stays inside the right edge — 9a2eedc
+- [x] 1.12 Dark mode borders and hover states match the previous header — 9a2eedc
+- [x] 1.13 No regression in orb or topic card layout on `/` — 9a2eedc
 
 ### Phase 2: Archive entry point under the orb
 
 #### Automated
 
-- [ ] 2.1 Linting passes: `npm run lint`
-- [ ] 2.2 Production build and typecheck pass: `npm run build`
+- [x] 2.1 Linting passes: `npm run lint`
+- [x] 2.2 Production build and typecheck pass: `npm run build`
 
 #### Manual
 
-- [ ] 2.3 `Archiwum sesji` visible under the topic card and navigates to `/archive`
-- [ ] 2.4 Link absent during the conversation and on the post-session report
-- [ ] 2.5 `Inny temat` re-draws the topic without disturbing the link
-- [ ] 2.6 Returning to the proposal screen brings the link back
-- [ ] 2.7 Link is clickable above the orb overlay and does not disturb card centering
-- [ ] 2.8 Full loop: `/` → `Archiwum sesji` → session → `← Archiwum` → logo → `/`
+- [x] 2.3 `Archiwum sesji` visible under the topic card and navigates to `/archive`
+- [x] 2.4 Link absent during the conversation and on the post-session report
+- [x] 2.5 `Inny temat` re-draws the topic without disturbing the link
+- [x] 2.6 Returning to the proposal screen brings the link back
+- [x] 2.7 Link is clickable above the orb overlay and does not disturb card centering
+- [x] 2.8 Full loop: `/` → `Archiwum sesji` → session → `← Archiwum` → logo → `/`
+- [x] 2.9 `← Nowa sesja` on `/archive` returns to the start screen and matches the `← Archiwum` treatment

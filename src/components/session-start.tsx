@@ -1,6 +1,8 @@
 'use client'
 
+import Link from 'next/link'
 import { useCallback, useState } from 'react'
+
 import { Orb, type OrbState } from '@/components/orb'
 import {
   VoiceConversation,
@@ -68,35 +70,48 @@ export function SessionStart({ initialTopics }: { initialTopics: Topic[] }) {
       </div>
 
       {phase === 'proposal' ? (
-        <div className="relative z-10 flex w-full max-w-md flex-col items-center gap-4 rounded-2xl border border-black/[.08] bg-white/85 px-8 py-10 backdrop-blur-sm dark:border-white/[.145] dark:bg-black/70">
-          <span className="text-xs font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
-            Wybierz temat sesji
-          </span>
-          <div className="flex w-full flex-col gap-3">
-            {topics.map((topic) => (
-              <button
-                key={topic.id}
-                type="button"
-                onClick={() => startConversation(topic)}
-                className="flex flex-col gap-1 rounded-xl border border-solid border-black/[.08] px-5 py-4 text-left transition-colors hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
-              >
-                <span className="text-base font-semibold tracking-tight">
-                  {topic.title}
-                </span>
-                <span className="text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-                  {topic.description}
-                </span>
-              </button>
-            ))}
+        <>
+          <div className="relative z-10 flex w-full max-w-md flex-col items-center gap-4 rounded-2xl border border-black/[.08] bg-white/85 px-8 py-10 backdrop-blur-sm dark:border-white/[.145] dark:bg-black/70">
+            <span className="text-xs font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
+              Wybierz temat sesji
+            </span>
+            <div className="flex w-full flex-col gap-3">
+              {topics.map((topic) => (
+                <button
+                  key={topic.id}
+                  type="button"
+                  onClick={() => startConversation(topic)}
+                  className="flex flex-col gap-1 rounded-xl border border-solid border-black/[.08] px-5 py-4 text-left transition-colors hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
+                >
+                  <span className="text-base font-semibold tracking-tight">
+                    {topic.title}
+                  </span>
+                  <span className="text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+                    {topic.description}
+                  </span>
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => setTopics((current) => drawTopicSet(current))}
+              className="mt-2 h-11 rounded-full border border-solid border-black/[.08] px-6 text-sm font-medium transition-colors hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
+            >
+              Inne tematy
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={() => setTopics((current) => drawTopicSet(current))}
-            className="mt-2 h-11 rounded-full border border-solid border-black/[.08] px-6 text-sm font-medium transition-colors hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
+
+          {/* Jedyne wejście do archiwum po S-08. Renderowane wyłącznie w fazie
+              propozycji — w trakcie rozmowy nawigacja zerwałaby połączenie
+              realtime i utraciła sesję. `relative z-10`, bo warstwa orba leży
+              absolutnie nad treścią. */}
+          <Link
+            href="/archive"
+            className="relative z-10 text-sm font-medium text-zinc-600 underline underline-offset-4 transition-colors hover:text-foreground dark:text-zinc-400 dark:hover:text-foreground"
           >
-            Inne tematy
-          </button>
-        </div>
+            Archiwum sesji
+          </Link>
+        </>
       ) : (
         <VoiceConversation
           topic={selected}
