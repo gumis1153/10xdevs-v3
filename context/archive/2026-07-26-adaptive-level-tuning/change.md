@@ -1,10 +1,10 @@
 ---
 change_id: adaptive-level-tuning
 title: Adaptive level tuning
-status: impl_reviewed
+status: archived
 created: 2026-07-26
 updated: 2026-07-26
-archived_at: null
+archived_at: 2026-07-26T16:45:05Z
 ---
 
 ## Notes
