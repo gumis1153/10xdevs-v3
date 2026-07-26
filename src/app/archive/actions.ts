@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient, requireUser } from '@/lib/supabase/server'
 
 /**
  * Usuwa sesję z archiwum (S-05, FR-015). Wzorzec `signOut`: mutacja + redirect.
@@ -10,6 +10,7 @@ import { createClient } from '@/lib/supabase/server'
  * że można skasować wyłącznie własny wiersz (cudze `id` usuwa 0 wierszy).
  */
 export async function deleteSession(id: string) {
+  await requireUser()
   const supabase = await createClient()
   const { error } = await supabase.from('sessions').delete().eq('id', id)
   if (error) {

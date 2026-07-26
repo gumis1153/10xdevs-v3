@@ -1,10 +1,10 @@
 ---
 change_id: session-archive-transcript
 title: Session archive transcript
-status: implemented
+status: archived
 created: 2026-07-23
-updated: 2026-07-23
-archived_at: null
+updated: 2026-07-26
+archived_at: 2026-07-26T15:24:50Z
 ---
 
 ## Notes
