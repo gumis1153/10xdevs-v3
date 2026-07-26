@@ -33,10 +33,13 @@ const STATE_LABELS: Record<ConversationState, string> = {
   error: 'Coś poszło nie tak',
 }
 
-// Twardy limit sesji (decyzja: bezpiecznik kosztowy; skrócony z planowanych
-// 5:00 do 2:00 ze względu na koszt Realtime API — decyzja 2026-07-22);
-// ostrzeżenie wizualne 30 s przed końcem.
-const SESSION_SECONDS = 2 * 60
+// Twardy limit sesji (bezpiecznik kosztowy). Historia decyzji: 5:00 → 2:00 ze
+// względu na koszt Realtime API (decyzja 2026-07-22), a następnie 2:00 → 3:00
+// pod adaptację poziomu (S-06, decyzja 2026-07-26) — po skalibrowaniu rejestru
+// musi zostać słyszalny kawałek rozmowy, 3:00 mieści się w „2–3 minutach" z
+// PRD US-01, a ~50% wyższy koszt Realtime na sesję jest świadomie przyjęty.
+// Ostrzeżenie wizualne 30 s przed końcem.
+const SESSION_SECONDS = 3 * 60
 const WARNING_SECONDS = 30
 
 const ACTIVE_STATES: ReadonlyArray<ConversationState> = [
@@ -64,7 +67,7 @@ const PRIMARY_BUTTON_CLASS =
 /**
  * Rdzeń rozmowy głosowej (S-03, FR-006–FR-009): pobiera token ek_,
  * zestawia sesję WebRTC przez @openai/agents-realtime i mapuje zdarzenia
- * sesji na maszynę stanów UI (orb + etykieta). Do tego twardy limit 2:00
+ * sesji na maszynę stanów UI (orb + etykieta). Do tego twardy limit 3:00
  * z odliczaniem, karty błędów z ręcznym retry (świeży token + nowa sesja)
  * i ekran końcowy z raportem po sesji (S-04, FR-010–FR-014): po wejściu
  * w `ended` snapshot historii idzie POST-em do /api/report, a wynik
