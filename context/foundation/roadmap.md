@@ -34,7 +34,7 @@ Polscy programiści na poziomie A2–B2 mają barierę mówioną w angielskim �
 | S-02 | session-topic-proposal    | użytkownik może rozpocząć sesję: widzi wylosowany temat, może odrzucić i wylosować inny | —                            | FR-003, FR-004, US-01           | done     |
 | S-03 | first-voice-conversation  | użytkownik może odbyć 2–3 min rozmowę głosową po angielsku i zakończyć ją w dowolnym momencie | S-02, bezpieczniki OpenAI (krok ludzki) | FR-006, FR-007, FR-008, FR-009, US-01 | done |
 | S-04 | post-session-report       | użytkownik widzi po sesji raport: pogrupowane błędy, ocena CEFR z disclaimerem, sugestie | S-03                         | FR-010, FR-011, FR-012, FR-013, US-01 | done     |
-| S-05 | session-archive-transcript | użytkownik widzi archiwum swoich sesji z transkrypcją i raportem                    | S-01, S-04                       | FR-014, FR-015                  | proposed |
+| S-05 | session-archive-transcript | użytkownik widzi archiwum swoich sesji z transkrypcją i raportem                    | S-01, S-04                       | FR-014, FR-015                  | done     |
 | S-06 | adaptive-level-tuning     | aplikacja wnioskuje poziom z pierwszej wymiany zdań i dostosowuje tempo oraz słownictwo | S-03                         | FR-005                          | proposed |
 
 ## Streams
@@ -139,7 +139,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** pierwszy plasterek, który cokolwiek trwale zapisuje — wprowadza pierwszy schemat i pierwszą migrację (RLS od pierwszej tabeli, migracje forward-only per deploy-plan); nice-to-have poza ścieżką must-have — przy presji czasu naturalny kandydat do parkowania.
-- **Status:** proposed
+- **Status:** done
 
 ### S-06: Adaptacja poziomu w trakcie rozmowy
 
@@ -195,3 +195,4 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **S-02: użytkownik może rozpocząć sesję: widzi wylosowany temat, może odrzucić i wylosować inny.** — Archived 2026-07-22 → `context/archive/2026-07-21-session-topic-proposal/`. Lesson: —.
 - **S-03: użytkownik może odbyć 2–3 min rozmowę głosową po angielsku na zaakceptowany temat — mówi do mikrofonu, słyszy odpowiedzi głosowo, widzi stan rozmowy (mówi / słucha / przetwarza) i może zakończyć sesję w dowolnym momencie.** — Archived 2026-07-23 → `context/archive/2026-07-22-first-voice-conversation/`. Lesson: —.
 - **S-04: użytkownik widzi po zakończeniu sesji raport: pogrupowaną listę błędów (gramatyka / słownictwo / wymowa) z poprawkami i wyjaśnieniami, ocenę CEFR z uzasadnieniem i disclaimerem o niepewności oraz konkretne sugestie do dalszej nauki; sesja krótsza niż 2 minuty dostaje komunikat „za mało materiału do analizy".** — Archived 2026-07-26 → `context/archive/2026-07-23-post-session-report/`. Lesson: —.
+- **S-05: użytkownik widzi listę swoich poprzednich sesji (czyste archiwum, bez adaptacji) i może otworzyć pełną transkrypcję rozmowy wraz z raportem.** — Archived 2026-07-26 → `context/archive/2026-07-23-session-archive-transcript/`. Lesson: —.
