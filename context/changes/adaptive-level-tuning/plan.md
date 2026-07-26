@@ -239,26 +239,26 @@ None. No schema, no migration, no persisted state — the inferred level lives a
 
 #### Automated
 
-- [x] 1.1 Linting passes: `npm run lint`
-- [x] 1.2 Build and typecheck pass: `npm run build`
+- [x] 1.1 Linting passes: `npm run lint` — 280951f
+- [x] 1.2 Build and typecheck pass: `npm run build` — 280951f
 
 #### Manual
 
-- [x] 1.3 Countdown starts at 3:00 and the amber warning still appears at 0:30
-- [x] 1.4 Timer reaching zero auto-ends the session into the report screen as a normal end
+- [x] 1.3 Countdown starts at 3:00 and the amber warning still appears at 0:30 — 280951f
+- [x] 1.4 Timer reaching zero auto-ends the session into the report screen as a normal end — 280951f
 
 ### Phase 2: Level calibration in the partner prompt
 
 #### Automated
 
-- [ ] 2.1 Linting passes: `npm run lint`
-- [ ] 2.2 Build and typecheck pass: `npm run build`
+- [x] 2.1 Linting passes: `npm run lint`
+- [x] 2.2 Build and typecheck pass: `npm run build`
 
 #### Manual
 
-- [ ] 2.3 Full conversation still connects, runs and ends into the report screen (no S-03 regression)
-- [ ] 2.4 Partner never names a level, asks about it, or announces adapting
-- [ ] 2.5 Partner still refrains from correcting mistakes mid-conversation
+- [x] 2.3 Full conversation still connects, runs and ends into the report screen (no S-03 regression)
+- [x] 2.4 Partner never names a level, asks about it, or announces adapting
+- [x] 2.5 Partner still refrains from correcting mistakes mid-conversation
 
 ### Phase 3: Register verification across three scenarios
 
