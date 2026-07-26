@@ -272,26 +272,26 @@ itd.) po prostu pojawią się w przyszłych wierszach; istniejące wiersze archi
 
 #### Automated
 
-- [x] 1.1 Linting przechodzi: `npm run lint`
-- [x] 1.2 Build + typecheck przechodzi: `npm run build`
+- [x] 1.1 Linting przechodzi: `npm run lint` — 5b96c9e
+- [x] 1.2 Build + typecheck przechodzi: `npm run build` — 5b96c9e
 
 #### Manual
 
-- [x] 1.3 Lista 30 tematów zaakceptowana; podział dokładnie 15 „work" / 15 „life"; opisy sensowne i spójne
-- [x] 1.4 `drawTopicSet()` zawsze zwraca 3 różne tematy z ≥1 „work" i ≥1 „life"; `drawTopicSet(prev)` nie powtarza tematów z `prev`
+- [x] 1.3 Lista 30 tematów zaakceptowana; podział dokładnie 15 „work" / 15 „life"; opisy sensowne i spójne — 5b96c9e
+- [x] 1.4 `drawTopicSet()` zawsze zwraca 3 różne tematy z ≥1 „work" i ≥1 „life"; `drawTopicSet(prev)` nie powtarza tematów z `prev` — 5b96c9e
 
 ### Phase 2: Ekran wyboru (3 karty + re-roll zestawu)
 
 #### Automated
 
-- [ ] 2.1 Linting przechodzi: `npm run lint`
-- [ ] 2.2 Build + typecheck przechodzi: `npm run build`
+- [x] 2.1 Linting przechodzi: `npm run lint`
+- [x] 2.2 Build + typecheck przechodzi: `npm run build`
 
 #### Manual
 
-- [ ] 2.3 Ekran startu pokazuje 3 karty (tytuł + pełny opis), oba konteksty widoczne
-- [ ] 2.4 Klik karty rozpoczyna rozmowę z działającym mikrofonem (gest Safari zachowany)
-- [ ] 2.5 „Inne tematy" losuje nowy zestaw 3, różny od poprzedniego
-- [ ] 2.6 „Nowa sesja" pokazuje świeży zestaw 3
-- [ ] 2.7 Orb niezaburzony; układ poprawny na mobile web (bez hover)
-- [ ] 2.8 Wybrany temat trafia do rozmowy i archiwum bez regresu
+- [x] 2.3 Ekran startu pokazuje 3 karty (tytuł + pełny opis), oba konteksty widoczne
+- [x] 2.4 Klik karty rozpoczyna rozmowę z działającym mikrofonem (gest Safari zachowany)
+- [x] 2.5 „Inne tematy" losuje nowy zestaw 3, różny od poprzedniego
+- [x] 2.6 „Nowa sesja" pokazuje świeży zestaw 3
+- [x] 2.7 Orb niezaburzony; układ poprawny na mobile web (bez hover)
+- [x] 2.8 Wybrany temat trafia do rozmowy i archiwum bez regresu

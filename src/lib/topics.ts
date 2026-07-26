@@ -229,16 +229,6 @@ function pickRandom<T>(pool: readonly T[]): T {
 }
 
 /**
- * Losuje pojedynczy temat z wykluczeniem podanego id (FR-004).
- * Shim zgodny z S-02 — konsumenci (`page.tsx`, `session-start.tsx`) migrują na
- * `drawTopicSet` w Fazie 2; wtedy ta funkcja zostanie usunięta.
- */
-export function drawTopic(excludeId?: string): Topic {
-  const pool = TOPICS.filter((topic) => topic.id !== excludeId)
-  return pickRandom(pool)
-}
-
-/**
  * Losuje zbalansowany zestaw 3 tematów: gwarantuje co najmniej jeden temat
  * z każdej kategorii (work / life), trzeci jest losowy z dowolnej kategorii,
  * a końcowa kolejność jest przetasowana (żeby pozycja karty nie zdradzała

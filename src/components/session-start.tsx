@@ -6,7 +6,7 @@ import {
   VoiceConversation,
   type ConversationState,
 } from '@/components/voice-conversation'
-import { drawTopic, type Topic } from '@/lib/topics'
+import { drawTopicSet, type Topic } from '@/lib/topics'
 
 type Phase = 'proposal' | 'conversation'
 
@@ -16,20 +16,23 @@ function toOrbState(state: ConversationState): OrbState {
 }
 
 /**
- * Interaktywny rdzeń startu sesji: propozycja tematu z ponownym losowaniem
- * (S-02, FR-003/FR-004) i rozmowa głosowa po akceptacji (S-03, FR-006–FR-009).
- * Klik „Rozpocznij rozmowę" jest zarazem gestem użytkownika wymaganym przez
- * getUserMedia/AudioContext (Safari).
+ * Interaktywny rdzeń startu sesji: wybór spośród 3 zbalansowanych propozycji
+ * tematu z ponownym losowaniem całego zestawu (S-09, FR-003/FR-004) i rozmowa
+ * głosowa po wyborze (S-03, FR-006–FR-009). Klik karty tematu jest zarazem
+ * gestem użytkownika wymaganym przez getUserMedia/AudioContext (Safari) — dlatego
+ * synchronicznie, przed jakimkolwiek awaitem, przełącza fazę na rozmowę.
  */
-export function SessionStart({ initialTopic }: { initialTopic: Topic }) {
-  const [topic, setTopic] = useState(initialTopic)
+export function SessionStart({ initialTopics }: { initialTopics: Topic[] }) {
+  const [topics, setTopics] = useState(initialTopics)
+  const [selected, setSelected] = useState<Topic>(initialTopics[0])
   const [phase, setPhase] = useState<Phase>('proposal')
   const [conversationState, setConversationState] =
     useState<ConversationState>('connecting')
 
-  const startConversation = () => {
-    // Synchronicznie w handlerze kliknięcia, przed jakimkolwiek awaitem —
-    // sygnał „łączenie" na orbie w ≤500 ms (NFR).
+  // Klik karty: wybór tematu + start rozmowy w jednym synchronicznym geście
+  // (sygnał „łączenie" na orbie w ≤500 ms — NFR; zarazem gest dla Safari).
+  const startConversation = (topic: Topic) => {
+    setSelected(topic)
     setConversationState('connecting')
     setPhase('conversation')
   }
@@ -40,9 +43,9 @@ export function SessionStart({ initialTopic }: { initialTopic: Topic }) {
   }, [])
 
   // „Nowa sesja" z ekranu końcowego — powrót do propozycji ze świeżym
-  // losowaniem (z wykluczeniem właśnie omówionego tematu).
+  // zestawem 3 tematów.
   const startNewSession = useCallback(() => {
-    setTopic((current) => drawTopic(current.id))
+    setTopics(drawTopicSet())
     setPhase('proposal')
     setConversationState('connecting')
   }, [])
@@ -67,34 +70,36 @@ export function SessionStart({ initialTopic }: { initialTopic: Topic }) {
       {phase === 'proposal' ? (
         <div className="relative z-10 flex w-full max-w-md flex-col items-center gap-4 rounded-2xl border border-black/[.08] bg-white/85 px-8 py-10 backdrop-blur-sm dark:border-white/[.145] dark:bg-black/70">
           <span className="text-xs font-medium uppercase tracking-widest text-zinc-600 dark:text-zinc-400">
-            Temat sesji
+            Wybierz temat sesji
           </span>
-          <h1 className="text-2xl font-semibold tracking-tight">
-            {topic.title}
-          </h1>
-          <p className="text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-            {topic.description}
-          </p>
-          <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
-            <button
-              type="button"
-              onClick={startConversation}
-              className="h-11 rounded-full bg-foreground px-6 text-sm font-medium text-background transition-opacity hover:opacity-85"
-            >
-              Rozpocznij rozmowę
-            </button>
-            <button
-              type="button"
-              onClick={() => setTopic((current) => drawTopic(current.id))}
-              className="h-11 rounded-full border border-solid border-black/[.08] px-6 text-sm font-medium transition-colors hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
-            >
-              Inny temat
-            </button>
+          <div className="flex w-full flex-col gap-3">
+            {topics.map((topic) => (
+              <button
+                key={topic.id}
+                type="button"
+                onClick={() => startConversation(topic)}
+                className="flex flex-col gap-1 rounded-xl border border-solid border-black/[.08] px-5 py-4 text-left transition-colors hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
+              >
+                <span className="text-base font-semibold tracking-tight">
+                  {topic.title}
+                </span>
+                <span className="text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+                  {topic.description}
+                </span>
+              </button>
+            ))}
           </div>
+          <button
+            type="button"
+            onClick={() => setTopics((current) => drawTopicSet(current))}
+            className="mt-2 h-11 rounded-full border border-solid border-black/[.08] px-6 text-sm font-medium transition-colors hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
+          >
+            Inne tematy
+          </button>
         </div>
       ) : (
         <VoiceConversation
-          topic={topic}
+          topic={selected}
           onStateChange={setConversationState}
           onExit={exitConversation}
           onNewSession={startNewSession}
