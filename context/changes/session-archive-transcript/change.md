@@ -1,9 +1,9 @@
 ---
 change_id: session-archive-transcript
 title: Session archive transcript
-status: implemented
+status: impl_reviewed
 created: 2026-07-23
-updated: 2026-07-23
+updated: 2026-07-26
 archived_at: null
 ---
 
