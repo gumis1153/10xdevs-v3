@@ -35,7 +35,10 @@ Polscy programiści na poziomie A2–B2 mają barierę mówioną w angielskim �
 | S-03 | first-voice-conversation  | użytkownik może odbyć 2–3 min rozmowę głosową po angielsku i zakończyć ją w dowolnym momencie | S-02, bezpieczniki OpenAI (krok ludzki) | FR-006, FR-007, FR-008, FR-009, US-01 | done |
 | S-04 | post-session-report       | użytkownik widzi po sesji raport: pogrupowane błędy, ocena CEFR z disclaimerem, sugestie | S-03                         | FR-010, FR-011, FR-012, FR-013, US-01 | done     |
 | S-05 | session-archive-transcript | użytkownik widzi archiwum swoich sesji z transkrypcją i raportem                    | S-01, S-04                       | FR-014, FR-015                  | done     |
-| S-06 | adaptive-level-tuning     | aplikacja wnioskuje poziom z pierwszej wymiany zdań i dostosowuje tempo oraz słownictwo | S-03                         | FR-005                          | proposed |
+| S-06 | adaptive-level-tuning     | aplikacja wnioskuje poziom z pierwszej wymiany zdań i dostosowuje tempo oraz słownictwo | S-03                         | FR-005                          | done |
+| S-07 | conversation-flow-tuning  | tutor sam rozpoczyna rozmowę i ją prowadzi, nie zasypuje tłumaczeniami w trakcie (korekty → raport) — user mówi więcej | S-03 | FR-006, FR-007 | proposed |
+| S-08 | header-avatar-menu        | widzi ten sam header na każdym roucie; wylogowuje się z dropdownu pod avatarem; wejście do archiwum przeniesione pod orb | S-01, S-05 | — | proposed |
+| S-09 | topic-selection-revamp    | wybiera na starcie spośród 3 proponowanych tematów (pula 30, 50% praca / 50% poza pracą) i może wylosować nowe | S-02 | FR-003, FR-004 | done |
 
 ## Streams
 
@@ -151,7 +154,50 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** nice-to-have poza ścieżką must-have (kandydat do parkowania przy presji czasu); celowo bez persistencji poziomu — wnioskowanie żyje tylko w obrębie sesji, zgodnie z Non-Goals v1.
+- **Status:** done
+
+### S-07: Balans korekt w trakcie rozmowy (mniej tłumaczeń, więcej mówienia)
+
+- **Outcome:** tutor sam otwiera rozmowę (powitanie + pierwsze pytanie na temat sesji) zamiast czekać, aż odezwie się użytkownik; następnie skupia się na prowadzeniu i podtrzymywaniu rozmowy (pytania, follow-upy), a nie na tłumaczeniu/korygowaniu na bieżąco — użytkownik mówi zdecydowaną większość czasu, a korekty językowe trafiają do raportu po sesji, nie w środek rozmowy.
+- **Change ID:** conversation-flow-tuning
+- **PRD refs:** FR-006, FR-007 (rozmowa głosowa w obie strony), persona (unikanie presji oceny), Guardrails (feedback po sesji, nie w trakcie)
+- **Current state:** dziś tutor nie inicjuje rozmowy — czeka na pierwszą wypowiedź użytkownika, co dodatkowo pogłębia paraliż persony na starcie.
+- **Prerequisites:** S-03 (istniejący tor rozmowy głosowej i instrukcje agenta)
+- **Parallel with:** S-08, S-09, S-06, F-01
+- **Blockers:** —
+- **Unknowns:**
+  - Jak zmierzyć „za dużo podpowiada" — proxy przez udział czasu mówienia usera vs agenta lub liczbę korekt w transkrypcie; do ustalenia w planie. — Owner: user. Block: no.
+  - Czy całkowicie usunąć korekty w trakcie, czy zostawić minimalny próg (np. tylko przy całkowitym zablokowaniu rozmowy). — Owner: product. Block: no.
+- **Risk:** dotyka rdzenia wartości produktu (jakość rozmowy) — zmiana instrukcji agenta bez regresji stanu rozmowy (S-03) i bez naruszenia guardraila „brak wymyślonych błędów" (S-04); czysto promptowa, ale wysokiego wpływu na doświadczenie.
 - **Status:** proposed
+
+### S-08: Reorganizacja headera — menu pod avatarem i archiwum pod orbem
+
+- **Outcome:** jeden, spójny header współdzielony na każdym roucie (start, archiwum, szczegół sesji) — „Wyloguj" przenosi się do rozwijanego menu pod avatarem użytkownika, a wejście do archiwum ląduje pod orbem rozmowy; header jest czystszy, a akcje są tam, gdzie użytkownik ich szuka.
+- **Change ID:** header-avatar-menu
+- **PRD refs:** — (porządki nawigacyjne/UI; brak bezpośredniego FR)
+- **Prerequisites:** S-01 (akcja wylogowania), S-05 (istniejący link do archiwum)
+- **Parallel with:** S-07, S-09, S-06, F-01
+- **Blockers:** —
+- **Current state:** header jest dziś powielany per strona (własna wersja w `page.tsx` i w routach `/archive`), przez co różni się między routami — do wydzielenia we wspólny komponent/layout.
+- **Unknowns:**
+  - Zawartość dropdownu poza „Wyloguj" (np. e-mail konta, link do archiwum) — do ustalenia w planie. — Owner: product. Block: no.
+- **Risk:** niskie ryzyko, czysto prezentacyjne; dropdown wymaga „use client" (interaktywność) — pilnować, by reszta headera pozostała server-componentem, a wspólny header nie wciągnął stron w niepotrzebny „use client".
+- **Status:** proposed
+
+### S-09: Nowa strategia wyboru tematów (3 propozycje + rozszerzona pula 50/50)
+
+- **Outcome:** na starcie sesji użytkownik widzi 3 proponowane tematy do wyboru (zamiast jednego) z możliwością wylosowania nowego zestawu; pula tematów rośnie do 30, z podziałem 50% konteksty zawodowe / 50% poza pracą.
+- **Change ID:** topic-selection-revamp
+- **PRD refs:** FR-003 (predefiniowane tematy), FR-004 (odrzucenie/losowanie), Open Q3 (rewizja listy tematów), Open Q2 (limit losowań)
+- **Prerequisites:** S-02 (istniejąca lista tematów `src/lib/topics.ts` i mechanika losowania)
+- **Parallel with:** S-07, S-08, S-06, F-01
+- **Blockers:** —
+- **Unknowns:**
+  - Treść 20 nowych tematów oraz podział 50/50 (praca / poza pracą); czy wybór 3 to losowe 3 z puli, czy zbalansowane (np. 2 praca + 1 poza) — do dopracowania w planie. — Owner: product. Block: no.
+  - Czy „losowanie nowych" podlega limitowi (wiąże się z Open Q2). — Owner: product. Block: no.
+- **Risk:** rewiduje decyzję z S-02 (10 tematów, Open Q3) i zmienia pierwszy ekran ścieżki must-have; zmiana danych + UI startu sesji, ale bez dotykania toru głosowego.
+- **Status:** done
 
 ## Backlog Handoff
 
@@ -164,12 +210,15 @@ Foundations below assume these are present and do NOT re-scaffold them.
 | S-04       | post-session-report        | Raport po sesji: błędy, CEFR, sugestie                       | no                    | Czeka na S-03                                |
 | S-05       | session-archive-transcript | Archiwum sesji z transkrypcją (pierwszy schemat DB)          | no                    | Czeka na S-01 i S-04                         |
 | S-06       | adaptive-level-tuning      | Adaptacja tempa i słownictwa do poziomu użytkownika          | no                    | Czeka na S-03                                |
+| S-07       | conversation-flow-tuning   | Balans korekt w trakcie rozmowy (mniej tłumaczeń, więcej mówienia) | no              | Czeka na S-03 (tuning instrukcji agenta)     |
+| S-08       | header-avatar-menu         | Wspólny header na każdym roucie: menu pod avatarem (Wyloguj) + archiwum pod orbem | no        | Czeka na S-01 i S-05                          |
+| S-09       | topic-selection-revamp     | Wybór 3 tematów na starcie + pula 30 (50/50 praca / nie-praca) | no                  | Czeka na S-02                                |
 
 ## Open Roadmap Questions
 
 1. **Metoda uwierzytelnienia (email+hasło vs OAuth Google/GitHub vs magic link)** — ROZSTRZYGNIĘTE 2026-07-20 przy planowaniu S-01: OAuth-only, wyłącznie Google (GitHub odrzucony — decyzja produktowa, nie odroczenie). Zapis w `context/changes/minimal-oauth-login/plan-brief.md`.
-2. **Czy ograniczyć liczbę skipów tematu na sesję (FR-004)?** — otwarte na v2 (np. limit 3/sesja). Owner: product. By: po pierwszych zewnętrznych testach v1. Block: —.
-3. **Lista predefiniowanych tematów (FR-003) — ile i jakie?** — ROZSTRZYGNIĘTE 2026-07-21 przy planowaniu S-02: 10 tematów (5 kandydatów z dyskusji + sprint planning, explaining your project, client progress update, conference networking, asking for help). Finalna lista w `src/lib/topics.ts`; zapis decyzji w `context/changes/session-topic-proposal/plan-brief.md`.
+2. **Czy ograniczyć liczbę skipów tematu na sesję (FR-004)?** — otwarte na v2 (np. limit 3/sesja). Owner: product. By: po pierwszych zewnętrznych testach v1. Block: —. Powiązane z S-09 (losowanie nowego zestawu 3 tematów — do rozstrzygnięcia, czy podlega limitowi).
+3. **Lista predefiniowanych tematów (FR-003) — ile i jakie?** — ROZSTRZYGNIĘTE 2026-07-21 przy planowaniu S-02: 10 tematów (5 kandydatów z dyskusji + sprint planning, explaining your project, client progress update, conference networking, asking for help). Finalna lista w `src/lib/topics.ts`; zapis decyzji w `context/changes/session-topic-proposal/plan-brief.md`. REWIZJA zaplanowana w S-09: rozszerzenie puli do 30 tematów (podział 50/50 praca / poza pracą) oraz wybór spośród 3 propozycji na starcie.
 4. **Sugestie dalszej nauki w v1 bazują tylko na bieżącej sesji (FR-013)** — przyjęte jako znana ograniczona wartość; v2 doda kontekst historii błędów. Owner: product. Block: —.
 5. **CEFR estymacja z pojedynczej sesji jest szumna (FR-012)** — przyjęte z disclaimerem o niepewności; v2 zbuduje stabilniejszą estymatę na historii. Owner: product. Block: —.
 6. **Hard deadline z PRD (2026-07-04) minął — czy obowiązuje nowy termin?** — cel sekwencjonowania to `speed`, ale bez zaktualizowanego terminu nie wiadomo, względem czego ciąć zakres (S-05/S-06 to pierwsi kandydaci do parkowania). Owner: user. Block: roadmap-wide (nieblokująco — kolejność pozostaje ta sama, zmienia się tylko punkt odcięcia).
@@ -196,3 +245,5 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **S-03: użytkownik może odbyć 2–3 min rozmowę głosową po angielsku na zaakceptowany temat — mówi do mikrofonu, słyszy odpowiedzi głosowo, widzi stan rozmowy (mówi / słucha / przetwarza) i może zakończyć sesję w dowolnym momencie.** — Archived 2026-07-23 → `context/archive/2026-07-22-first-voice-conversation/`. Lesson: —.
 - **S-04: użytkownik widzi po zakończeniu sesji raport: pogrupowaną listę błędów (gramatyka / słownictwo / wymowa) z poprawkami i wyjaśnieniami, ocenę CEFR z uzasadnieniem i disclaimerem o niepewności oraz konkretne sugestie do dalszej nauki; sesja krótsza niż 2 minuty dostaje komunikat „za mało materiału do analizy".** — Archived 2026-07-26 → `context/archive/2026-07-23-post-session-report/`. Lesson: —.
 - **S-05: użytkownik widzi listę swoich poprzednich sesji (czyste archiwum, bez adaptacji) i może otworzyć pełną transkrypcję rozmowy wraz z raportem.** — Archived 2026-07-26 → `context/archive/2026-07-23-session-archive-transcript/`. Lesson: —.
+- **S-06: aplikacja wnioskuje poziom angielskiego użytkownika z pierwszej wymiany zdań i dostosowuje do niego tempo oraz słownictwo rozmowy.** — Archived 2026-07-26 → `context/archive/2026-07-26-adaptive-level-tuning/`. Lesson: —.
+- **S-09: na starcie sesji użytkownik widzi 3 proponowane tematy do wyboru (zamiast jednego) z możliwością wylosowania nowego zestawu; pula tematów rośnie do 30, z podziałem 50% konteksty zawodowe / 50% poza pracą.** — Archived 2026-07-26 → `context/archive/2026-07-26-topic-selection-revamp/`. Lesson: —.

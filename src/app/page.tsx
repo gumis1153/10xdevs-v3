@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { signOut } from '@/app/auth/actions'
 import { SessionStart } from '@/components/session-start'
 import { requireUser } from '@/lib/supabase/server'
-import { drawTopic } from '@/lib/topics'
+import { drawTopicSet } from '@/lib/topics'
 
 export default async function Home() {
   const user = await requireUser()
@@ -76,7 +76,7 @@ export default async function Home() {
       {/* relative + overflow-hidden: kontekst pozycjonowania dla orba
           (absolutny element przy krawędziach nie może tworzyć scrollbarów) */}
       <main className="relative flex flex-1 flex-col items-center justify-center gap-6 overflow-hidden px-6 text-center">
-        <SessionStart initialTopic={drawTopic()} />
+        <SessionStart initialTopics={drawTopicSet()} />
       </main>
     </div>
   )
