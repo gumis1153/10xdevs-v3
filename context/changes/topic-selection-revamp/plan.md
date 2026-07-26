@@ -284,14 +284,14 @@ itd.) po prostu pojawią się w przyszłych wierszach; istniejące wiersze archi
 
 #### Automated
 
-- [x] 2.1 Linting przechodzi: `npm run lint`
-- [x] 2.2 Build + typecheck przechodzi: `npm run build`
+- [x] 2.1 Linting przechodzi: `npm run lint` — c11d2e7
+- [x] 2.2 Build + typecheck przechodzi: `npm run build` — c11d2e7
 
 #### Manual
 
-- [x] 2.3 Ekran startu pokazuje 3 karty (tytuł + pełny opis), oba konteksty widoczne
-- [x] 2.4 Klik karty rozpoczyna rozmowę z działającym mikrofonem (gest Safari zachowany)
-- [x] 2.5 „Inne tematy" losuje nowy zestaw 3, różny od poprzedniego
-- [x] 2.6 „Nowa sesja" pokazuje świeży zestaw 3
-- [x] 2.7 Orb niezaburzony; układ poprawny na mobile web (bez hover)
-- [x] 2.8 Wybrany temat trafia do rozmowy i archiwum bez regresu
+- [x] 2.3 Ekran startu pokazuje 3 karty (tytuł + pełny opis), oba konteksty widoczne — c11d2e7
+- [x] 2.4 Klik karty rozpoczyna rozmowę z działającym mikrofonem (gest Safari zachowany) — c11d2e7
+- [x] 2.5 „Inne tematy" losuje nowy zestaw 3, różny od poprzedniego — c11d2e7
+- [x] 2.6 „Nowa sesja" pokazuje świeży zestaw 3 — c11d2e7
+- [x] 2.7 Orb niezaburzony; układ poprawny na mobile web (bez hover) — c11d2e7
+- [x] 2.8 Wybrany temat trafia do rozmowy i archiwum bez regresu — c11d2e7
