@@ -267,15 +267,15 @@ No data migration. Fully revertible by reverting the commits.
 
 #### Automated
 
-- [x] 2.1 Linting passes: `npm run lint`
-- [x] 2.2 Production build and typecheck pass: `npm run build`
+- [x] 2.1 Linting passes: `npm run lint` — fe52fe7
+- [x] 2.2 Production build and typecheck pass: `npm run build` — fe52fe7
 
 #### Manual
 
-- [x] 2.3 `Archiwum sesji` visible under the topic card and navigates to `/archive`
-- [x] 2.4 Link absent during the conversation and on the post-session report
-- [x] 2.5 `Inny temat` re-draws the topic without disturbing the link
-- [x] 2.6 Returning to the proposal screen brings the link back
-- [x] 2.7 Link is clickable above the orb overlay and does not disturb card centering
-- [x] 2.8 Full loop: `/` → `Archiwum sesji` → session → `← Archiwum` → logo → `/`
-- [x] 2.9 `← Nowa sesja` on `/archive` returns to the start screen and matches the `← Archiwum` treatment
+- [x] 2.3 `Archiwum sesji` visible under the topic card and navigates to `/archive` — fe52fe7
+- [x] 2.4 Link absent during the conversation and on the post-session report — fe52fe7
+- [x] 2.5 `Inny temat` re-draws the topic without disturbing the link — fe52fe7
+- [x] 2.6 Returning to the proposal screen brings the link back — fe52fe7
+- [x] 2.7 Link is clickable above the orb overlay and does not disturb card centering — fe52fe7
+- [x] 2.8 Full loop: `/` → `Archiwum sesji` → session → `← Archiwum` → logo → `/` — fe52fe7
+- [x] 2.9 `← Nowa sesja` on `/archive` returns to the start screen and matches the `← Archiwum` treatment — fe52fe7
