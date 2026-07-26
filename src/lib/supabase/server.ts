@@ -4,6 +4,7 @@ import { createServerClient } from '@supabase/ssr'
 import type { User } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { cache } from 'react'
 
 export async function createClient() {
   const cookieStore = await cookies()
@@ -31,17 +32,37 @@ export async function createClient() {
   )
 }
 
-export async function requireUser(): Promise<User> {
+/**
+ * Odczyt zalogowanego użytkownika, memoizowany w obrębie jednego żądania.
+ * `auth.getUser()` to realne odpytanie Supabase Auth (walidacja JWT), a od S-08
+ * usera potrzebuje zarówno layout grupy `(app)` (avatar w headerze), jak i każda
+ * strona pod nim (własna bramka sesji) — bez `cache()` byłyby to dwa okrążenia
+ * na jedno renderowanie. `cache()` żyje tylko w zakresie jednego żądania, więc
+ * nie ma tu współdzielenia między użytkownikami.
+ */
+export const getUser = cache(async (): Promise<User | null> => {
   const supabase = await createClient()
   const {
     data: { user },
     error,
   } = await supabase.auth.getUser()
 
-  // Brak sesji to stan normalny (redirect niżej); loguj tylko realne awarie.
+  // Brak sesji to stan normalny (bramki wyżej robią redirect); loguj tylko
+  // realne awarie.
   if (error && error.name !== 'AuthSessionMissingError') {
-    console.error('requireUser getUser failed:', error.message)
+    console.error('getUser failed:', error.message)
   }
+
+  return user
+})
+
+/**
+ * Bramka sesji dla stron i Server Actions. Świadomie cienka: memoizowany jest
+ * sam odczyt, nie przepływ sterowania — `redirect()` zostaje poza `cache()`,
+ * żeby nigdy nie trafił do zapamiętanej wartości.
+ */
+export async function requireUser(): Promise<User> {
+  const user = await getUser()
 
   if (!user) {
     redirect('/login')

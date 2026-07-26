@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-import { DeleteSessionButton } from '@/app/archive/delete-session-button'
+import { DeleteSessionButton } from '@/app/(app)/archive/delete-session-button'
 import { ReportView } from '@/components/report-view'
 import type { Report, Turn } from '@/lib/report/schema'
 import { createClient, requireUser } from '@/lib/supabase/server'
@@ -57,34 +57,28 @@ export default async function ArchiveSessionPage({
   )
 
   return (
-    <div className="flex flex-1 flex-col font-sans">
-      <header className="flex items-center justify-between border-b border-black/[.08] px-6 py-4 dark:border-white/[.145]">
-        <span className="text-lg font-semibold tracking-tight">english-talk</span>
-        <Link
-          href="/archive"
-          className="h-9 rounded-full border border-solid border-black/[.08] px-4 text-sm font-medium leading-9 transition-colors hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
-        >
-          ← Archiwum
-        </Link>
-      </header>
+    <main className="mx-auto flex w-full max-w-xl flex-1 flex-col items-stretch gap-6 px-6 py-10">
+      {/* Powrót jest kontekstowy dla tej strony, nie globalnym chrome — po S-08
+          header zawiera tylko logo i menu konta. */}
+      <Link
+        href="/archive"
+        className="self-start text-sm font-medium underline underline-offset-4"
+      >
+        ← Archiwum
+      </Link>
 
-      <main className="mx-auto flex w-full max-w-xl flex-1 flex-col items-stretch gap-6 px-6 py-10">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            {session.topic_title}
-          </h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
-            {DATE_FORMAT.format(new Date(session.created_at))}
-          </p>
-        </div>
+      <div className="flex flex-col gap-1">
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {session.topic_title}
+        </h1>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          {DATE_FORMAT.format(new Date(session.created_at))}
+        </p>
+      </div>
 
-        <ReportView
-          report={session.report}
-          transcriptLines={transcriptLines}
-        />
+      <ReportView report={session.report} transcriptLines={transcriptLines} />
 
-        <DeleteSessionButton id={session.id} />
-      </main>
-    </div>
+      <DeleteSessionButton id={session.id} />
+    </main>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { deleteSession } from '@/app/archive/actions'
+import { deleteSession } from '@/app/(app)/archive/actions'
 
 /**
  * Przycisk usuwania sesji z potwierdzeniem. Reszta widoku szczegółu pozostaje
