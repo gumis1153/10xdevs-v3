@@ -251,25 +251,25 @@ None. No schema, no migration, no persisted state — the inferred level lives a
 
 #### Automated
 
-- [x] 2.1 Linting passes: `npm run lint`
-- [x] 2.2 Build and typecheck pass: `npm run build`
+- [x] 2.1 Linting passes: `npm run lint` — 1ac963d
+- [x] 2.2 Build and typecheck pass: `npm run build` — 1ac963d
 
 #### Manual
 
-- [x] 2.3 Full conversation still connects, runs and ends into the report screen (no S-03 regression)
-- [x] 2.4 Partner never names a level, asks about it, or announces adapting
-- [x] 2.5 Partner still refrains from correcting mistakes mid-conversation
+- [x] 2.3 Full conversation still connects, runs and ends into the report screen (no S-03 regression) — 1ac963d
+- [x] 2.4 Partner never names a level, asks about it, or announces adapting — 1ac963d
+- [x] 2.5 Partner still refrains from correcting mistakes mid-conversation — 1ac963d
 
 ### Phase 3: Register verification across three scenarios
 
 #### Automated
 
-- [ ] 3.1 Linting passes: `npm run lint`
-- [ ] 3.2 Build and typecheck pass: `npm run build`
-- [ ] 3.3 `verification.md` exists with all three scenario sections plus a verdict
+- [x] 3.1 Linting passes: `npm run lint`
+- [x] 3.2 Build and typecheck pass: `npm run build`
+- [x] 3.3 `verification.md` exists with all three scenario sections plus a verdict
 
 #### Manual
 
-- [ ] 3.4 Scenario (a) vs (b) tutor turns show a clearly different register
-- [ ] 3.5 Scenario (c) holds a neutral mid-band register without baby talk
-- [ ] 3.6 No level leak in any of the three transcripts
+- [x] 3.4 Scenario (a) vs (b) tutor turns show a clearly different register — partial: question type + vocabulary yes, length no; topic confound (see verification.md)
+- [x] 3.5 Scenario (c) holds a neutral mid-band register without baby talk — live observation only, session not archived
+- [x] 3.6 No level leak in any of the three transcripts
