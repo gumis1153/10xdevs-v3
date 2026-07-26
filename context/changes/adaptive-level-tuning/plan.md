@@ -264,12 +264,12 @@ None. No schema, no migration, no persisted state — the inferred level lives a
 
 #### Automated
 
-- [x] 3.1 Linting passes: `npm run lint`
-- [x] 3.2 Build and typecheck pass: `npm run build`
-- [x] 3.3 `verification.md` exists with all three scenario sections plus a verdict
+- [x] 3.1 Linting passes: `npm run lint` — 28bb03e
+- [x] 3.2 Build and typecheck pass: `npm run build` — 28bb03e
+- [x] 3.3 `verification.md` exists with all three scenario sections plus a verdict — 28bb03e
 
 #### Manual
 
-- [x] 3.4 Scenario (a) vs (b) tutor turns show a clearly different register — partial: question type + vocabulary yes, length no; topic confound (see verification.md)
-- [x] 3.5 Scenario (c) holds a neutral mid-band register without baby talk — live observation only, session not archived
-- [x] 3.6 No level leak in any of the three transcripts
+- [x] 3.4 Scenario (a) vs (b) tutor turns show a clearly different register — partial: question type + vocabulary yes, length no; topic confound (see verification.md) — 28bb03e
+- [x] 3.5 Scenario (c) holds a neutral mid-band register without baby talk — live observation only, session not archived — 28bb03e
+- [x] 3.6 No level leak in any of the three transcripts — 28bb03e
