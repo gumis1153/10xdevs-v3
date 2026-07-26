@@ -1,10 +1,10 @@
 ---
 change_id: topic-selection-revamp
 title: Topic selection revamp
-status: implemented
+status: archived
 created: 2026-07-26
 updated: 2026-07-26
-archived_at: null
+archived_at: 2026-07-26T17:13:14Z
 ---
 
 ## Notes
