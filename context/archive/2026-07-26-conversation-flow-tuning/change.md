@@ -1,10 +1,10 @@
 ---
 change_id: conversation-flow-tuning
 title: Conversation flow tuning
-status: impl_reviewed
+status: archived
 created: 2026-07-26
 updated: 2026-07-27
-archived_at: null
+archived_at: 2026-07-27T19:12:13Z
 ---
 
 ## Notes
