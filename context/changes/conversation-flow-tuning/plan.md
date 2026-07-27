@@ -209,27 +209,27 @@ None — no schema, no data, no config. Both phases are pure code changes and re
 
 #### Automated
 
-- [x] 1.1 Linting passes: `npm run lint`
-- [x] 1.2 Production build and typecheck pass: `npm run build`
+- [x] 1.1 Linting passes: `npm run lint` — 36d5487
+- [x] 1.2 Production build and typecheck pass: `npm run build` — 36d5487
 
 #### Manual
 
-- [x] 1.3 Tutor greets and asks the first question without the learner speaking first
-- [x] 1.4 Label never shows "Słucham" before the tutor speaks, and shows "Rozmówca odpowiada…" while the tutor talks
-- [x] 1.5 Countdown starts at connect and auto-end at 0:00 still reaches the report screen
-- [x] 1.6 Ending right after the greeting yields "za mało materiału", not an error
-- [x] 1.7 Speaking over the greeting does not leave the UI stuck
-- [x] 1.8 Fallback: with the trigger commented out, label returns to "Słucham" within ~5 s
+- [x] 1.3 Tutor greets and asks the first question without the learner speaking first — 36d5487
+- [x] 1.4 Label never shows "Słucham" before the tutor speaks, and shows "Rozmówca odpowiada…" while the tutor talks — 36d5487
+- [x] 1.5 Countdown starts at connect and auto-end at 0:00 still reaches the report screen — 36d5487
+- [x] 1.6 Ending right after the greeting yields "za mało materiału", not an error — 36d5487
+- [x] 1.7 Speaking over the greeting does not leave the UI stuck — 36d5487
+- [x] 1.8 Fallback: with the trigger commented out, label returns to "Słucham" within ~5 s — 36d5487
 - [ ] 1.9 Greeting is audible on Safari iOS after tapping a topic card
 
 ### Phase 2: Prompt leads instead of teaching
 
 #### Automated
 
-- [ ] 2.1 Linting passes: `npm run lint`
-- [ ] 2.2 Production build and typecheck pass: `npm run build`
-- [ ] 2.3 `! grep -q "offer the missing word" src/lib/realtime/instructions.ts`
-- [ ] 2.4 `! grep -q "two or three sentences" src/lib/realtime/instructions.ts`
+- [x] 2.1 Linting passes: `npm run lint`
+- [x] 2.2 Production build and typecheck pass: `npm run build`
+- [x] 2.3 `! grep -q "offer the missing word" src/lib/realtime/instructions.ts`
+- [x] 2.4 `! grep -q "two or three sentences" src/lib/realtime/instructions.ts`
 
 #### Manual
 
