@@ -42,6 +42,14 @@ const STATE_LABELS: Record<ConversationState, string> = {
 const SESSION_SECONDS = 3 * 60
 const WARNING_SECONDS = 30
 
+// Wyjście awaryjne z otwierającego `processing` (S-07): tutor startuje rozmowę
+// sam, więc po connect czekamy na jego turę, a nie na usera. Gdyby otwierająca
+// odpowiedź nie doszła (zgubione response.create, błąd modelu — handler `error`
+// tylko loguje), żadne zdarzenie tury nie przyjdzie i user zostałby na „Chwila
+// namysłu…" do końca sesji, bez sygnału, że może mówić. Ten timer wraca wtedy
+// do „Słucham" — zachowania z czasów, gdy rozmowę otwierał user.
+const OPENING_FALLBACK_MS = 5000
+
 const ACTIVE_STATES: ReadonlyArray<ConversationState> = [
   'listening',
   'user-speaking',
@@ -72,7 +80,8 @@ const PRIMARY_BUTTON_CLASS =
  * i ekran końcowy z raportem po sesji (S-04, FR-010–FR-014): po wejściu
  * w `ended` snapshot historii idzie POST-em do /api/report, a wynik
  * (analiza / raport / za mało materiału / błąd z retry) renderuje
- * SessionReport.
+ * SessionReport. Rozmowę otwiera tutor (S-07): po connect leci
+ * `response.create`, więc user nigdy nie zastaje ciszy i nie musi zaczynać.
  */
 export function VoiceConversation({
   topic,
@@ -151,6 +160,14 @@ export function VoiceConversation({
     let cancelled = false
     userEndedRef.current = false
 
+    // Uzbrajany po connect, zdejmowany przez start tury tutora i przez cleanup.
+    let openingFallbackId: ReturnType<typeof setTimeout> | undefined
+    const clearOpeningFallback = () => {
+      if (openingFallbackId === undefined) return
+      clearTimeout(openingFallbackId)
+      openingFallbackId = undefined
+    }
+
     const agent = new RealtimeAgent({
       name: 'English conversation partner',
       instructions: buildInstructions(topic),
@@ -174,7 +191,10 @@ export function VoiceConversation({
     })
     sessionRef.current = session
 
-    session.on('agent_start', () => setActiveState('processing'))
+    session.on('agent_start', () => {
+      clearOpeningFallback()
+      setActiveState('processing')
+    })
     session.on('agent_end', () => setActiveState('listening'))
     session.on('audio_start', () => setActiveState('speaking'))
     session.on('audio_stopped', () => setActiveState('listening'))
@@ -192,6 +212,16 @@ export function VoiceConversation({
         setActiveState('user-speaking')
       } else if (event.type === 'input_audio_buffer.speech_stopped') {
         setActiveState('processing')
+      } else if (event.type === 'response.output_audio_transcript.delta') {
+        // Sygnał „tutor mówi" (FR-008). Handler `audio_start` wyżej nigdy się
+        // tu nie odpala: RealtimeSession emituje `audio_start` na zdarzeniu
+        // `audio` transportu, a to emituje wyłącznie transport WebSocket —
+        // WebRTC oddaje dźwięk media trackiem. Delta transkryptu wyjściowego
+        // idzie kanałem danych i jest jedynym dostępnym startem mowy tutora.
+        // Powtarza się wielokrotnie w turze; setState tą samą wartością nie
+        // wywołuje re-renderu, więc dodatkowy strażnik jest zbędny.
+        clearOpeningFallback()
+        setActiveState('speaking')
       }
     })
     // Nieoczekiwane zerwanie połączenia w aktywnej rozmowie → karta błędu;
@@ -237,9 +267,24 @@ export function VoiceConversation({
           session.close()
           return
         }
-        setActiveState('listening')
+        // Tutor otwiera rozmowę (S-07), więc po connect czekamy na jego turę,
+        // nie na usera — stąd `processing`, nie `listening`.
+        setActiveState('processing')
         // Odliczanie startuje, gdy sesja osiąga stan aktywny.
         updateSecondsLeft(SESSION_SECONDS)
+        // Sama instrukcja „you start the conversation" nie wystarcza: Realtime
+        // generuje odpowiedź dopiero po `response.create`, a connect() wysyła
+        // tylko session.update. Świadomie NIE `session.sendMessage()` — ten
+        // wstrzyknąłby turę `user` do historii, a buildTurns() podałby ją
+        // egzaminatorowi w /api/report jako wypowiedź ucznia.
+        // `requestResponse` jest opcjonalne w typie transportu (implementuje je
+        // WebRTC) i rzuca, gdy kanał danych jest zamknięty — dlatego w try.
+        session.transport.requestResponse?.()
+        openingFallbackId = setTimeout(() => {
+          openingFallbackId = undefined
+          if (cancelled || stateRef.current !== 'processing') return
+          setActiveState('listening')
+        }, OPENING_FALLBACK_MS)
       } catch (error) {
         if (cancelled) return
         console.error('voice conversation connect:', error)
@@ -255,6 +300,7 @@ export function VoiceConversation({
 
     return () => {
       cancelled = true
+      clearOpeningFallback()
       sessionRef.current = null
       session.close()
     }
