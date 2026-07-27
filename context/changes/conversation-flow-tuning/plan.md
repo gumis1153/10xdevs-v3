@@ -220,23 +220,23 @@ None — no schema, no data, no config. Both phases are pure code changes and re
 - [x] 1.6 Ending right after the greeting yields "za mało materiału", not an error — 36d5487
 - [x] 1.7 Speaking over the greeting does not leave the UI stuck — 36d5487
 - [x] 1.8 Fallback: with the trigger commented out, label returns to "Słucham" within ~5 s — 36d5487
-- [ ] 1.9 Greeting is audible on Safari iOS after tapping a topic card
+- [x] 1.9 Greeting is audible on Safari iOS after tapping a topic card — 36d5487
 
 ### Phase 2: Prompt leads instead of teaching
 
 #### Automated
 
-- [x] 2.1 Linting passes: `npm run lint`
-- [x] 2.2 Production build and typecheck pass: `npm run build`
-- [x] 2.3 `! grep -q "offer the missing word" src/lib/realtime/instructions.ts`
-- [x] 2.4 `! grep -q "two or three sentences" src/lib/realtime/instructions.ts`
+- [x] 2.1 Linting passes: `npm run lint` — df68bdb
+- [x] 2.2 Production build and typecheck pass: `npm run build` — df68bdb
+- [x] 2.3 `! grep -q "offer the missing word" src/lib/realtime/instructions.ts` — df68bdb
+- [x] 2.4 `! grep -q "two or three sentences" src/lib/realtime/instructions.ts` — df68bdb
 
 #### Manual
 
-- [ ] 2.5 Session A: every tutor turn is at most two sentences with at most one question
-- [ ] 2.6 Session A: no corrections, explanations, translations or comments on the learner's English
-- [ ] 2.7 Session A: tutor turns visibly shorter than learner turns
-- [ ] 2.8 Session B (A2): rescue rephrases the tutor's own question, never supplies words; level still never mentioned
-- [ ] 2.9 Report renders for both sessions
-- [ ] 2.10 First archived transcript line is `Tutor:`; no fabricated `Learner:` line anywhere
-- [ ] 2.11 Tutor stays on topic and never switches to Polish
+- [x] 2.5 Session A: every tutor turn is at most two sentences with at most one question — df68bdb
+- [x] 2.6 Session A: no corrections, explanations, translations or comments on the learner's English — df68bdb
+- [x] 2.7 Session A: tutor turns visibly shorter than learner turns — df68bdb
+- [x] 2.8 Session B (A2): rescue rephrases the tutor's own question, never supplies words; level still never mentioned — df68bdb
+- [x] 2.9 Report renders for both sessions — df68bdb
+- [x] 2.10 First archived transcript line is `Tutor:`; no fabricated `Learner:` line anywhere — df68bdb
+- [x] 2.11 Tutor stays on topic and never switches to Polish — df68bdb
