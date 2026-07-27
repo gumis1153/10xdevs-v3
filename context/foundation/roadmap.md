@@ -3,7 +3,7 @@ project: "english-talk"
 version: 1
 status: draft
 created: 2026-07-18
-updated: 2026-07-26
+updated: 2026-07-27
 prd_version: 1
 main_goal: speed
 top_blocker: decisions
@@ -36,7 +36,7 @@ Polscy programiści na poziomie A2–B2 mają barierę mówioną w angielskim �
 | S-04 | post-session-report       | użytkownik widzi po sesji raport: pogrupowane błędy, ocena CEFR z disclaimerem, sugestie | S-03                         | FR-010, FR-011, FR-012, FR-013, US-01 | done     |
 | S-05 | session-archive-transcript | użytkownik widzi archiwum swoich sesji z transkrypcją i raportem                    | S-01, S-04                       | FR-014, FR-015                  | done     |
 | S-06 | adaptive-level-tuning     | aplikacja wnioskuje poziom z pierwszej wymiany zdań i dostosowuje tempo oraz słownictwo | S-03                         | FR-005                          | done |
-| S-07 | conversation-flow-tuning  | tutor sam rozpoczyna rozmowę i ją prowadzi, nie zasypuje tłumaczeniami w trakcie (korekty → raport) — user mówi więcej | S-03 | FR-006, FR-007 | proposed |
+| S-07 | conversation-flow-tuning  | tutor sam rozpoczyna rozmowę i ją prowadzi, nie zasypuje tłumaczeniami w trakcie (korekty → raport) — user mówi więcej | S-03 | FR-006, FR-007 | done |
 | S-08 | header-avatar-menu        | widzi ten sam header na każdym roucie; wylogowuje się z dropdownu pod avatarem; wejście do archiwum przeniesione pod orb | S-01, S-05 | — | done |
 | S-09 | topic-selection-revamp    | wybiera na starcie spośród 3 proponowanych tematów (pula 30, 50% praca / 50% poza pracą) i może wylosować nowe | S-02 | FR-003, FR-004 | done |
 
@@ -169,7 +169,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
   - Jak zmierzyć „za dużo podpowiada" — proxy przez udział czasu mówienia usera vs agenta lub liczbę korekt w transkrypcie; do ustalenia w planie. — Owner: user. Block: no.
   - Czy całkowicie usunąć korekty w trakcie, czy zostawić minimalny próg (np. tylko przy całkowitym zablokowaniu rozmowy). — Owner: product. Block: no.
 - **Risk:** dotyka rdzenia wartości produktu (jakość rozmowy) — zmiana instrukcji agenta bez regresji stanu rozmowy (S-03) i bez naruszenia guardraila „brak wymyślonych błędów" (S-04); czysto promptowa, ale wysokiego wpływu na doświadczenie.
-- **Status:** proposed
+- **Status:** done
 
 ### S-08: Reorganizacja headera — menu pod avatarem i archiwum pod orbem
 
@@ -247,4 +247,5 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **S-05: użytkownik widzi listę swoich poprzednich sesji (czyste archiwum, bez adaptacji) i może otworzyć pełną transkrypcję rozmowy wraz z raportem.** — Archived 2026-07-26 → `context/archive/2026-07-23-session-archive-transcript/`. Lesson: —.
 - **S-06: aplikacja wnioskuje poziom angielskiego użytkownika z pierwszej wymiany zdań i dostosowuje do niego tempo oraz słownictwo rozmowy.** — Archived 2026-07-26 → `context/archive/2026-07-26-adaptive-level-tuning/`. Lesson: —.
 - **S-09: na starcie sesji użytkownik widzi 3 proponowane tematy do wyboru (zamiast jednego) z możliwością wylosowania nowego zestawu; pula tematów rośnie do 30, z podziałem 50% konteksty zawodowe / 50% poza pracą.** — Archived 2026-07-26 → `context/archive/2026-07-26-topic-selection-revamp/`. Lesson: —.
+- **S-07: tutor sam otwiera rozmowę (powitanie + pierwsze pytanie na temat sesji) zamiast czekać, aż odezwie się użytkownik; następnie skupia się na prowadzeniu i podtrzymywaniu rozmowy (pytania, follow-upy), a nie na tłumaczeniu/korygowaniu na bieżąco — użytkownik mówi zdecydowaną większość czasu, a korekty językowe trafiają do raportu po sesji, nie w środek rozmowy.** — Archived 2026-07-27 → `context/archive/2026-07-26-conversation-flow-tuning/`. Lesson: —.
 - **S-08: jeden, spójny header współdzielony na każdym roucie (start, archiwum, szczegół sesji) — „Wyloguj" przenosi się do rozwijanego menu pod avatarem użytkownika, a wejście do archiwum ląduje pod orbem rozmowy; header jest czystszy, a akcje są tam, gdzie użytkownik ich szuka.** — Archived 2026-07-26 → `context/archive/2026-07-26-header-avatar-menu/`. Lesson: —.
