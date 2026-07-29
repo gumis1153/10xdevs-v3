@@ -3,7 +3,7 @@ project: "english-talk"
 version: 1
 status: draft
 created: 2026-07-18
-updated: 2026-07-27
+updated: 2026-07-29
 prd_version: 1
 main_goal: speed
 top_blocker: decisions
@@ -39,6 +39,7 @@ Polscy programiści na poziomie A2–B2 mają barierę mówioną w angielskim �
 | S-07 | conversation-flow-tuning  | tutor sam rozpoczyna rozmowę i ją prowadzi, nie zasypuje tłumaczeniami w trakcie (korekty → raport) — user mówi więcej | S-03 | FR-006, FR-007 | done |
 | S-08 | header-avatar-menu        | widzi ten sam header na każdym roucie; wylogowuje się z dropdownu pod avatarem; wejście do archiwum przeniesione pod orb | S-01, S-05 | — | done |
 | S-09 | topic-selection-revamp    | wybiera na starcie spośród 3 proponowanych tematów (pula 30, 50% praca / 50% poza pracą) i może wylosować nowe | S-02 | FR-003, FR-004 | done |
+| S-10 | readme-project-overview   | (dokumentacja) osoba wchodząca do repo czyta z README, czym jest english-talk, i uruchamia projekt lokalnie bez pytania autora | — | — (źródło treści: PRD §Vision, `tech-stack.md`) | not started |
 
 ## Streams
 
@@ -199,6 +200,21 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Risk:** rewiduje decyzję z S-02 (10 tematów, Open Q3) i zmienia pierwszy ekran ścieżki must-have; zmiana danych + UI startu sesji, ale bez dotykania toru głosowego.
 - **Status:** done
 
+### S-10: README projektu (co to jest i jak to uruchomić)
+
+- **Outcome:** osoba (lub agent) wchodząca do repo dowiaduje się z `README.md`, czym jest english-talk i dla kogo, na jakim stacku stoi, jak uruchomić projekt lokalnie od zera (zmienne środowiskowe + migracje Supabase) i gdzie leży dokumentacja projektowa (`context/foundation/`) — bez pytania autora o cokolwiek.
+- **Change ID:** readme-project-overview
+- **PRD refs:** — (dokumentacja repo; brak bezpośredniego FR. Źródło treści: PRD §Vision & Problem Statement i §Business Logic, `tech-stack.md`, runbook w `context/deployment/deploy-plan.md`)
+- **Current state:** `README.md` to nietknięty boilerplate `create-next-app` (37 linii): „This is a Next.js project bootstrapped with create-next-app", `npm run dev`, sekcja o `next/font`/Geist i linki do dokumentacji Next.js. Nazwa projektu ani jego przeznaczenie nie pojawiają się w nim ani razu, a `OPENAI_API_KEY`, klucze Supabase i `supabase db push` — bez których aplikacja nie startuje — nie są nigdzie wspomniane. Cała realna dokumentacja żyje w `context/foundation/` i wchodzący do repo nie ma jak się o niej dowiedzieć.
+- **Prerequisites:** — (opisuje stan po S-09, więc naturalnie na końcu kolejki, ale nic go nie blokuje)
+- **Parallel with:** dowolny plasterek — zmiana wyłącznie w `README.md`, zero dotknięć kodu i schematu
+- **Blockers:** —
+- **Unknowns:**
+  - Czy README ma zawierać zrzuty ekranu / link do produkcji (`english-talk-black.vercel.app`), czy zostać czysto tekstowy — Owner: user. Block: no.
+  - Język README: polski (spójny z PRD i roadmapą) czy angielski (spójny z kodem i promptami) — Owner: user. Block: no.
+- **Risk:** najniższe ryzyko techniczne w całej roadmapie (jeden plik markdown, zero wpływu na runtime), ale realny koszt utrzymania: README powtarzający treść PRD i `tech-stack.md` rozjedzie się z nimi przy kolejnym plasterku. Trzymać go krótkim i linkować do `context/foundation/` zamiast kopiować. Drugi guardrail: nie wpisywać do README żadnych sekretów — wyłącznie **nazwy** wymaganych zmiennych, wartości zostają w `vercel env` i `.env.local`.
+- **Status:** not started
+
 ## Backlog Handoff
 
 | Roadmap ID | Change ID                  | Suggested issue title                                        | Ready for `/10x-plan` | Notes                                        |
@@ -213,6 +229,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 | S-07       | conversation-flow-tuning   | Balans korekt w trakcie rozmowy (mniej tłumaczeń, więcej mówienia) | no              | Czeka na S-03 (tuning instrukcji agenta)     |
 | S-08       | header-avatar-menu         | Wspólny header na każdym roucie: menu pod avatarem (Wyloguj) + archiwum pod orbem | no        | Czeka na S-01 i S-05                          |
 | S-09       | topic-selection-revamp     | Wybór 3 tematów na starcie + pula 30 (50/50 praca / nie-praca) | no                  | Czeka na S-02                                |
+| S-10       | readme-project-overview    | README: czym jest english-talk, stack, setup lokalny, gdzie leży dokumentacja | yes   | Run `/10x-plan readme-project-overview`      |
 
 ## Open Roadmap Questions
 
