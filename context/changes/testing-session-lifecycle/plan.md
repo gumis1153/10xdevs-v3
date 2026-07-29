@@ -645,29 +645,29 @@ testowych i jednego commita w `voice-conversation.tsx`.
 
 #### Automated
 
-- [x] 1.1 Testy przechodzą: `npm run test:run`
-- [x] 1.2 Typecheck czysty: `npx tsc --noEmit`
-- [x] 1.3 Build produkcyjny czysty (bramka Vercela): `npm run build`
-- [x] 1.4 Lint czysty: `npm run lint`
+- [x] 1.1 Testy przechodzą: `npm run test:run` — 298508a
+- [x] 1.2 Typecheck czysty: `npx tsc --noEmit` — 298508a
+- [x] 1.3 Build produkcyjny czysty (bramka Vercela): `npm run build` — 298508a
+- [x] 1.4 Lint czysty: `npm run lint` — 298508a
 
 #### Manual
 
-- [x] 1.5 `npm test` wchodzi w watch mode i reaguje na zapis pliku testowego
-- [x] 1.6 Edytor nie zgłasza błędów typów w `transcript.test.ts` ani w `vitest.setup.ts`
+- [x] 1.5 `npm test` wchodzi w watch mode i reaguje na zapis pliku testowego — 298508a
+- [x] 1.6 Edytor nie zgłasza błędów typów w `transcript.test.ts` ani w `vitest.setup.ts` — 298508a
 
 ### Phase 2: Fake modułu SDK + ścieżki B i C
 
 #### Automated
 
-- [ ] 2.1 Wszystkie testy przechodzą: `npm run test:run`
-- [ ] 2.2 Typecheck czysty: `npx tsc --noEmit`
-- [ ] 2.3 Build produkcyjny czysty: `npm run build`
-- [ ] 2.4 Lint czysty: `npm run lint`
+- [x] 2.1 Wszystkie testy przechodzą: `npm run test:run`
+- [x] 2.2 Typecheck czysty: `npx tsc --noEmit`
+- [x] 2.3 Build produkcyjny czysty: `npm run build`
+- [x] 2.4 Lint czysty: `npm run lint`
 
 #### Manual
 
-- [ ] 2.5 Przegląd fake'a: nie modeluje niczego, czego nasz kod nie dotyka (brak `getSenders()`, brak `track.readyState`)
-- [ ] 2.6 Testy B i C przechodzą bez żadnej zmiany w kodzie produkcyjnym
+- [x] 2.5 Przegląd fake'a: nie modeluje niczego, czego nasz kod nie dotyka (brak `getSenders()`, brak `track.readyState`)
+- [x] 2.6 Testy B i C przechodzą bez żadnej zmiany w kodzie produkcyjnym
 
 ### Phase 3: Ścieżka A w oknie `connecting` — czerwony test i fix D1
 
