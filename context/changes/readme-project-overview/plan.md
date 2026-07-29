@@ -383,14 +383,14 @@ jednego commita.
 
 #### Automated
 
-- [x] 2.1 Cykl Supabase przechodzi czysto: `npx supabase stop && npx supabase start`
-- [x] 2.2 Migracje aplikują się od zera: `npx supabase db reset`
-- [x] 2.3 Dev server startuje i odpowiada na `http://127.0.0.1:3000`
-- [x] 2.4 Lint nadal przechodzi: `npm run lint`
+- [x] 2.1 Cykl Supabase przechodzi czysto: `npx supabase stop && npx supabase start` — 3a664d5
+- [x] 2.2 Migracje aplikują się od zera: `npx supabase db reset` — 3a664d5
+- [x] 2.3 Dev server startuje i odpowiada na `http://127.0.0.1:3000` — 3a664d5
+- [x] 2.4 Lint nadal przechodzi: `npm run lint` — 3a664d5
 
 #### Manual
 
-- [x] 2.5 Kroki z README doprowadzają do działającej aplikacji bez wiedzy spoza README
-- [x] 2.6 Logowanie Google działa (poprawny redirect URI)
-- [x] 2.7 Pełny przebieg działa po świeżym `db reset`: temat → rozmowa → raport → archiwum
-- [x] 2.8 Żaden krok nie wymagał wiedzy spoza README (lub został dopisany)
+- [x] 2.5 Kroki z README doprowadzają do działającej aplikacji bez wiedzy spoza README — 3a664d5
+- [x] 2.6 Logowanie Google działa (poprawny redirect URI) — 3a664d5
+- [x] 2.7 Pełny przebieg działa po świeżym `db reset`: temat → rozmowa → raport → archiwum — 3a664d5
+- [x] 2.8 Żaden krok nie wymagał wiedzy spoza README (lub został dopisany) — 3a664d5
