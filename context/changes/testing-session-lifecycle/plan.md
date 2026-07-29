@@ -690,12 +690,12 @@ testowych i jednego commita w `voice-conversation.tsx`.
 
 #### Automated
 
-- [x] 4.1 W §6.1 i §6.2 test-planu nie ma już „TBD"
-- [x] 4.2 Status fazy 1 w §3 to `complete`
-- [x] 4.3 `AGENTS.md` nie zawiera już „No test framework is configured yet"
-- [x] 4.4 Cały zestaw nadal zielony: `npm run test:run`, `npm run build`, `npm run lint`
+- [x] 4.1 W §6.1 i §6.2 test-planu nie ma już „TBD" — 8fca8be
+- [x] 4.2 Status fazy 1 w §3 to `complete` — 8fca8be
+- [x] 4.3 `AGENTS.md` nie zawiera już „No test framework is configured yet" — 8fca8be
+- [x] 4.4 Cały zestaw nadal zielony: `npm run test:run`, `npm run build`, `npm run lint` — 8fca8be
 
 #### Manual
 
-- [x] 4.5 §6.1 i §6.2 wystarczają, żeby dopisać drugi test komponentu bez czytania tego planu
-- [x] 4.6 §6.7 uczciwie wymienia to, czego faza nie pokryła (mikrofon fizycznie, ścieżki H i I)
+- [x] 4.5 §6.1 i §6.2 wystarczają, żeby dopisać drugi test komponentu bez czytania tego planu — 8fca8be
+- [x] 4.6 §6.7 uczciwie wymienia to, czego faza nie pokryła (mikrofon fizycznie, ścieżki H i I) — 8fca8be
