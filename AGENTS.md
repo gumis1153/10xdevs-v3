@@ -28,6 +28,7 @@ Next.js 16 App Router application (React 19, Tailwind CSS v4, TypeScript strict 
 - `npm run dev` — start the dev server at http://localhost:3000.
 - `npm run build` — production build.
 - `npm run start` — serve the production build.
+- `npm run test:run` — run the Vitest suite once. `npm test` is watch mode.
 - `npm run lint` — run ESLint. Run before pushing.
 
 ## Coding Style & Naming Conventions
@@ -38,7 +39,7 @@ Next.js 16 App Router application (React 19, Tailwind CSS v4, TypeScript strict 
 
 ## Testing Guidelines
 
-No test framework is configured yet. If you add one, wire a `test` script into @package.json and place tests beside the unit they cover.
+Vitest in `jsdom` with `@testing-library/react` (config: @vitest.config.mts, setup: @vitest.setup.ts). Run `npm run test:run` for a single pass (gate) and `npm test` for watch mode. Place tests beside the unit they cover (`src/lib/realtime/transcript.test.ts` next to `transcript.ts`); shared fakes live in `src/test/fakes/`. Read `context/foundation/test-plan.md` §6 before writing a new test — it holds the per-layer patterns, the mocking policy (external module boundaries only, never internal modules), and what the current suite deliberately does not cover.
 
 ## Commit & Pull Request Guidelines
 

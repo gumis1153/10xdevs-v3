@@ -13,6 +13,12 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
+    // UWAGA: jawny `types` odcina automatyczne ładowanie WSZYSTKIEGO z @types.
+    // Każdy przyszły pakiet typów globalnych trzeba dopisać tutaj, inaczej
+    // zniknie z programu TS i wywróci `next build`. "node" jest tu obowiązkowe —
+    // `src/` czyta `process.env` w 6 miejscach. "vitest/globals" jest sprzężone
+    // z `globals: true` w vitest.config.mts.
+    "types": ["node", "vitest/globals"],
     "plugins": [
       {
         "name": "next"

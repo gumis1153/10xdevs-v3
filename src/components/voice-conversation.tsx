@@ -107,8 +107,12 @@ export function VoiceConversation({
   // zmiany historii nie mają powodować re-renderów. Surowe audio nigdzie
   // nie jest zapisywane (strumienie WebRTC są przejściowe z założenia).
   const historyRef = useRef<RealtimeItem[]>([])
-  // Odróżnia świadome zakończenie (przycisk / limit czasu) od zerwania
-  // połączenia, żeby normalny koniec nigdy nie wyglądał jak błąd.
+  // Świadome zakończenie (przycisk / limit czasu) w dwóch rolach. (1) Klasyfikator:
+  // odróżnia normalny koniec od zerwania połączenia, żeby koniec nigdy nie
+  // wyglądał jak błąd. (2) Strażnik: unieważnia dalszy przebieg efektu łączącego
+  // dokładnie tak, jak robi to odmontowanie — bez tego zakończenie w oknie
+  // `connecting` dopuszczało do powstania w pełni działającej sesji PO pokazaniu
+  // ekranu raportu (ryzyko #1 z test-plan.md, defekt D1).
   const userEndedRef = useRef(false)
   // Lustro stanu dla handlerów zdarzeń sesji (odczyt bez re-subskrypcji).
   const stateRef = useRef(state)
@@ -159,6 +163,11 @@ export function VoiceConversation({
     // druga równoległa sesja audio).
     let cancelled = false
     userEndedRef.current = false
+
+    // Jedyny warunek anulowania dla całego przebiegu łączenia: odmontowanie
+    // ORAZ świadome zakończenie. Reset `userEndedRef` wyżej sprawia, że retry
+    // (`attempt`) startuje z otwartą bramką.
+    const abandoned = () => cancelled || userEndedRef.current
 
     // Uzbrajany po connect, zdejmowany przez start tury tutora i przez cleanup.
     let openingFallbackId: ReturnType<typeof setTimeout> | undefined
@@ -227,7 +236,7 @@ export function VoiceConversation({
     // Nieoczekiwane zerwanie połączenia w aktywnej rozmowie → karta błędu;
     // świadome zakończenie (przycisk / limit czasu) jest odfiltrowane flagą.
     session.transport.on('connection_change', (status) => {
-      if (status !== 'disconnected' || userEndedRef.current || cancelled) {
+      if (status !== 'disconnected' || abandoned()) {
         return
       }
       const current = stateRef.current
@@ -251,19 +260,23 @@ export function VoiceConversation({
           audio: true,
         })
         stream.getTracks().forEach((track) => track.stop())
-        // Wczesne wyjście przed mintowaniem tokenu — anulowany przebieg
-        // (StrictMode w dev) nie ma marnować tokenów ek_.
-        if (cancelled) return
+        // Wczesne wyjście przed mintowaniem tokenu — porzucony przebieg
+        // (StrictMode w dev, zakończenie przyciskiem) nie ma marnować tokenów ek_.
+        if (abandoned()) return
 
         const response = await fetch('/api/realtime/token', { method: 'POST' })
         if (!response.ok) {
           throw new Error(`token endpoint responded ${response.status}`)
         }
         const { value } = (await response.json()) as { value: string }
-        if (cancelled) return
+        // Punkt kontrolny D1: fetch tokenu jest najdłuższym oknem, w którym
+        // użytkownik może zakończyć rozmowę — po `ended` nie wolno połączyć.
+        if (abandoned()) return
 
         await session.connect({ apiKey: value })
-        if (cancelled) {
+        if (abandoned()) {
+          // Zakończenie padło w trakcie `connect()`: `close()` z handlera
+          // trafiło w transport, który jeszcze nie istniał, więc zamykamy tu.
           session.close()
           return
         }
@@ -282,11 +295,15 @@ export function VoiceConversation({
         session.transport.requestResponse?.()
         openingFallbackId = setTimeout(() => {
           openingFallbackId = undefined
-          if (cancelled || stateRef.current !== 'processing') return
+          if (abandoned() || stateRef.current !== 'processing') return
           setActiveState('listening')
         }, OPENING_FALLBACK_MS)
       } catch (error) {
-        if (cancelled) return
+        // Defekt D2: gdy klik padł już po starcie `connect()`, `close()` zamyka
+        // transport i `connect()` odrzuca — surowy `setState('error')` nadpisywał
+        // wtedy ekran raportu kartą „Połączenie przerwane". Świadome zakończenie
+        // nie jest błędem połączenia, więc kończy przebieg po cichu.
+        if (abandoned()) return
         console.error('voice conversation connect:', error)
         setErrorKind(
           error instanceof DOMException && error.name === 'NotAllowedError'
