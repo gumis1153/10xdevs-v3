@@ -75,7 +75,8 @@ Dokładne wersje paczek — [`package.json`](package.json).
    Google przez `env()`.
 3. **`npx supabase start`** — podnosi lokalny stack (wymaga Dockera). Na wyjściu wypisuje
    adresy i klucze: API `http://127.0.0.1:54321`, Postgres `54322`,
-   Studio `http://127.0.0.1:54323`.
+   Studio `http://127.0.0.1:54323`. Jeśli przegapisz to wyjście (albo stack już działa),
+   wypisz je ponownie: **`npx supabase status`**.
 4. **Uzupełnij `.env.local`** wartościami z kroku 3 (`NEXT_PUBLIC_SUPABASE_URL`,
    `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`) oraz własnym `OPENAI_API_KEY` — patrz
    [tabela zmiennych](#zmienne-środowiskowe).
@@ -102,7 +103,7 @@ wartości ani ich fragmentów w repo.**
 | Zmienna | Do czego | Skąd wziąć |
 | --- | --- | --- |
 | `NEXT_PUBLIC_SUPABASE_URL` | adres API Supabase używany przez klienta serwerowego i `proxy.ts` | wyjście `npx supabase start` (lokalnie `http://127.0.0.1:54321`) |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | publiczny klucz API Supabase | wyjście `npx supabase start` |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | publiczny klucz API Supabase | wyjście `npx supabase start` (pozycja `PUBLISHABLE_KEY`) |
 | `OPENAI_API_KEY` | mint tokenów Realtime + analiza transkryptu (server-only) | dashboard OpenAI |
 | `SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID` | provider Google w lokalnym Auth | Google Cloud Console (kroki niżej) |
 | `SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET` | provider Google w lokalnym Auth | Google Cloud Console (kroki niżej) |
@@ -110,9 +111,11 @@ wartości ani ich fragmentów w repo.**
 Pełny, skomentowany rejestr zmiennych (łącznie z tymi, których kod nie używa, i tymi
 server-only) żyje w [`.env.example`](.env.example) — tam zaglądaj po szczegóły.
 
-Pułapka: lokalny stack może wypisać wyłącznie legacy **`anon key`**. Wklej tę wartość jako
-`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` — nazwa zmiennej jest kontraktem kodu, wartości są
-wymienne.
+Pułapka na kluczach: lokalny stack wypisuje ich kilka. Weź **`PUBLISHABLE_KEY`**; jeśli
+Twoja wersja CLI wypisuje wyłącznie legacy **`ANON_KEY`**, wklej właśnie ją — nazwa
+zmiennej jest kontraktem kodu, wartości są wymienne. Nigdy nie używaj tutaj `SECRET_KEY`
+ani `SERVICE_ROLE_KEY`: są server-only i nie wolno ich wystawiać pod prefiksem
+`NEXT_PUBLIC_`.
 
 ### Google OAuth (logowanie)
 

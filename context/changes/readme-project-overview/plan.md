@@ -364,33 +364,33 @@ jednego commita.
 
 #### Automated
 
-- [x] 1.1 Lint przechodzi: `npm run lint`
-- [x] 1.2 Build przechodzi: `npm run build`
-- [x] 1.3 Boilerplate zniknął (grep: `bootstrapped with|create-next-app|next/font|Geist`)
-- [x] 1.4 Zero wartości sekretów (grep: `sk-|eyJ|GOCSPX-`)
-- [x] 1.5 Każda nazwa zmiennej z README istnieje w `.env.example` lub w kodzie
-- [x] 1.6 Każda komenda `npm run <x>` z README istnieje w `package.json`
-- [x] 1.7 Każdy link relatywny w README wskazuje istniejący plik lub katalog
-- [x] 1.8 Nazwa `english-talk` i URL produkcji występują w README
+- [x] 1.1 Lint przechodzi: `npm run lint` — 73098c2
+- [x] 1.2 Build przechodzi: `npm run build` — 73098c2
+- [x] 1.3 Boilerplate zniknął (grep: `bootstrapped with|create-next-app|next/font|Geist`) — 73098c2
+- [x] 1.4 Zero wartości sekretów (grep: `sk-|eyJ|GOCSPX-`) — 73098c2
+- [x] 1.5 Każda nazwa zmiennej z README istnieje w `.env.example` lub w kodzie — 73098c2
+- [x] 1.6 Każda komenda `npm run <x>` z README istnieje w `package.json` — 73098c2
+- [x] 1.7 Każdy link relatywny w README wskazuje istniejący plik lub katalog — 73098c2
+- [x] 1.8 Nazwa `english-talk` i URL produkcji występują w README — 73098c2
 
 #### Manual
 
-- [x] 1.9 README czyta się jako spójny dokument po polsku, bez wtrętów z boilerplate'u
-- [x] 1.10 Sekcje „Co to jest" i „Stack" parafrazują PRD i `tech-stack.md`, nie kopiują ich
-- [x] 1.11 Lista wymagań wstępnych jest kompletna (Docker, konto OpenAI, konto Google Cloud)
+- [x] 1.9 README czyta się jako spójny dokument po polsku, bez wtrętów z boilerplate'u — 73098c2
+- [x] 1.10 Sekcje „Co to jest" i „Stack" parafrazują PRD i `tech-stack.md`, nie kopiują ich — 73098c2
+- [x] 1.11 Lista wymagań wstępnych jest kompletna (Docker, konto OpenAI, konto Google Cloud) — 73098c2
 
 ### Phase 2: Smoke test quickstartu i korekty
 
 #### Automated
 
-- [ ] 2.1 Cykl Supabase przechodzi czysto: `npx supabase stop && npx supabase start`
-- [ ] 2.2 Migracje aplikują się od zera: `npx supabase db reset`
-- [ ] 2.3 Dev server startuje i odpowiada na `http://127.0.0.1:3000`
-- [ ] 2.4 Lint nadal przechodzi: `npm run lint`
+- [x] 2.1 Cykl Supabase przechodzi czysto: `npx supabase stop && npx supabase start`
+- [x] 2.2 Migracje aplikują się od zera: `npx supabase db reset`
+- [x] 2.3 Dev server startuje i odpowiada na `http://127.0.0.1:3000`
+- [x] 2.4 Lint nadal przechodzi: `npm run lint`
 
 #### Manual
 
-- [ ] 2.5 Kroki z README doprowadzają do działającej aplikacji bez wiedzy spoza README
-- [ ] 2.6 Logowanie Google działa (poprawny redirect URI)
-- [ ] 2.7 Pełny przebieg działa po świeżym `db reset`: temat → rozmowa → raport → archiwum
-- [ ] 2.8 Żaden krok nie wymagał wiedzy spoza README (lub został dopisany)
+- [x] 2.5 Kroki z README doprowadzają do działającej aplikacji bez wiedzy spoza README
+- [x] 2.6 Logowanie Google działa (poprawny redirect URI)
+- [x] 2.7 Pełny przebieg działa po świeżym `db reset`: temat → rozmowa → raport → archiwum
+- [x] 2.8 Żaden krok nie wymagał wiedzy spoza README (lub został dopisany)
