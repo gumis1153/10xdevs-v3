@@ -673,29 +673,29 @@ testowych i jednego commita w `voice-conversation.tsx`.
 
 #### Automated
 
-- [x] 3.1 Test zakończenia w trakcie łączenia jest czerwony PRZED fixem
-- [x] 3.2 Wszystkie testy przechodzą po fixie: `npm run test:run`
-- [x] 3.3 Testy ścieżek B i C z fazy 2 nadal przechodzą
-- [x] 3.4 Typecheck czysty: `npx tsc --noEmit`
-- [x] 3.5 Build produkcyjny czysty: `npm run build`
-- [x] 3.6 Lint czysty: `npm run lint`
+- [x] 3.1 Test zakończenia w trakcie łączenia jest czerwony PRZED fixem — e64a642
+- [x] 3.2 Wszystkie testy przechodzą po fixie: `npm run test:run` — e64a642
+- [x] 3.3 Testy ścieżek B i C z fazy 2 nadal przechodzą — e64a642
+- [x] 3.4 Typecheck czysty: `npx tsc --noEmit` — e64a642
+- [x] 3.5 Build produkcyjny czysty: `npm run build` — e64a642
+- [x] 3.6 Lint czysty: `npm run lint` — e64a642
 
 #### Manual
 
-- [x] 3.7 Smoke w przeglądarce: zakończenie w trakcie łączenia gasi wskaźnik mikrofonu i tutor nie mówi
-- [x] 3.8 Normalna sesja nadal prowadzi do poprawnego raportu
-- [x] 3.9 Retry po błędzie połączenia nadal tworzy świeżą sesję
+- [x] 3.7 Smoke w przeglądarce: zakończenie w trakcie łączenia gasi wskaźnik mikrofonu i tutor nie mówi — e64a642
+- [x] 3.8 Normalna sesja nadal prowadzi do poprawnego raportu — e64a642
+- [x] 3.9 Retry po błędzie połączenia nadal tworzy świeżą sesję — e64a642
 
 ### Phase 4: Cookbook i synchronizacja test-planu
 
 #### Automated
 
-- [ ] 4.1 W §6.1 i §6.2 test-planu nie ma już „TBD"
-- [ ] 4.2 Status fazy 1 w §3 to `complete`
-- [ ] 4.3 `AGENTS.md` nie zawiera już „No test framework is configured yet"
-- [ ] 4.4 Cały zestaw nadal zielony: `npm run test:run`, `npm run build`, `npm run lint`
+- [x] 4.1 W §6.1 i §6.2 test-planu nie ma już „TBD"
+- [x] 4.2 Status fazy 1 w §3 to `complete`
+- [x] 4.3 `AGENTS.md` nie zawiera już „No test framework is configured yet"
+- [x] 4.4 Cały zestaw nadal zielony: `npm run test:run`, `npm run build`, `npm run lint`
 
 #### Manual
 
-- [ ] 4.5 §6.1 i §6.2 wystarczają, żeby dopisać drugi test komponentu bez czytania tego planu
-- [ ] 4.6 §6.7 uczciwie wymienia to, czego faza nie pokryła (mikrofon fizycznie, ścieżki H i I)
+- [x] 4.5 §6.1 i §6.2 wystarczają, żeby dopisać drugi test komponentu bez czytania tego planu
+- [x] 4.6 §6.7 uczciwie wymienia to, czego faza nie pokryła (mikrofon fizycznie, ścieżki H i I)

@@ -76,7 +76,7 @@ orkiestratora od nich zależy.
 
 | # | Phase name | Goal (one line) | Risks covered | Test types | Status | Change folder |
 |---|---|---|---|---|---|---|
-| 1 | Bootstrap runnera + cykl życia sesji | Udowodnić, że każda ścieżka wyjścia z rozmowy faktycznie zamyka połączenie i zwalnia mikrofon | #1 | unit + component | change opened | `context/changes/testing-session-lifecycle/` |
+| 1 | Bootstrap runnera + cykl życia sesji | Udowodnić, że każda ścieżka wyjścia z rozmowy faktycznie zamyka połączenie i zwalnia mikrofon | #1 | unit + component | complete | `context/changes/testing-session-lifecycle/` |
 | 2 | Kontrakty route'ów serwerowych | Udowodnić, że route tokenów i route raportu trzymają się swoich kontraktów, a nie tylko szczęśliwej ścieżki | #2, #5, #6, #7 | integration + contract | not started | — |
 | 3 | Izolacja danych między kontami | Udowodnić, że cudza sesja jest nieosiągalna na liście, w szczególe i w usuwaniu | #3 | integration (lokalny stack DB, dwa konta) | not started | — |
 | 4 | E2E ścieżki krytycznej + widoczny stan startu | Udowodnić, że pełny przepływ przechodzi, a nieudany start kończy się czytelnym stanem terminalnym | #4 | e2e | not started | — |
@@ -108,9 +108,9 @@ i configach oraz w MCP faktycznie wystawionych w sesji, w której plan powstał.
 
 | Warstwa | Narzędzie | Wersja | Notatka |
 |---|---|---|---|
-| unit + integration | Vitest | brak — patrz Phase 1 | Setup dla App Router: `vitest.config.mts` z `@vitejs/plugin-react` i `vite-tsconfig-paths` (alias `@/*` jest wymagany przez AGENTS.md), środowisko `jsdom` |
-| komponenty | @testing-library/react | brak — patrz Phase 1 | Asercje na rolach i tekście, nie na strukturze DOM |
-| granica sieci / SDK | mock na granicy transportu (MSW dla HTTP, podmiana obiektu sesji dla SDK Realtime) | brak — patrz Phase 1 | Nigdy nie mockować modułów wewnętrznych — polityka §6.2 |
+| unit + integration | Vitest | `vitest` 4.1.10 (Phase 1) | Setup dla App Router: `vitest.config.mts` z `@vitejs/plugin-react` i `vite-tsconfig-paths` (alias `@/*` jest wymagany przez AGENTS.md), środowisko `jsdom` 30.0.1 |
+| komponenty | @testing-library/react | 16.3.2 + `jest-dom` 7.0.0 (Phase 1) | Asercje na rolach i tekście, nie na strukturze DOM |
+| granica sieci / SDK | mock na granicy transportu (MSW dla HTTP, podmiana modułu dla SDK Realtime) | fake SDK: `src/test/fakes/realtime-session.ts` (Phase 1); MSW: brak — patrz Phase 2 | Nigdy nie mockować modułów wewnętrznych — polityka §6.2 |
 | integration DB / polityki dostępu | lokalny stack Supabase przez CLI | `supabase` 2.109.1 (już w devDependencies) | Jedyna warstwa, która realnie sprawdza grant + politykę + ścieżkę serwerową razem |
 | e2e | Playwright | brak — patrz Phase 4 | Wymagane też dla async Server Components — Vitest ich nie wspiera (docsy Next.js) |
 | walidacja kontraktów | `zod` 4.4 | już w dependencies | Schemat produktowy jest źródłem oracle'a dla #5, o ile pochodzi z wymagania, nie z odpowiedzi modelu |
@@ -151,11 +151,65 @@ odpowiednia faza rolloutu wyląduje; przed tym podsekcja mówi
 
 ### 6.1 Dodanie testu jednostkowego
 
-- TBD — patrz §3 Phase 1 (wzorzec dla ryzyka #1: każda ścieżka wyjścia z sesji zwalnia połączenie i strumień mikrofonu).
+- **Gdzie**: obok jednostki, którą pokrywasz — `src/lib/realtime/transcript.test.ts`
+  leży przy `transcript.ts` (kolokacja z AGENTS.md §Testing Guidelines).
+- **Jak uruchomić**: `npm test` w pracy (watch), `npm run test:run` jako bramka
+  (samo `vitest` bez flagi wchodzi w watch i zawiesza skrypt w CI).
+- **Skąd oracle**: z wymagania — PRD, FR, guardrail — **nigdy** z implementacji.
+  Asercja policzona tą samą logiką co kod jest lustrem, które przejdzie na
+  zielono także na buggu. Nie importuj stałych z testowanego modułu do asercji.
+- `describe` / `it` / `expect` / `vi` są globalne (`globals: true` w
+  `vitest.config.mts` + `types: ["node", "vitest/globals"]` w `tsconfig.json`) —
+  nie importuj ich.
+- **Wzorzec referencyjny**: `src/lib/realtime/transcript.test.ts` — oracle wzięty
+  z PRD §Guardrails, cztery asercje na wartościach, zero asercji na przebiegu pętli.
 
 ### 6.2 Dodanie testu komponentu z podmienioną granicą SDK
 
-- TBD — patrz §3 Phase 1 (polityka mockowania: wyłącznie granica transportu, nigdy moduły wewnętrzne).
+- **Co podmieniamy**: cały moduł `@openai/agents-realtime` — granica zewnętrzna.
+  Modułów wewnętrznych (`@/lib/**`, `@/components/**`) nie mockujemy nigdy.
+- **Fake**: `src/test/fakes/realtime-session.ts`. Rejestr wywołań jest globalny
+  dla modułu (instancje powstają wewnątrz efektu komponentu, test nie ma szansy
+  wstrzyknąć własnego) — dlatego `resetRealtimeFake()` w `beforeEach` jest
+  obowiązkowy.
+- **Deklaracja mocka**: `vi.mock(import('@openai/agents-realtime'), async () => (await import('@/test/fakes/realtime-session')).realtimeFakeModule())`.
+  Dynamiczny `await import` w fabryce, nie symbol z góry pliku — `vi.mock` jest
+  hoistowany nad importy i statyczny symbol byłby jeszcze niezainicjalizowany.
+- **Uchwyty fake'a** (to jest cała jego wartość — bez nich zostaje licznik):
+  `realtimeSessions()[0].emit('history_updated', items)` wystrzeliwuje zdarzenie
+  sesji, `.transport.emit('connection_change', 'disconnected')` — zdarzenie
+  transportu, `holdConnect()` wstrzymuje każde kolejne `connect()` do ręcznego
+  `resolve()` / `reject()` (wołaj **przed** renderem — instancja powstaje
+  w efekcie), `realtimeCalls()` zwraca pełną sekwencję, gdy liczba nie wystarcza.
+- **Drenaż łańcucha łączenia.** Efekt czeka na `getUserMedia → fetch → json →
+  connect`; po renderze i po każdym rozwiązaniu bramki trzeba przepuścić
+  mikrozadania — `await settle()` w `voice-conversation.test.tsx` (pętla
+  `Promise.resolve()` wewnątrz `act`) jest tym helperem. Same mikrozadania, więc
+  działa identycznie na prawdziwych i sfałszowanych timerach.
+- **Pułapka `getUserMedia`.** Kod robi własny probe uprawnień przed `connect()`,
+  więc stub `navigator.mediaDevices` musi oddać obiekt z `getTracks()`
+  zwracającym ścieżkę ze `stop()`. Bez tego test po cichu bada gałąź
+  `mic-denied` zamiast ścieżki, którą miał badać — i przechodzi.
+- **Sprzątanie.** `afterEach`: `vi.useRealTimers()`, `vi.unstubAllGlobals()`,
+  `vi.restoreAllMocks()`. `console.error` warto podmienić szpiegiem i asertować
+  jego brak — cicha gałąź `catch` w kodzie produkcyjnym loguje, więc brak logu
+  jest sygnałem, że przebieg poszedł zamierzoną ścieżką.
+- **Fake jest minimalny.** Modeluje wyłącznie powierzchnię, której dotyka kod
+  produkcyjny. Czego nie modeluje (`getSenders()`, `track.readyState`,
+  `peerConnection`, `<audio>`), nie modeluje **celowo** — asercja o tym byłaby
+  asercją o fake'u, zieloną nawet gdyby produkcja przeciekała (patrz §6.7).
+- **Kliknięcia**: `fireEvent` z `@testing-library/react`, nie
+  `@testing-library/user-event` — ten drugi wymaga opcji `advanceTimers` przy
+  `vi.useFakeTimers()` i łatwo zakleszcza testy odliczania.
+- **Sieć**: `vi.stubGlobal('fetch', ...)` plus rozwiązywalny `deferred()`, kiedy
+  test bada wyścig — potrzebna jest kontrola nad *momentem* odpowiedzi. MSW
+  wchodzi od §3 Phase 2, gdzie liczy się *treść* odpowiedzi route'ów.
+- **Timery**: `vi.useFakeTimers()` per test, `vi.useRealTimers()` w `afterEach`;
+  przesuwanie czasu przez `await act(async () => vi.advanceTimersByTimeAsync(...))`.
+- **Asercje**: na wywołaniach SDK (`countRealtimeCalls('connect' | 'close' | 'requestResponse')`)
+  oraz na rolach i tekście, nigdy na strukturze DOM. „Zakończone" znaczy brak
+  dalszej aktywności sesji, nie samą zmianę ekranu.
+- **Wzorzec referencyjny**: `src/components/voice-conversation.test.tsx`.
 
 ### 6.3 Dodanie testu integracyjnego route handlera
 
@@ -175,9 +229,28 @@ odpowiednia faza rolloutu wyląduje; przed tym podsekcja mówi
 
 ### 6.7 Notatki per faza rolloutu
 
-(Puste. Po wylądowaniu każdej fazy `/10x-implement` dopisuje tu 2–3 linie
-z tym, co faza okazała się uczyć — np. gdzie wylądowały fixture'y transkryptu
-i co powinno je reużywać.)
+**Phase 1 — bootstrap runnera + cykl życia sesji (2026-07-29):**
+
+- **Granica jsdom.** Fizyczne zwolnienie mikrofonu jest w tej warstwie
+  niedowodliwe: nasz kod nie trzyma referencji do `MediaStream` (własne
+  `getUserMedia` to probe uprawnień zatrzymywany linijkę dalej), a bez
+  `window.RTCPeerConnection` SDK po cichu wybiera transport WebSocket, którego
+  `close()` w ogóle nie dotyka ścieżek mediów. Zostaje **ręcznym smoke'em
+  w przeglądarce** i jest wymieniony w §7 razem z matrycą audio.
+- **Pułapka `types` w `tsconfig.json`.** Jawny klucz `types` wyłącza automatyczne
+  ładowanie `@types`, więc **musi** zawierać `"node"` — `src/` ma 6 użyć
+  `process.env` i bez tego `next build` pada na preview Vercela. Każdy przyszły
+  pakiet typów globalnych trzeba dopisać w tym miejscu. Dlatego `npm run build`
+  jest bramką automatyczną w każdej fazie, nie tylko w pierwszej.
+- **Ryzyko #1 NIE jest zamknięte w całości.** Niepokryte zostały dwie ścieżki
+  wyjścia leżące poza drzewem `SessionStart`: link logo w headerze (soft-nav na
+  tę samą trasę nie zatrzymuje sesji — **prawdopodobnie realny defekt, świadomie
+  w produkcji**) i zamknięcie karty (zero handlerów `beforeunload` / `pagehide`
+  w `src/`). Obie są testowalne tylko e2e → §3 Phase 4.
+- **Kolejność, którą warto powtórzyć w kolejnych fazach TDD.** Najpierw testy
+  ścieżek, które są dziś poprawne (tu: limit czasu i unmount) — ich zielony kolor
+  waliduje fake i harness. Dopiero potem czerwony test defektu, którego kolor już
+  nie ma alternatywnego wyjaśnienia („defekt czy błąd w świeżym fake'u?").
 
 ## 7. What We Deliberately Don't Test
 
