@@ -659,32 +659,32 @@ testowych i jednego commita w `voice-conversation.tsx`.
 
 #### Automated
 
-- [x] 2.1 Wszystkie testy przechodzą: `npm run test:run`
-- [x] 2.2 Typecheck czysty: `npx tsc --noEmit`
-- [x] 2.3 Build produkcyjny czysty: `npm run build`
-- [x] 2.4 Lint czysty: `npm run lint`
+- [x] 2.1 Wszystkie testy przechodzą: `npm run test:run` — 20cd7c2
+- [x] 2.2 Typecheck czysty: `npx tsc --noEmit` — 20cd7c2
+- [x] 2.3 Build produkcyjny czysty: `npm run build` — 20cd7c2
+- [x] 2.4 Lint czysty: `npm run lint` — 20cd7c2
 
 #### Manual
 
-- [x] 2.5 Przegląd fake'a: nie modeluje niczego, czego nasz kod nie dotyka (brak `getSenders()`, brak `track.readyState`)
-- [x] 2.6 Testy B i C przechodzą bez żadnej zmiany w kodzie produkcyjnym
+- [x] 2.5 Przegląd fake'a: nie modeluje niczego, czego nasz kod nie dotyka (brak `getSenders()`, brak `track.readyState`) — 20cd7c2
+- [x] 2.6 Testy B i C przechodzą bez żadnej zmiany w kodzie produkcyjnym — 20cd7c2
 
 ### Phase 3: Ścieżka A w oknie `connecting` — czerwony test i fix D1
 
 #### Automated
 
-- [ ] 3.1 Test zakończenia w trakcie łączenia jest czerwony PRZED fixem
-- [ ] 3.2 Wszystkie testy przechodzą po fixie: `npm run test:run`
-- [ ] 3.3 Testy ścieżek B i C z fazy 2 nadal przechodzą
-- [ ] 3.4 Typecheck czysty: `npx tsc --noEmit`
-- [ ] 3.5 Build produkcyjny czysty: `npm run build`
-- [ ] 3.6 Lint czysty: `npm run lint`
+- [x] 3.1 Test zakończenia w trakcie łączenia jest czerwony PRZED fixem
+- [x] 3.2 Wszystkie testy przechodzą po fixie: `npm run test:run`
+- [x] 3.3 Testy ścieżek B i C z fazy 2 nadal przechodzą
+- [x] 3.4 Typecheck czysty: `npx tsc --noEmit`
+- [x] 3.5 Build produkcyjny czysty: `npm run build`
+- [x] 3.6 Lint czysty: `npm run lint`
 
 #### Manual
 
-- [ ] 3.7 Smoke w przeglądarce: zakończenie w trakcie łączenia gasi wskaźnik mikrofonu i tutor nie mówi
-- [ ] 3.8 Normalna sesja nadal prowadzi do poprawnego raportu
-- [ ] 3.9 Retry po błędzie połączenia nadal tworzy świeżą sesję
+- [x] 3.7 Smoke w przeglądarce: zakończenie w trakcie łączenia gasi wskaźnik mikrofonu i tutor nie mówi
+- [x] 3.8 Normalna sesja nadal prowadzi do poprawnego raportu
+- [x] 3.9 Retry po błędzie połączenia nadal tworzy świeżą sesję
 
 ### Phase 4: Cookbook i synchronizacja test-planu
 

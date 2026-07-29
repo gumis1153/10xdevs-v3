@@ -1,9 +1,10 @@
-import { act, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { VoiceConversation } from '@/components/voice-conversation'
 import type { Topic } from '@/lib/topics'
 import {
   countRealtimeCalls,
   deferred,
+  holdConnect,
   resetRealtimeFake,
   type Deferred,
 } from '@/test/fakes/realtime-session'
@@ -188,5 +189,58 @@ describe('VoiceConversation — ścieżka C: odmontowanie', () => {
     // React 19 nie ostrzega już o setState po odmontowaniu, ale cicha gałąź
     // `catch` w kodzie produkcyjnym loguje — brak logu jest tu asercją.
     expect(consoleError).not.toHaveBeenCalled()
+  })
+})
+
+describe('VoiceConversation — ścieżka A: przycisk „Zakończ rozmowę"', () => {
+  it('kliknięcie w trakcie łączenia nie dopuszcza do powstania sesji', async () => {
+    // Okno wyścigu leży na fetchu tokenu: klik pada, gdy żądanie jeszcze wisi,
+    // a dopiero potem token wraca. Kontrast z bliźniaczym testem odmontowania
+    // wyżej jest właściwym dowodem asymetrii „przycisk robi mniej niż unmount".
+    tokenGate = deferred<void>()
+    renderConversation()
+    await settle()
+
+    expect(screen.getByText('Łączenie z rozmówcą…')).toBeInTheDocument()
+    expect(countRealtimeCalls('connect')).toBe(0)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Zakończ rozmowę' }))
+    tokenGate.resolve()
+    await settle()
+
+    // Zakończenie znaczy brak dalszej aktywności sesji (ryzyko #1), nie tylko
+    // zmianę ekranu — stąd asercje na wywołaniach, nie na etykiecie.
+    expect(countRealtimeCalls('connect')).toBe(0)
+    expect(countRealtimeCalls('requestResponse')).toBe(0)
+    expect(countRealtimeCalls('close')).toBe(1)
+    expect(
+      screen.queryByRole('heading', { name: 'Połączenie przerwane' }),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'Za mało materiału do analizy' }),
+    ).toBeInTheDocument()
+  })
+
+  it('odrzucone `connect()` po kliknięciu nie nadpisuje raportu kartą błędu', async () => {
+    // Poboczny wariant tego samego wyścigu (D2): klik pada już po starcie
+    // `connect()`, więc `close()` faktycznie zamyka, a `connect()` odrzuca.
+    const connectGate = holdConnect()
+    renderConversation()
+    await settle()
+
+    expect(countRealtimeCalls('connect')).toBe(1)
+    expect(screen.getByText('Łączenie z rozmówcą…')).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Zakończ rozmowę' }))
+    connectGate.reject(new Error('data channel closed'))
+    await settle()
+
+    expect(
+      screen.queryByRole('heading', { name: 'Połączenie przerwane' }),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'Za mało materiału do analizy' }),
+    ).toBeInTheDocument()
+    expect(countRealtimeCalls('requestResponse')).toBe(0)
   })
 })
