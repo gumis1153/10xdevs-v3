@@ -3,7 +3,7 @@ project: "english-talk"
 version: 1
 status: draft
 created: 2026-07-18
-updated: 2026-07-29
+updated: 2026-08-02
 prd_version: 1
 main_goal: speed
 top_blocker: decisions
@@ -40,6 +40,7 @@ Polscy programiści na poziomie A2–B2 mają barierę mówioną w angielskim �
 | S-08 | header-avatar-menu        | widzi ten sam header na każdym roucie; wylogowuje się z dropdownu pod avatarem; wejście do archiwum przeniesione pod orb | S-01, S-05 | — | done |
 | S-09 | topic-selection-revamp    | wybiera na starcie spośród 3 proponowanych tematów (pula 30, 50% praca / 50% poza pracą) i może wylosować nowe | S-02 | FR-003, FR-004 | done |
 | S-10 | readme-project-overview   | (dokumentacja) osoba wchodząca do repo czyta z README, czym jest english-talk, i uruchamia projekt lokalnie bez pytania autora | — | — (źródło treści: PRD §Vision, `tech-stack.md`) | not started |
+| S-11 | readme-testing-sync       | (dokumentacja) recenzent czyta z README, jak uruchomić testy (`npm test` / `npm run test:run`), i trafia do `test-plan.md` | S-10 | — (źródło treści: `package.json`, `test-plan.md`, `AGENTS.md`) | not started |
 
 ## Streams
 
@@ -215,6 +216,25 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Risk:** najniższe ryzyko techniczne w całej roadmapie (jeden plik markdown, zero wpływu na runtime), ale realny koszt utrzymania: README powtarzający treść PRD i `tech-stack.md` rozjedzie się z nimi przy kolejnym plasterku. Trzymać go krótkim i linkować do `context/foundation/` zamiast kopiować. Drugi guardrail: nie wpisywać do README żadnych sekretów — wyłącznie **nazwy** wymaganych zmiennych, wartości zostają w `vercel env` i `.env.local`.
 - **Status:** not started
 
+### S-11: README zgodny z realnym stanem testów
+
+- **Outcome:** osoba (lub agent) wchodząca do repo czyta z `README.md`, że projekt ma testy i jak je uruchomić (`npm test` w trybie watch, `npm run test:run` jako bramka), oraz gdzie leży strategia testów (`context/foundation/test-plan.md`) — bez zaglądania do `package.json` czy `AGENTS.md`.
+- **Change ID:** readme-testing-sync
+- **PRD refs:** — (dokumentacja repo; brak bezpośredniego FR. Źródło prawdy: `package.json` scripts, `context/foundation/test-plan.md`, `AGENTS.md` §Testing Guidelines)
+- **Current state:** `README.md:95-96` twierdzi: „Dostępne skrypty npm: `dev`, `build`, `start`, `lint`. Projekt nie ma jeszcze frameworka testowego — skryptu `test` nie znajdziesz." Tymczasem `package.json` ma Vitest 4.1.10 (+ `@testing-library/react`, `jsdom`) oraz skrypty `test` i `test:run`, a `npm run test:run` przechodzi 11 testów w 2 plikach (`src/lib/realtime/transcript.test.ts`, `src/components/voice-conversation.test.tsx`). Sekcja „Dokumentacja projektu" nie wspomina też o `context/foundation/test-plan.md` (24 KB strategii testów), mimo że listuje wszystkie pozostałe dokumenty foundation. Poboczny rozjazd w tej samej sekcji: opis roadmapy mówi „plasterki (`S-01`…`S-10`)", a po tym wpisie zakres to `S-11`.
+- **Dodatkowy zakres (z impl-review `readme-project-overview`, 2026-08-02 → `context/changes/readme-project-overview/reviews/impl-review.md`):** trzy znaleziska tej recenzji zostały świadomie delegowane do tego plasterka, żeby weszły jednym PR-em zamiast trzech mikro-poprawek:
+  - **F1** — zdanie o braku frameworka testowego (`README.md:95-96`), rdzeń tego plasterka.
+  - **F2** — sekcja „Dokumentacja projektu" (`README.md:143-157`): dopisać `context/foundation/test-plan.md`, poprawić zakres `S-01…S-10` → `S-01…S-11`; link do `lessons.md` (dodany ponad kontrakt planu S-10) zaakceptowany post factum, zostaje.
+  - **F3** — krok 6 quickstartu (`README.md:87-88`): dopisać, że `npx supabase db reset` **kasuje lokalną bazę** (lokalne sesje przepadają), a nie tylko „aplikuje migracje od zera". Ryzyko zdalne sprawdzone i nieistotne: README nigdzie nie używa `--linked`.
+- **Prerequisites:** S-10 (README musi istnieć w wersji produktowej — to jego sekcje są korygowane)
+- **Parallel with:** dowolny plasterek — zmiana wyłącznie w `README.md`, zero dotknięć kodu, schematu i konfiguracji testów
+- **Blockers:** —
+- **Unknowns:**
+  - Czy README ma podawać liczbę testów / pokrycie (rozjedzie się przy pierwszym nowym teście), czy tylko komendy i link do `test-plan.md` — rekomendacja: same komendy. Owner: user. Block: no.
+  - Czy dopisać wzmiankę o bramce mutacyjnej (Stryker, ad hoc per faza ryzyka z `test-plan.md §4`), czy zostawić ją wyłącznie w `test-plan.md`. Owner: user. Block: no.
+- **Risk:** techniczne ryzyko zerowe (jeden plik markdown), ale realny koszt reputacyjny: README jest bramką wejścia do repo, więc recenzent czytający wyłącznie README może uznać kryterium „projekt ma testy" za niespełnione, mimo że suite istnieje i przechodzi. Ten sam mechanizm rozjazdu, który S-10 wskazał jako swoje główne ryzyko utrzymania — dlatego poprawka ma **linkować** do `test-plan.md` i `package.json`, a nie kopiować ich treści (żadnych list plików testowych, liczników ani procentów pokrycia w README).
+- **Status:** not started
+
 ## Backlog Handoff
 
 | Roadmap ID | Change ID                  | Suggested issue title                                        | Ready for `/10x-plan` | Notes                                        |
@@ -230,6 +250,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 | S-08       | header-avatar-menu         | Wspólny header na każdym roucie: menu pod avatarem (Wyloguj) + archiwum pod orbem | no        | Czeka na S-01 i S-05                          |
 | S-09       | topic-selection-revamp     | Wybór 3 tematów na starcie + pula 30 (50/50 praca / nie-praca) | no                  | Czeka na S-02                                |
 | S-10       | readme-project-overview    | README: czym jest english-talk, stack, setup lokalny, gdzie leży dokumentacja | yes   | Run `/10x-plan readme-project-overview`      |
+| S-11       | readme-testing-sync        | README: komendy testowe (`npm test` / `npm run test:run`) + link do `test-plan.md` | yes | Run `/10x-plan readme-testing-sync`; jednolinijkowa poprawka `README.md:95-96` |
 
 ## Open Roadmap Questions
 
