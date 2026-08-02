@@ -199,15 +199,15 @@ linków (łapie zmyślony fakt). Ten sam próg, którego użyto w S-10 przy pisa
 
 #### Automated
 
-- [x] 1.1 Suite przechodzi: `npm run test:run`
-- [x] 1.2 Tryb watch startuje bez błędu konfiguracji: `npm test -- --run --reporter=dot`
-- [x] 1.3 Każda ścieżka wymieniona w nowej treści istnieje
-- [x] 1.4 Lista skryptów npm w README zgadza się z `scripts` w `package.json`
-- [x] 1.5 Lint przechodzi: `npm run lint`
+- [x] 1.1 Suite przechodzi: `npm run test:run` — 8a32e55
+- [x] 1.2 Tryb watch startuje bez błędu konfiguracji: `npm test -- --run --reporter=dot` — 8a32e55
+- [x] 1.3 Każda ścieżka wymieniona w nowej treści istnieje — 8a32e55
+- [x] 1.4 Lista skryptów npm w README zgadza się z `scripts` w `package.json` — 8a32e55
+- [x] 1.5 Lint przechodzi: `npm run lint` — 8a32e55
 
 #### Manual
 
-- [x] 1.6 W całym README nie ma już zdania sugerującego brak testów
-- [x] 1.7 Podsekcja „### Testy" czyta się spójnie z resztą README
-- [x] 1.8 Linki relatywne otwierają się poprawnie w widoku repo na GitHubie
-- [x] 1.9 Czytelnik wie, co uruchomić i gdzie dopisać nowy test, bez otwierania `AGENTS.md`
+- [x] 1.6 W całym README nie ma już zdania sugerującego brak testów — 8a32e55
+- [x] 1.7 Podsekcja „### Testy" czyta się spójnie z resztą README — 8a32e55
+- [x] 1.8 Linki relatywne otwierają się poprawnie w widoku repo na GitHubie — 8a32e55
+- [x] 1.9 Czytelnik wie, co uruchomić i gdzie dopisać nowy test, bez otwierania `AGENTS.md` — 8a32e55

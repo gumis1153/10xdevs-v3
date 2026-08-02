@@ -1,7 +1,7 @@
 ---
 change_id: readme-testing-sync
 title: README — synchronizacja z warstwą testową
-status: implementing
+status: implemented
 created: 2026-08-02
 updated: 2026-08-02
 archived_at: null
