@@ -1,9 +1,9 @@
 ---
 change_id: readme-project-overview
 title: Readme project overview
-status: implemented
+status: impl_reviewed
 created: 2026-07-29
-updated: 2026-07-29
+updated: 2026-08-02
 archived_at: null
 ---
 
