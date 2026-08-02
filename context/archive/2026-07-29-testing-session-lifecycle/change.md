@@ -1,10 +1,10 @@
 ---
 change_id: testing-session-lifecycle
 title: Testing session lifecycle
-status: implemented
+status: archived
 created: 2026-07-29
-updated: 2026-07-29
-archived_at: null
+updated: 2026-08-02
+archived_at: 2026-08-02T11:34:52Z
 ---
 
 ## Notes
