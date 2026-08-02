@@ -92,8 +92,22 @@ W całym setupie używaj konsekwentnie **`127.0.0.1`**, nie `localhost`:
 `supabase/config.toml` ustawia `site_url = "http://127.0.0.1:3000"`, a mieszanie hostów
 prowadzi do rozjazdu ciasteczek sesji.
 
-Dostępne skrypty npm: `dev`, `build`, `start`, `lint`. Projekt nie ma jeszcze frameworka
-testowego — skryptu `test` nie znajdziesz.
+Dostępne skrypty npm: `dev`, `build`, `start`, `lint`, `test`, `test:run`.
+
+### Testy
+
+- **`npm test`** — tryb watch, do pracy nad zmianą: suite przelicza się po każdym zapisie.
+- **`npm run test:run`** — jeden przebieg; tej wersji używaj jako bramki przed pushem.
+
+Plik testu leży **obok jednostki, którą pokrywa** — test dla
+[`src/lib/realtime/transcript.ts`](src/lib/realtime/transcript.ts) to
+`src/lib/realtime/transcript.test.ts` w tym samym katalogu. Fake'i współdzielone między
+testami trzymamy w [`src/test/fakes/`](src/test/fakes).
+
+Zanim dopiszesz nowy test, zajrzyj do
+[`context/foundation/test-plan.md`](context/foundation/test-plan.md): §6 zbiera wzorce dla
+poszczególnych warstw i politykę mockowania, a wcześniejsze sekcje — mapę ryzyk i zakres,
+którego suite świadomie dziś nie obejmuje.
 
 ### Zmienne środowiskowe
 
@@ -150,6 +164,8 @@ Repo pracuje na dokumentacji trzymanej w `context/`, nie w wiki:
   platformy deploymentu.
 - [`context/foundation/lessons.md`](context/foundation/lessons.md) — reguły wyciągnięte
   z poprzednich zmian.
+- [`context/foundation/test-plan.md`](context/foundation/test-plan.md) — strategia testów:
+  mapa ryzyk, fazy rolloutu i wzorce dodawania testów.
 - [`context/deployment/deploy-plan.md`](context/deployment/deploy-plan.md) — runbook
   deploymentu i lokalnego Supabase (dziennik decyzji, nie instrukcja startowa).
 - [`context/archive/`](context/archive) — zamknięte zmiany z planami, researchem
