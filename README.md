@@ -97,7 +97,15 @@ Dostępne skrypty npm: `dev`, `build`, `start`, `lint`, `test`, `test:run`.
 ### Testy
 
 - **`npm test`** — tryb watch, do pracy nad zmianą: suite przelicza się po każdym zapisie.
-- **`npm run test:run`** — jeden przebieg; tej wersji używaj jako bramki przed pushem.
+- **`npm run test:run`** — jeden przebieg; **ten sam przebieg jest wymuszany w buildzie
+  Vercela na każdym PR-ze**, więc uruchom go lokalnie, zanim wypchniesz.
+
+Czerwony suite kończy build błędem, a przez required status check `Vercel` **blokuje merge
+do `master` i deploy produkcyjny** — nie da się go obejść inaczej niż naprawą testu albo
+revertem. Bramka jest skonfigurowana w [`vercel.ts`](vercel.ts) jako
+`buildCommand: 'npm run test:run && npm run build'`; testy idą przed kompilacją, więc
+czerwony suite przerywa build, zanim zapłaci za `next build`. ESLint w bramce **nie**
+biegnie — `npm run lint` uruchamiaj lokalnie.
 
 Plik testu leży **obok jednostki, którą pokrywa** — test dla
 [`src/lib/realtime/transcript.ts`](src/lib/realtime/transcript.ts) to

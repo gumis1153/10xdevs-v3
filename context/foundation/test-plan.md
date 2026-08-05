@@ -92,6 +92,16 @@ w fazie 4 jest promowane tylko dlatego, że nic tańszego nie łapie przejścia
 auth + WebRTC + route; faza 5 jest na końcu, bo bramka ma sens dopiero wtedy,
 gdy jest co bramkować.
 
+**Bramka testów z fazy 5 wyszła poza kolejność.** Została dostarczona w
+`context/changes/vercel-build-test-gate/`: `buildCommand` w `vercel.ts` uruchamia
+`npm run test:run` przed `next build`, więc czerwony suite kończy build błędem i
+przez required status check `Vercel` blokuje merge oraz deploy produkcyjny
+(udowodnione empirycznie na PR #29 — czerwony commit dał `FAILURE` i zablokowany
+merge, revert wrócił na `SUCCESS`). Wcześniejsze domknięcie było obronne, bo po
+fazie 1 jest już co bramkować: 11 hermetycznych testów w 2 plikach. Status fazy 5
+zostaje `not started`, bo jej pozostałe elementy — lint w bramce, post-edit hook i
+przegląd multimodalny stanów rozmowy — nie ruszyły.
+
 **Brak osobnej fazy AI-native.** Warstwa AI-native jest zmieszczona w fazie 5
 i ograniczona do jednego zastosowania, które daje sygnał niedostępny tanio
 klasycznie: animowany wskaźnik stanu rozmowy (`src/components/` — 12
@@ -135,7 +145,7 @@ rolloutu wyląduje; przed tym bramka jest planowana.
 |---|---|---|---|
 | typecheck | Vercel preview build (już podłączone) + CI | required | dryf typów |
 | lint (ESLint) | dziś tylko lokalnie | required after §3 Phase 5 | dryf stylu i błędy wykrywalne statycznie; AGENTS.md potwierdza, że ESLint nie biegnie dziś w CI |
-| unit + integration | lokalnie od §3 Phase 1, w CI od §3 Phase 5 | required after §3 Phase 1 | regresje logiki, w szczególności teardown sesji |
+| unit + integration | lokalnie + Vercel preview build (podpięte: `buildCommand` w `vercel.ts`) | required | regresje logiki, w szczególności teardown sesji |
 | MERGE-GATE tokenów Realtime (rate limit + TTL ≤600 s + nagłówek identyfikacyjny) | dziś review PR; test od §3 Phase 2 | required | runaway bill (ryzyko #2) — dziś egzekwowane wyłącznie ludzkim review |
 | integration polityk dostępu (dwa konta) | lokalnie + CI | required after §3 Phase 3 | wyciek danych między kontami (ryzyko #3) |
 | e2e ścieżki krytycznej | CI na PR | required after §3 Phase 4 | zerwana ścieżka login → temat → rozmowa → raport → archiwum |
