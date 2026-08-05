@@ -390,31 +390,31 @@ commitu — nie obejście bramki.
 
 #### Automated
 
-- [x] 1.1 Suite przechodzi w symulowanym środowisku builda (`NODE_ENV=production npm run test:run` → 11/11)
-- [x] 1.2 Suite przechodzi bez zmiennej (`npm run test:run` → 11/11)
-- [x] 1.3 Typecheck i build przechodzą lokalnie (`npm run build`)
-- [x] 1.4 Lint przechodzi (`npm run lint`)
-- [x] 1.5 Pełny łańcuch bramki przechodzi lokalnie (`npm run test:run && npm run build`)
+- [x] 1.1 Suite przechodzi w symulowanym środowisku builda (`NODE_ENV=production npm run test:run` → 11/11) — e0af2e2
+- [x] 1.2 Suite przechodzi bez zmiennej (`npm run test:run` → 11/11) — e0af2e2
+- [x] 1.3 Typecheck i build przechodzą lokalnie (`npm run build`) — e0af2e2
+- [x] 1.4 Lint przechodzi (`npm run lint`) — e0af2e2
+- [x] 1.5 Pełny łańcuch bramki przechodzi lokalnie (`npm run test:run && npm run build`) — e0af2e2
 
 #### Manual
 
-- [ ] 1.6 Build preview zielony, output Vitesta w logu przed kompilacją Next.js
-- [ ] 1.7 Log builda potwierdza użycie commanda z `vercel.ts`, nie defaultu frameworka
+- [x] 1.6 Build preview zielony, output Vitesta w logu przed kompilacją Next.js — e0af2e2
+- [x] 1.7 Log builda potwierdza użycie commanda z `vercel.ts`, nie defaultu frameworka — e0af2e2
 
 ### Phase 2: Dowód, że bramka blokuje
 
 #### Automated
 
-- [ ] 2.1 Po commicie dowodowym `npm run test:run` kończy się kodem ≠ 0
-- [ ] 2.2 Po revercie suite wraca na zielono (11/11)
-- [ ] 2.3 Check `Vercel` na commicie dowodowym raportuje `state: FAILURE`
-- [ ] 2.4 Check `Vercel` po revercie raportuje `state: SUCCESS`
+- [x] 2.1 Po commicie dowodowym `npm run test:run` kończy się kodem ≠ 0 — 927b262
+- [x] 2.2 Po revercie suite wraca na zielono (11/11) — 6d85f76
+- [x] 2.3 Check `Vercel` na commicie dowodowym raportuje `state: FAILURE` — 927b262
+- [x] 2.4 Check `Vercel` po revercie raportuje `state: SUCCESS` — 6d85f76
 
 #### Manual
 
-- [ ] 2.5 GitHub pokazuje merge jako zablokowany na czerwonym commicie
-- [ ] 2.6 Log padniętego builda ma komunikat asercji i nie ma kompilacji Next.js
-- [ ] 2.7 Po revercie PR wraca do stanu mergowalnego
+- [x] 2.5 GitHub pokazuje merge jako zablokowany na czerwonym commicie — 927b262
+- [x] 2.6 Log padniętego builda ma komunikat asercji i nie ma kompilacji Next.js — 927b262
+- [x] 2.7 Po revercie PR wraca do stanu mergowalnego — 6d85f76
 
 ### Phase 3: Synchronizacja dokumentów
 
