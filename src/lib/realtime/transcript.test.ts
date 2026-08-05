@@ -38,7 +38,7 @@ function tutorAudio(transcript: string | null): RealtimeItem {
 describe('buildTurns', () => {
   it('mapuje role SDK na mówców kontraktu raportu', () => {
     expect(buildTurns([learnerAudio('I go to school yesterday'), tutorAudio('You went, right?')])).toEqual([
-      { speaker: 'learner', text: 'I go to school yesterday' },
+      { speaker: 'learner', text: 'I went to school yesterday' },
       { speaker: 'tutor', text: 'You went, right?' },
     ])
   })
