@@ -1,7 +1,7 @@
 ---
 change_id: vercel-build-test-gate
 title: Vercel build test gate
-status: implementing
+status: implemented
 created: 2026-08-05
 updated: 2026-08-05
 archived_at: null

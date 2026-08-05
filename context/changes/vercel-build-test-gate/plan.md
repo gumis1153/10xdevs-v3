@@ -420,13 +420,13 @@ commitu — nie obejście bramki.
 
 #### Automated
 
-- [x] 3.1 `test-plan.md` nie opisuje już bramki unit+integration jako wyłącznie lokalnej
-- [x] 3.2 Notka o ESLincie przetrwała w `AGENTS.md` i w wierszu `lint` w `§5`
-- [x] 3.3 Wartości Status w `§3` nadal należą do słownika parsera
-- [x] 3.4 Suite i build przechodzą po zmianach w dokumentach
+- [x] 3.1 `test-plan.md` nie opisuje już bramki unit+integration jako wyłącznie lokalnej — c126aa7
+- [x] 3.2 Notka o ESLincie przetrwała w `AGENTS.md` i w wierszu `lint` w `§5` — c126aa7
+- [x] 3.3 Wartości Status w `§3` nadal należą do słownika parsera — c126aa7
+- [x] 3.4 Suite i build przechodzą po zmianach w dokumentach — c126aa7
 
 #### Manual
 
-- [x] 3.5 `### Testy` w README odpowiada na „co musi przejść, żebym mógł zmergować"
-- [x] 3.6 `test-plan.md §3` czyta się spójnie (Phase 5 `not started` + adnotacja)
-- [x] 3.7 `change.md` zaktualizowany (`status`, `updated`)
+- [x] 3.5 `### Testy` w README odpowiada na „co musi przejść, żebym mógł zmergować" — c126aa7
+- [x] 3.6 `test-plan.md §3` czyta się spójnie (Phase 5 `not started` + adnotacja) — c126aa7
+- [x] 3.7 `change.md` zaktualizowany (`status`, `updated`) — c126aa7
