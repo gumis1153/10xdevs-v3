@@ -3,7 +3,7 @@ project: "english-talk"
 version: 1
 status: draft
 created: 2026-07-18
-updated: 2026-08-02
+updated: 2026-08-05
 prd_version: 1
 main_goal: speed
 top_blocker: decisions
@@ -41,6 +41,7 @@ Polscy programiści na poziomie A2–B2 mają barierę mówioną w angielskim �
 | S-09 | topic-selection-revamp    | wybiera na starcie spośród 3 proponowanych tematów (pula 30, 50% praca / 50% poza pracą) i może wylosować nowe | S-02 | FR-003, FR-004 | done |
 | S-10 | readme-project-overview   | (dokumentacja) osoba wchodząca do repo czyta z README, czym jest english-talk, i uruchamia projekt lokalnie bez pytania autora | — | — (źródło treści: PRD §Vision, `tech-stack.md`) | done |
 | S-11 | readme-testing-sync       | (dokumentacja) recenzent czyta z README, jak uruchomić testy (`npm test` / `npm run test:run`), i trafia do `test-plan.md` | S-10 | — (źródło treści: `package.json`, `test-plan.md`, `AGENTS.md`) | not started |
+| S-12 | vercel-build-test-gate    | (bramka jakości) czerwony test nie wchodzi na produkcję: suite biegnie przed `next build` na każdym deployu, a Build Logs są dowodem bramki | F-01 | — (źródło: `test-plan.md` §5, `AGENTS.md`) | not started |
 
 ## Streams
 
@@ -235,6 +236,22 @@ Foundations below assume these are present and do NOT re-scaffold them.
 - **Risk:** techniczne ryzyko zerowe (jeden plik markdown), ale realny koszt reputacyjny: README jest bramką wejścia do repo, więc recenzent czytający wyłącznie README może uznać kryterium „projekt ma testy" za niespełnione, mimo że suite istnieje i przechodzi. Ten sam mechanizm rozjazdu, który S-10 wskazał jako swoje główne ryzyko utrzymania — dlatego poprawka ma **linkować** do `test-plan.md` i `package.json`, a nie kopiować ich treści (żadnych list plików testowych, liczników ani procentów pokrycia w README).
 - **Status:** not started
 
+### S-12: Testy jako bramka builda na Vercelu
+
+- **Outcome:** żadna zmiana z czerwoną suite nie dojeżdża na preview ani na produkcję — hermetyczne testy biegną przed `next build` na każdym deployu, a wyjście Vitesta w Build Logs deploymentu jest dowodem, że bramka jest automatyczna, a nie odpalona raz ręcznie. Recenzent projektu widzi ten dowód bez klonowania repo.
+- **Change ID:** vercel-build-test-gate
+- **PRD refs:** — (bramka jakości / delivery; brak bezpośredniego FR. Źródła: `context/foundation/test-plan.md` §5 wiersz „unit + integration", `AGENTS.md` §Commit & PR Guidelines, runbook `context/deployment/deploy-plan.md`)
+- **Current state:** bramka nie jest dziś wymuszona nigdzie automatycznie. [`vercel.ts`](../../vercel.ts) ustawia wyłącznie `regions: ['fra1']` — bez `buildCommand`, więc Vercel odpala domyślne `npm run build` i testy nie są w tej ścieżce w ogóle obecne. `.github/workflows/` nie istnieje (patrz §Baseline), a `AGENTS.md` potwierdza, że w CI nie biegnie nawet ESLint. Suite jest zdrowa i tania: 11 testów w 2 plikach (`src/lib/realtime/transcript.test.ts`, `src/components/voice-conversation.test.tsx`), `npm run test:run` kończy się w ~1,3 s. `test-plan.md` §5 opisuje ten stan jako „lokalnie od §3 Phase 1, w CI od §3 Phase 5" — ten plasterek świadomie wyprzedza Fazę 5, biorąc z niej wyłącznie warstwę hermetyczną.
+- **Zakres poza `vercel.ts`:** wpięcie bramki rozjeżdża `test-plan.md` z rzeczywistością, więc częścią tego plasterka jest korekta §5 (wiersz `unit + integration`: gdzie bramka jest wymuszana i od kiedy) oraz §3 Phase 5 (zawężenie zakresu o to, co ten plasterek już dostarczył). Bez tej korekty recenzent czyta w planie coś innego, niż widzi w Build Logs — dokładnie ten mechanizm rozjazdu, który S-10 i S-11 wskazały jako swoje główne ryzyko.
+- **Prerequisites:** F-01 (ścieżka deployu: merge → build produkcji, PR → preview; bez niej bramka nie ma gdzie się wykonać)
+- **Parallel with:** dowolny plasterek — zmiana dotyka `vercel.ts` i `context/foundation/test-plan.md`, zero dotknięć kodu aplikacji, schematu i konfiguracji Vitesta
+- **Blockers:** —
+- **Unknowns:**
+  - Miejsce wpięcia: `buildCommand: 'npm run test:run && npm run build'` w `vercel.ts` czy `"prebuild": "vitest run"` w `package.json`. Rekomendacja: `vercel.ts` — jawne w konfiguracji (czytelne dla recenzenta) i zostawia lokalny `npm run build` szybkim; wariant `prebuild` obciąża każdy build lokalny. Owner: user. Block: no.
+  - Czy README ma wspominać o tej bramce w podsekcji „Testy" (S-11), czy wystarczy `test-plan.md` §5. Rekomendacja: jedno zdanie w README, bez zrzutów i liczników — spójnie z guardrailem S-11 („linkować, nie kopiować"). Owner: user. Block: no.
+- **Risk:** sprzęga deploy z suite — od tej zmiany czerwony lub flaky test blokuje produkcję, nie tylko PR. Dziś ryzyko jest niskie (wszystkie 11 testów jest hermetycznych: podmieniony moduł `@openai/agents-realtime`, stubowany `fetch`, fake timery — zero sieci i zero DB), ale rośnie z każdym testem dotykającym zewnętrznego zasobu. Dwa guardraile do zapisania w planie: (1) do `buildCommand` wpuszczać **wyłącznie** warstwę hermetyczną — środowisko builda Vercela nie ma Dockera, więc integration z §3 Phase 3 (lokalny stack Supabase, dwa konta) tam nie wystartuje i musi zostać poza bramką builda; (2) `test:run`, nigdy `test` — samo `vitest` wchodzi w tryb watch i zawiesiłby build do timeoutu.
+- **Status:** not started
+
 ## Backlog Handoff
 
 | Roadmap ID | Change ID                  | Suggested issue title                                        | Ready for `/10x-plan` | Notes                                        |
@@ -251,6 +268,7 @@ Foundations below assume these are present and do NOT re-scaffold them.
 | S-09       | topic-selection-revamp     | Wybór 3 tematów na starcie + pula 30 (50/50 praca / nie-praca) | no                  | Czeka na S-02                                |
 | S-10       | readme-project-overview    | README: czym jest english-talk, stack, setup lokalny, gdzie leży dokumentacja | yes   | Run `/10x-plan readme-project-overview`      |
 | S-11       | readme-testing-sync        | README: komendy testowe (`npm test` / `npm run test:run`) + link do `test-plan.md` | yes | Run `/10x-plan readme-testing-sync`; jednolinijkowa poprawka `README.md:95-96` |
+| S-12       | vercel-build-test-gate     | Bramka builda: `npm run test:run` przed `next build` na Vercelu + sync `test-plan.md` §5 | yes | Run `/10x-plan vercel-build-test-gate`; F-01 done, więc nic nie blokuje |
 
 ## Open Roadmap Questions
 
